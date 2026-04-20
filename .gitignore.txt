@@ -1,0 +1,19 @@
+# Các thư mục chứa code đã biên dịch (không nên push)
+[Bb]in/
+[Oo]bj/
+
+# Các tệp cấu hình của Visual Studio
+.vs/
+*.user
+*.userosscache
+*.sln.docstates
+
+# Các tệp cấu hình của JetBrains (Rider/IntelliJ)
+.idea/
+
+# Các tệp log
+*.log
+
+# File cấu hình cá nhân chứa mật khẩu (ví dụ nếu bạn có)
+appsettings.Development.json
+appsettings.json

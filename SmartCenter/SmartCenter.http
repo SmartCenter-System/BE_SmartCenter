@@ -1,0 +1,6 @@
+@SmartCenter_HostAddress = http://localhost:5159
+
+GET {{SmartCenter_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
