@@ -20,14 +20,4 @@
     <ItemGroup>
       <ProjectReference Include="..\SmartCenter.Repository\SmartCenter.Repository.csproj" />
     </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="CloudinaryService\" />
-      <Folder Include="Course\" />
-      <Folder Include="JwtService\" />
-      <Folder Include="Lecture\" />
-      <Folder Include="MailService\" />
-      <Folder Include="Staff\" />
-      <Folder Include="Student\" />
-    </ItemGroup>
 </Project>

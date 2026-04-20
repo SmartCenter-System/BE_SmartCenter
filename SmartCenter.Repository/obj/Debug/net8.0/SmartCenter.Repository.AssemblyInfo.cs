@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SmartCenter.Repository")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b9856094bb8fc443bd855acacda3a10b489856f3")]
 [assembly: System.Reflection.AssemblyProductAttribute("SmartCenter.Repository")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SmartCenter.Repository")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
