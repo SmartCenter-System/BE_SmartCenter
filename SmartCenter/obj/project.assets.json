@@ -6960,19 +6960,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Admin\\.nuget\\packages\\": {}
+    "C:\\Users\\pc\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Admin\\Downloads\\PIEDTEAM-C#\\SmartCenter\\SmartCenter\\SmartCenter.csproj",
+      "projectUniqueName": "D:\\SmartCenter\\SmartCenter\\SmartCenter.csproj",
       "projectName": "SmartCenter",
-      "projectPath": "C:\\Users\\Admin\\Downloads\\PIEDTEAM-C#\\SmartCenter\\SmartCenter\\SmartCenter.csproj",
-      "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Admin\\Downloads\\PIEDTEAM-C#\\SmartCenter\\SmartCenter\\obj\\",
+      "projectPath": "D:\\SmartCenter\\SmartCenter\\SmartCenter.csproj",
+      "packagesPath": "C:\\Users\\pc\\.nuget\\packages\\",
+      "outputPath": "D:\\SmartCenter\\SmartCenter\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\pc\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
@@ -6984,8 +6984,8 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "C:\\Users\\Admin\\Downloads\\PIEDTEAM-C#\\SmartCenter\\SmartCenter.Service\\SmartCenter.Service.csproj": {
-              "projectPath": "C:\\Users\\Admin\\Downloads\\PIEDTEAM-C#\\SmartCenter\\SmartCenter.Service\\SmartCenter.Service.csproj"
+            "D:\\SmartCenter\\SmartCenter.Service\\SmartCenter.Service.csproj": {
+              "projectPath": "D:\\SmartCenter\\SmartCenter.Service\\SmartCenter.Service.csproj"
             }
           }
         }

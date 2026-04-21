@@ -1,12 +1,43 @@
+using Microsoft.EntityFrameworkCore;
+using Quartz;
+using SmartCenter.Extensions;
+using SmartCenter.Middlewares;
+using SmartCenter.Repository.Data;
+
+using JwtService = SmartCenter.Service.JwtService;
+using MediaService = SmartCenter.Service.MediaService;
+using CloudinaryService = SmartCenter.Service.CloudinaryService;
+using MailService = SmartCenter.Service.MailService;
+using SePayService = SmartCenter.Service.SePayService;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddHttpContextAccessor();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseNpgsql(
+        builder.Configuration.GetConnectionString("DefaultConnection")
+    )
+);
+builder.Services.AddJwtServices(builder.Configuration);
+builder.Services.AddSwaggerServices();
+
+builder.Services.AddScoped<JwtService.IJwtService, JwtService.JwtServices>();
+builder.Services.AddScoped<MediaService.IService, CloudinaryService.Service>();
+builder.Services.AddScoped<MailService.IService, MailService.Service>();
+
+
+builder.Services.AddQuartzHostedService(options =>
+{
+    options.WaitForJobsToComplete = true;
+});
+
+builder.Services.AddTransient<GlobalExceptionHandlerMiddleware>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -16,6 +47,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

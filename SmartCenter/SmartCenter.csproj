@@ -24,9 +24,5 @@
     <ItemGroup>
       <ProjectReference Include="..\SmartCenter.Service\SmartCenter.Service.csproj" />
     </ItemGroup>
-    <ItemGroup>
-      <Folder Include="Extensions\" />
-      <Folder Include="Middlewares\" />
-    </ItemGroup>
 
 </Project>
