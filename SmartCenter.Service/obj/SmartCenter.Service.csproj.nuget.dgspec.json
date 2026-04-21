@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "D:\\SmartCenter\\SmartCenter.Service\\SmartCenter.Service.csproj": {}
+    "D:\\Data\\Personal\\SmartCenter\\BE_SmartCenter\\SmartCenter.Service\\SmartCenter.Service.csproj": {}
   },
   "projects": {
-    "D:\\SmartCenter\\SmartCenter.Repository\\SmartCenter.Repository.csproj": {
+    "D:\\Data\\Personal\\SmartCenter\\BE_SmartCenter\\SmartCenter.Repository\\SmartCenter.Repository.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\SmartCenter\\SmartCenter.Repository\\SmartCenter.Repository.csproj",
+        "projectUniqueName": "D:\\Data\\Personal\\SmartCenter\\BE_SmartCenter\\SmartCenter.Repository\\SmartCenter.Repository.csproj",
         "projectName": "SmartCenter.Repository",
-        "projectPath": "D:\\SmartCenter\\SmartCenter.Repository\\SmartCenter.Repository.csproj",
-        "packagesPath": "C:\\Users\\pc\\.nuget\\packages\\",
-        "outputPath": "D:\\SmartCenter\\SmartCenter.Repository\\obj\\",
+        "projectPath": "D:\\Data\\Personal\\SmartCenter\\BE_SmartCenter\\SmartCenter.Repository\\SmartCenter.Repository.csproj",
+        "packagesPath": "C:\\Users\\Administrator\\.nuget\\packages\\",
+        "outputPath": "D:\\Data\\Personal\\SmartCenter\\BE_SmartCenter\\SmartCenter.Repository\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\pc\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\Administrator\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -88,17 +88,17 @@
         }
       }
     },
-    "D:\\SmartCenter\\SmartCenter.Service\\SmartCenter.Service.csproj": {
+    "D:\\Data\\Personal\\SmartCenter\\BE_SmartCenter\\SmartCenter.Service\\SmartCenter.Service.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\SmartCenter\\SmartCenter.Service\\SmartCenter.Service.csproj",
+        "projectUniqueName": "D:\\Data\\Personal\\SmartCenter\\BE_SmartCenter\\SmartCenter.Service\\SmartCenter.Service.csproj",
         "projectName": "SmartCenter.Service",
-        "projectPath": "D:\\SmartCenter\\SmartCenter.Service\\SmartCenter.Service.csproj",
-        "packagesPath": "C:\\Users\\pc\\.nuget\\packages\\",
-        "outputPath": "D:\\SmartCenter\\SmartCenter.Service\\obj\\",
+        "projectPath": "D:\\Data\\Personal\\SmartCenter\\BE_SmartCenter\\SmartCenter.Service\\SmartCenter.Service.csproj",
+        "packagesPath": "C:\\Users\\Administrator\\.nuget\\packages\\",
+        "outputPath": "D:\\Data\\Personal\\SmartCenter\\BE_SmartCenter\\SmartCenter.Service\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\pc\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\Administrator\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -110,8 +110,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "D:\\SmartCenter\\SmartCenter.Repository\\SmartCenter.Repository.csproj": {
-                "projectPath": "D:\\SmartCenter\\SmartCenter.Repository\\SmartCenter.Repository.csproj"
+              "D:\\Data\\Personal\\SmartCenter\\BE_SmartCenter\\SmartCenter.Repository\\SmartCenter.Repository.csproj": {
+                "projectPath": "D:\\Data\\Personal\\SmartCenter\\BE_SmartCenter\\SmartCenter.Repository\\SmartCenter.Repository.csproj"
               }
             }
           }
