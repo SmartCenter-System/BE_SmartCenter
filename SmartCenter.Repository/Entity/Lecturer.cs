@@ -11,6 +11,7 @@ public class Lecturer: BaseEntity<Guid>, IAuditableEntity
     public required string Expertise { get; set; }
     
     public ICollection<Course> Courses { get; set; } = new List<Course>();
+    public ICollection<ExamPaper> ExamPapers { get; set; } = new List<ExamPaper>();
     
     public DateTimeOffset CreatedAt { get; set; }
     public DateTimeOffset? UpdatedAt { get; set; }
