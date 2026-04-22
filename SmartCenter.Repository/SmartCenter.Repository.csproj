@@ -14,8 +14,4 @@
         <PackageReference Include="Quartz" Version="3.17.1" />
         <PackageReference Include="Quartz.Extensions.Hosting" Version="3.17.1" />
     </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Entity\" />
-    </ItemGroup>
 </Project>

@@ -1,10 +1,12 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartCenter", "SmartCenter\SmartCenter.csproj", "{49D2C62A-D76C-4157-B40F-9910A40E08FC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartCenter.Api", "SmartCenter.Api\SmartCenter.Api.csproj", "{49D2C62A-D76C-4157-B40F-9910A40E08FC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartCenter.Service", "SmartCenter.Service\SmartCenter.Service.csproj", "{2D7948F1-5240-4A72-8021-43026E15C68E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartCenter.Repository", "SmartCenter.Repository\SmartCenter.Repository.csproj", "{70916149-49B4-45D0-AD66-3633F9DEB77B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".gitignore", ".gitignore", "{E8C6A7FD-FB71-40BA-8D81-AC6572DF3EB8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
