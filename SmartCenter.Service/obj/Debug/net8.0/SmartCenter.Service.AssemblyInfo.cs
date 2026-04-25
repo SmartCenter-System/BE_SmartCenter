@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SmartCenter.Service")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5b3760875950f16484d840855dda4a27c56e27d1")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1fec6f49282ce9616cbaffa6dbb97a999b9970e5")]
 [assembly: System.Reflection.AssemblyProductAttribute("SmartCenter.Service")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SmartCenter.Service")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
