@@ -19,7 +19,7 @@ public class Order: BaseEntity<Guid>, IAuditableEntity
     public required decimal TotalAmount { get; set; }
     public OrderStatus Status { get; set; }
     public PaymentMethod PaymentMethod { get; set; }
-    public required string? Note { get; set; }
+    public string? Note { get; set; }
     public DateTimeOffset ExpireAt { get; set; }
     public DateTimeOffset? PaidAt { get; set; }
     

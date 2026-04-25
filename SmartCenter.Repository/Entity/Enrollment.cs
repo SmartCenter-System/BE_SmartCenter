@@ -7,10 +7,10 @@ public class Enrollment: BaseEntity<Guid>, IAuditableEntity
 {
     
     public Guid StuId { get; set; }
-    public Student Student { get; set; }
+    public Student Student { get; set; } = null!;
     
     public Guid CourseId { get; set; }
-    public Course Course { get; set; }
+    public Course Course { get; set; } = null!;
     
     public Guid TransactionId { get; set; }
     public Transaction Transaction { get; set; }

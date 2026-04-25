@@ -2,5 +2,7 @@
 
 public enum ConsultReqStatus
 {
-    
+    Pending,
+    Accepted,
+    Rejected,
 }
