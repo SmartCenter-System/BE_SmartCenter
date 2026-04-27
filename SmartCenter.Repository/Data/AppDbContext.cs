@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using SmartCenter.Repository.Entity;
+using SmartCenter.Repository.Entity.Enums;
 
 namespace SmartCenter.Repository.Data;
 
@@ -55,8 +56,8 @@ public class AppDbContext : DbContext
             builder.Property(u => u.Email).IsRequired().HasMaxLength(128);
             builder.Property(u => u.PasswordHash).IsRequired().HasMaxLength(128);
             builder.Property(u => u.Phone).IsRequired().HasMaxLength(15);
-            builder.Property(u => u.Role).IsRequired().HasDefaultValue("Student");
-            builder.Property(u => u.Status).IsRequired().HasDefaultValue("Active");
+            builder.Property(u => u.Role).IsRequired().HasDefaultValue(UserRole.Student);
+            builder.Property(u => u.Status).IsRequired().HasDefaultValue(UserStatus.Active);
             builder.Property(u => u.Verified).IsRequired();
             builder.Property(u => u.ImgUrl).HasMaxLength(500);
             
@@ -66,6 +67,22 @@ public class AppDbContext : DbContext
             builder.HasMany(u => u.Notifications).WithOne(c => c.User).HasForeignKey(c => c.UserId).OnDelete(DeleteBehavior.Cascade);
             builder.HasOne(u => u.Lecturer).WithOne(l => l.User).HasForeignKey<Lecturer>(l => l.UserId).OnDelete(DeleteBehavior.Cascade);
             builder.HasOne(u => u.Student).WithOne(s => s.User).HasForeignKey<Student>(s => s.UserId).OnDelete(DeleteBehavior.Cascade);
+        });
+        
+        modelBuilder.Entity<UserSession>( builder => 
+        {
+            builder.Property(us => us.DeviceFingerprint).IsRequired().HasMaxLength(300);
+            builder.Property(s => s.RefreshToken).IsRequired().HasMaxLength(512);
+            builder.Property(s => s.ExpiresAt).IsRequired();
+            builder.Property(s => s.IsRevoked).HasDefaultValue(false);
+            
+            builder.HasIndex(s => s.UserId);
+            builder.HasIndex(s => s.RefreshToken).IsUnique();
+            
+            builder.HasOne<User>()
+                .WithMany() 
+                .HasForeignKey(s => s.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
 
         modelBuilder.Entity<Comment>(builder =>
@@ -85,13 +102,18 @@ public class AppDbContext : DbContext
             builder.Property(u => u.Email).IsRequired().HasMaxLength(128);
             builder.Property(u => u.Message).IsRequired();
             builder.Property(u => u.RequestDate).IsRequired().HasDefaultValue(DateTimeOffset.UtcNow);
-            builder.Property(u => u.Status).IsRequired().HasDefaultValue("Pending");
+            builder.Property(u => u.Status).IsRequired().HasDefaultValue(ConsultReqStatus.Pending);
             builder.Property(u => u.Notes).HasMaxLength(500);
         });
 
         modelBuilder.Entity<AuditLog>(builder =>
         {
-            //chua xong
+            builder.Property(e => e.Action).IsRequired();
+            builder.Property(e => e.Entity).IsRequired().HasMaxLength(200);
+            builder.Property(e => e.EntityId).IsRequired();
+            builder.Property(e => e.Timestamp).HasDefaultValue("now()");
+            builder.Property(e => e.Metadata).HasColumnType("jsonb");
+            
         });
 
         modelBuilder.Entity<Notification>(builder =>
@@ -99,7 +121,11 @@ public class AppDbContext : DbContext
             builder.Property(n => n.Title).IsRequired().HasMaxLength(128);
             builder.Property(n => n.Description).IsRequired().HasMaxLength(500);
             builder.Property(n => n.Type).IsRequired();
-            //chua xong
+            builder.Property(n => n.RefId).HasMaxLength(50);
+            builder.Property(n => n.RefType).HasMaxLength(50);
+
+            builder.Property(n => n.IsRead).HasDefaultValue(false);
+            builder.Property(n => n.CreatedAt).HasDefaultValueSql("now()");
         });
 
         modelBuilder.Entity<Lecturer>(builder =>
@@ -126,24 +152,36 @@ public class AppDbContext : DbContext
             builder.HasMany(s => s.LearningProcesses).WithOne(s => s.Student).HasForeignKey(s => s.StuId).OnDelete(DeleteBehavior.Cascade);
             builder.HasMany(s => s.ReviewCourses).WithOne(s => s.Student).HasForeignKey(s => s.StuId).OnDelete(DeleteBehavior.Restrict);
         });
-
+        
+        
         modelBuilder.Entity<CartItem>(builder =>
         {
             builder.Property(ci => ci.Quantity).IsRequired();
             builder.Property(ci => ci.ItemType).IsRequired();//Course, Combo
             
+            builder.HasOne(c => c.Cart).WithMany(c => c.Items).HasForeignKey(c => c.CartId).OnDelete(DeleteBehavior.Cascade);
+
         });
         
         modelBuilder.Entity<ExamPaper>(builder =>
         {
             builder.Property(e => e.Title).IsRequired().HasMaxLength(500);
-            builder.Property(e => e.CountDown);
+            builder.Property(e => e.CountDown).IsRequired();
             builder.Property(e => e.TotalPoints).IsRequired();
-            builder.Property(e => e.Status).IsRequired().HasDefaultValue("Open");
+            builder.Property(e => e.Status).IsRequired().HasDefaultValue(ExamPaperStatus.Open);
+            
             builder.HasMany(e => e.ExamManaments).WithOne(e => e.ExamPaper).HasForeignKey(e => e.ExamPaperId).OnDelete(DeleteBehavior.Restrict);
-            builder.HasMany(e => e.ExamComments).WithOne(e => e.ExamPaper).HasForeignKey(e => e.ExamPaperId).OnDelete(DeleteBehavior.Restrict);
+            builder.HasMany(e => e.ExamComments).WithOne(e => e.ExamPaper).HasForeignKey(e => e.ExamPaperId).OnDelete(DeleteBehavior.Cascade);
             builder.HasMany(e => e.ExamPaperDetails).WithOne(e => e.ExamPaper).HasForeignKey(e => e.ExamPaperId).OnDelete(DeleteBehavior.Restrict);
-            builder.HasOne(e => e.Deadline).WithOne(e => e.ExamPaper).HasForeignKey<Deadline>(e => e.ExamPaperId).OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(e => e.Deadline).WithOne(e => e.ExamPaper).HasForeignKey<Deadline>(e => e.ExamPaperId).OnDelete(DeleteBehavior.SetNull);
+        });
+
+        modelBuilder.Entity<Deadline>(builder =>
+        {
+            builder.Property(d => d.Title).HasMaxLength(255).IsRequired();
+            builder.Property(d => d.EndedAt).IsRequired();
+
+            builder.Property(d => d.Status).IsRequired().HasDefaultValue(DeadlineStatus.Processing);
         });
         
         modelBuilder.Entity<ExamManament>(builder =>
@@ -205,7 +243,7 @@ public class AppDbContext : DbContext
             builder.Property(c => c.CourseName).IsRequired().HasMaxLength(500);
             builder.Property(c => c.Description).IsRequired();
             builder.Property(c => c.CourseType).IsRequired();
-            builder.Property(c => c.IsActive).IsRequired().HasDefaultValue("Open");//Close
+            builder.Property(c => c.IsActive).IsRequired().HasDefaultValue(true);
             builder.Property(c => c.ImgUrl).IsRequired().HasMaxLength(500);
             builder.Property(c => c.StartAt).IsRequired();
             builder.Property(c => c.EndAt).IsRequired();
@@ -233,8 +271,8 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Section>(builder =>
         {
             builder.Property(s => s.Title).IsRequired().HasMaxLength(500);
-            builder.Property(s => s.Position).IsRequired().HasMaxLength(500);
-            builder.Property(s => s.IsActive).IsRequired().HasDefaultValue("Open");//CLose
+            builder.Property(s => s.Position).IsRequired().HasMaxLength(100);
+            builder.Property(s => s.IsActive).IsRequired().HasDefaultValue(true);
             
             builder.HasMany(s => s.Lessons).WithOne(s => s.Section).HasForeignKey(s => s.SectionId).OnDelete(DeleteBehavior.Restrict);
         });
@@ -247,19 +285,31 @@ public class AppDbContext : DbContext
 
         modelBuilder.Entity<Order>(builder =>
         {
-            builder.Property(o => o.OrderCode).IsRequired();
-            builder.Property(o => o.SubtotalAmount).IsRequired();
-            builder.Property(o => o.TotalAmount).IsRequired();
-            builder.Property(o => o.Status).IsRequired().HasDefaultValue("Pending");
-            builder.Property(o => o.PaymentMethod).IsRequired();
-            builder.Property(o => o.Note).IsRequired().HasMaxLength(500);
-            builder.Property(o => o.ExpireAt).IsRequired().HasDefaultValue(DateTimeOffset.UtcNow);
-            builder.Property(o => o.PaidAt).IsRequired().HasDefaultValue(DateTimeOffset.UtcNow);
+            builder.Property(o => o.OrderCode).IsRequired().HasMaxLength(50);
+            builder.Property(o => o.SubtotalAmount).IsRequired().HasPrecision(18, 3);
+            builder.Property(o => o.DiscountAmount).HasPrecision(18, 2).HasDefaultValue(0);
+            builder.Property(o => o.TotalAmount).IsRequired().HasPrecision(18, 3);
             
-            builder.HasMany(o => o.OrderItems).WithOne(o => o.Order).HasForeignKey(o => o.OrderId).OnDelete(DeleteBehavior.Restrict);
+            builder.Property(o => o.Status).IsRequired().HasDefaultValue(OrderStatus.Pending);
+            builder.Property(o => o.PaymentMethod).IsRequired();
+            builder.Property(o => o.Note).IsRequired(false).HasMaxLength(500);
+            builder.Property(o => o.ExpireAt).IsRequired();
+            builder.Property(o => o.PaidAt).IsRequired(false);
+            
+            builder.HasMany(o => o.OrderItems).WithOne(o => o.Order).HasForeignKey(o => o.OrderId).OnDelete(DeleteBehavior.Cascade);
             builder.HasOne(o => o.Transaction).WithOne(o => o.Order).HasForeignKey<Transaction>(o => o.OrderId).OnDelete(DeleteBehavior.Restrict);
+            builder.HasIndex(o => o.OrderCode).IsUnique();
         });
 
+        modelBuilder.Entity<OrderItem>(builder =>
+        {
+            builder.Property(oi => oi.ItemName).IsRequired().HasMaxLength(255);
+
+            builder.Property(oi => oi.UnitPrice).HasPrecision(18, 3).IsRequired();
+
+            builder.Property(oi => oi.Quantity).IsRequired().HasDefaultValue(1);
+        });
+        
         modelBuilder.Entity<Transaction>(builder =>
         {
             builder.Property(t => t.Amount).IsRequired();
@@ -275,7 +325,7 @@ public class AppDbContext : DbContext
         {
             builder.Property(c => c.Name).IsRequired().HasMaxLength(500);
             builder.Property(c => c.DiscountPercent).IsRequired();
-            builder.Property(c => c.IsActive).IsRequired().HasDefaultValue("Open");
+            builder.Property(c => c.IsActive).IsRequired().HasDefaultValue(true);
 
             builder.HasMany(c => c.ComboCourses).WithOne(c => c.Combo).HasForeignKey(c => c.ComboId)
                 .OnDelete(DeleteBehavior.Cascade);
@@ -288,10 +338,10 @@ public class AppDbContext : DbContext
             builder.Property(l => l.Description).IsRequired();
             builder.Property(l => l.VideoUrl).HasMaxLength(500);
             builder.Property(l => l.Duration).IsRequired();
-            builder.Property(l => l.IsPreview).HasDefaultValue(true);
+            builder.Property(l => l.IsPreview).HasDefaultValue(false);
             builder.Property(l => l.Position).IsRequired();
             
-            builder.HasMany(l => l.Comments).WithOne(l => l.Lesson).HasForeignKey(l => l.LessonId).OnDelete(DeleteBehavior.Restrict);
+            builder.HasMany(l => l.Comments).WithOne(l => l.Lesson).HasForeignKey(l => l.LessonId).OnDelete(DeleteBehavior.Cascade);
             builder.HasMany(l => l.Documents).WithOne(l => l.Lesson).HasForeignKey(l => l.LessonId).OnDelete(DeleteBehavior.Restrict);
             builder.HasMany(l => l.LearningProcesses).WithOne(l => l.Lesson).HasForeignKey(l => l.LessonId).OnDelete(DeleteBehavior.Restrict);
             builder.HasMany(l => l.ExamPapers).WithOne(l => l.Lesson).HasForeignKey(l => l.LessonId).OnDelete(DeleteBehavior.Restrict);
@@ -306,15 +356,21 @@ public class AppDbContext : DbContext
 
         modelBuilder.Entity<LearningProcess>(builder =>
         {
-            builder.Property(l => l.IsCompleted).IsRequired();
+            builder.Property(lp => lp.WatchTime).IsRequired().HasDefaultValue(0);
+            builder.Property(l => l.IsCompleted).IsRequired().HasDefaultValue(false);
+            builder.Property(l => l.LastWatchedAt).IsRequired().HasDefaultValueSql("now()");
+            
+            builder.HasIndex(lp => new { lp.StuId, lp.LessonId }).IsUnique();
         });
 
         modelBuilder.Entity<Category>(builder =>
         {
             builder.Property(c => c.Name).IsRequired().HasMaxLength(500);
             builder.Property(c => c.Description).IsRequired();
-            builder.Property(c => c.IsActive).IsRequired();
+            builder.Property(c => c.IsActive).IsRequired().HasDefaultValue(true);
             builder.Property(c => c.IconUrl).IsRequired();
+            
+            builder.HasMany(c => c.CourseCategories).WithOne(c => c.Category).HasForeignKey(c => c.CategoryId).OnDelete(DeleteBehavior.Cascade);
         });
     }
 }
