@@ -10,6 +10,9 @@ public class ComboCourse: BaseEntity<Guid>, IAuditableEntity
     public Guid ComboId { get; set; }
     public Combo Combo { get; set; }
     
+    public CartItem CartItem { get; set; }
+    public Guid CartItemId { get; set; }
+    
     public DateTimeOffset CreatedAt { get; set; }
     public DateTimeOffset? UpdatedAt { get; set; }
 }

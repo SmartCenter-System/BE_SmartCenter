@@ -10,7 +10,7 @@ public class ExamManament: BaseEntity<Guid>, IAuditableEntity
     public Guid StudentId { get; set; }
     public Student Student { get; set; }
     
-    public required int Points { get; set; }
+    public required int PointsOfStudent { get; set; }
     
     public ICollection<ExamManementDetail> ExamManementDetails { get; set; } = new List<ExamManementDetail>();
     

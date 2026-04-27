@@ -9,7 +9,7 @@ public class Comment: BaseEntity<Guid>, IAuditableEntity
     
     public Guid? ParentCommentId { get; set; }
     public Comment? ParentComment { get; set; }
-    public ICollection<Comment> Replies { get; set; } = new List<Comment>();
+    public ICollection<Comment>? Replies { get; set; } = new List<Comment>();
     
     
     public Lesson Lesson { get; set; }

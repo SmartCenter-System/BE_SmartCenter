@@ -5013,19 +5013,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Administrator\\.nuget\\packages\\": {}
+    "C:\\Users\\Admin\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Data\\Personal\\SmartCenter\\BE_SmartCenter\\SmartCenter.Service\\SmartCenter.Service.csproj",
+      "projectUniqueName": "C:\\Users\\Admin\\Downloads\\PIEDTEAM-C#\\SmartCenter\\BE_SmartCenter\\SmartCenter.Service\\SmartCenter.Service.csproj",
       "projectName": "SmartCenter.Service",
-      "projectPath": "D:\\Data\\Personal\\SmartCenter\\BE_SmartCenter\\SmartCenter.Service\\SmartCenter.Service.csproj",
-      "packagesPath": "C:\\Users\\Administrator\\.nuget\\packages\\",
-      "outputPath": "D:\\Data\\Personal\\SmartCenter\\BE_SmartCenter\\SmartCenter.Service\\obj\\",
+      "projectPath": "C:\\Users\\Admin\\Downloads\\PIEDTEAM-C#\\SmartCenter\\BE_SmartCenter\\SmartCenter.Service\\SmartCenter.Service.csproj",
+      "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Admin\\Downloads\\PIEDTEAM-C#\\SmartCenter\\BE_SmartCenter\\SmartCenter.Service\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\Administrator\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
@@ -5037,8 +5037,8 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "D:\\Data\\Personal\\SmartCenter\\BE_SmartCenter\\SmartCenter.Repository\\SmartCenter.Repository.csproj": {
-              "projectPath": "D:\\Data\\Personal\\SmartCenter\\BE_SmartCenter\\SmartCenter.Repository\\SmartCenter.Repository.csproj"
+            "C:\\Users\\Admin\\Downloads\\PIEDTEAM-C#\\SmartCenter\\BE_SmartCenter\\SmartCenter.Repository\\SmartCenter.Repository.csproj": {
+              "projectPath": "C:\\Users\\Admin\\Downloads\\PIEDTEAM-C#\\SmartCenter\\BE_SmartCenter\\SmartCenter.Repository\\SmartCenter.Repository.csproj"
             }
           }
         }

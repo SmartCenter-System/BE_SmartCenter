@@ -9,4 +9,7 @@ public class AuditLog: BaseEntity<Guid>{
     public Guid EntityId { get; set; }
     public required string Metadata { get; set; }
     public DateTime Timestamp { get; set; } = DateTime.UtcNow;
+    
+    public User User { get; set; }
+    public Guid UserId { get; set; }
 }

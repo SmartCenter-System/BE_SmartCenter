@@ -7,10 +7,14 @@ public class ExamPaper: BaseEntity<Guid>, IAuditableEntity
 {
     
     public Guid DeadlineId { get; set; }
-    public Deadline Deadline { get; set; }
+    public Deadline? Deadline { get; set; }
     
     public Guid LecturerId { get; set; }
     public Lecturer Lecturer { get; set; }
+    
+    public Lesson Lesson { get; set; }
+    
+    public Guid LessonId { get; set; }
     
     public required string Title { get; set; }
     public int CountDown { get; set; }

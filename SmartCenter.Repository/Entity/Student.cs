@@ -18,9 +18,12 @@ public class Student: BaseEntity<Guid>, IAuditableEntity
     
     public ICollection<Enrollment> Enrollments { get; set; } =  new List<Enrollment>();
     public ICollection<Order> Orders { get; set; } =  new List<Order>();
+    
     public ICollection<ReviewCourse> Reviews { get; set; } =  new List<ReviewCourse>();
     public ICollection<LearningProcess> LearningProcesses { get; set; } =  new List<LearningProcess>();
     public ICollection<ExamManament> ExamManaments { get; set; } =  new List<ExamManament>();
+    
+    public ICollection<ReviewCourse>? ReviewCourses { get; set; } =  new List<ReviewCourse>();
     
     public DateTimeOffset CreatedAt { get; set; }
     public DateTimeOffset? UpdatedAt { get; set; }

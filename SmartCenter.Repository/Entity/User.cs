@@ -16,6 +16,14 @@ public class User: BaseEntity<Guid>, IAuditableEntity
     public string? ImgUrl { get; set; }
     public bool Verified  { get; set; }
     
+    public ConsultationRequest? ConsultationRequest { get; set; }
+    
+    public Lecturer? Lecturer { get; set; }
+    
+    public Student? Student { get; set; }
+    
+    public ICollection<AuditLog> AuditLogs { get; set; } = new List<AuditLog>();
+    
     public ICollection<Notification> Notifications { get; set; } = new List<Notification>();
     public ICollection<Comment> Comments { get; set; } = new List<Comment>();
     

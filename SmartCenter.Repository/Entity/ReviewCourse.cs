@@ -11,7 +11,7 @@ public class ReviewCourse: BaseEntity<Guid>, IAuditableEntity
     public Guid StuId { get; set; }
     public Student Student { get; set; }
     
-    public required int Rate { get; set; }
+    public required int Rating { get; set; }
     public required string? Comment { get; set; }
     
     public DateTimeOffset CreatedAt { get; set; }

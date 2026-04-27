@@ -1285,19 +1285,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Administrator\\.nuget\\packages\\": {}
+    "C:\\Users\\Admin\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Data\\Personal\\SmartCenter\\BE_SmartCenter\\SmartCenter.Repository\\SmartCenter.Repository.csproj",
+      "projectUniqueName": "C:\\Users\\Admin\\Downloads\\PIEDTEAM-C#\\SmartCenter\\BE_SmartCenter\\SmartCenter.Repository\\SmartCenter.Repository.csproj",
       "projectName": "SmartCenter.Repository",
-      "projectPath": "D:\\Data\\Personal\\SmartCenter\\BE_SmartCenter\\SmartCenter.Repository\\SmartCenter.Repository.csproj",
-      "packagesPath": "C:\\Users\\Administrator\\.nuget\\packages\\",
-      "outputPath": "D:\\Data\\Personal\\SmartCenter\\BE_SmartCenter\\SmartCenter.Repository\\obj\\",
+      "projectPath": "C:\\Users\\Admin\\Downloads\\PIEDTEAM-C#\\SmartCenter\\BE_SmartCenter\\SmartCenter.Repository\\SmartCenter.Repository.csproj",
+      "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Admin\\Downloads\\PIEDTEAM-C#\\SmartCenter\\BE_SmartCenter\\SmartCenter.Repository\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\Administrator\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"

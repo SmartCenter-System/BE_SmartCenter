@@ -19,6 +19,7 @@ public class ConsultationRequest: BaseEntity<Guid>, IAuditableEntity
     public required string Email { get; set; }
     public required string PhoneNumber { get; set; }
     public string? Message { get; set; }
+    public DateTimeOffset RequestDate { get; set; }
     public ConsultReqStatus Status { get; set; }   
     public string? Notes { get; set; }
     
