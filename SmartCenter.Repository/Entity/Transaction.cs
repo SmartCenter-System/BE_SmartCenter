@@ -11,6 +11,8 @@ public class Transaction: BaseEntity<Guid>, IAuditableEntity
     
     public decimal Amount { get; set; }
     
+    public string Status { get; set; }
+    
     public required string ProviderTransactionCode { get; set; }
     public required Guid ConfirmedByStaffId { get; set; }
     public DateTimeOffset ConfirmedAt { get; set; }

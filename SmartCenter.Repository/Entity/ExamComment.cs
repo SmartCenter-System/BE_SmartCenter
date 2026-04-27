@@ -7,6 +7,8 @@ public class ExamComment: BaseEntity<Guid>,IAuditableEntity
     public Guid ParentExamCommentId { get; set; }
     
     public Guid ExamPaperId { get; set; }
+    
+    public ExamComment ParentExamComment { get; set; }
     public ICollection<ExamComment> Comments { get; set; } =  new List<ExamComment>();
     
     public ExamPaper ExamPaper { get; set; }

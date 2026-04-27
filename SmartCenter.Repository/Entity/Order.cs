@@ -15,13 +15,15 @@ public class Order: BaseEntity<Guid>, IAuditableEntity
     
     public required string OrderCode { get; set; }
     public required decimal SubtotalAmount { get; set; }
-    public required decimal DiscountAmount { get; set; }
+    public required decimal? DiscountAmount { get; set; }
     public required decimal TotalAmount { get; set; }
     public OrderStatus Status { get; set; }
     public PaymentMethod PaymentMethod { get; set; }
     public string? Note { get; set; }
     public DateTimeOffset ExpireAt { get; set; }
     public DateTimeOffset? PaidAt { get; set; }
+    
+    public ICollection<OrderItem>? OrderItems { get; set; } = new List<OrderItem>();
     
     public DateTimeOffset CreatedAt { get; set; }
     public DateTimeOffset? UpdatedAt { get; set; }
