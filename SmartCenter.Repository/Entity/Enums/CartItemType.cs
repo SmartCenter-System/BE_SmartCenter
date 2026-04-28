@@ -2,6 +2,6 @@
 
 public enum CartItemType
 {
-    Course,
-    Combo
+    Course = 1,
+    Combo 
 }

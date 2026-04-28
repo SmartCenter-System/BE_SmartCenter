@@ -2,6 +2,6 @@
 
 public enum PaymentMethod
 {
-    Cash,
+    Cash = 1,
     BankTransfer,
 }

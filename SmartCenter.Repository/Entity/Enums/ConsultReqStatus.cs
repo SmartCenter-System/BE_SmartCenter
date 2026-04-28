@@ -2,7 +2,7 @@
 
 public enum ConsultReqStatus
 {
-    Pending,
+    Pending = 1,
     Accepted,
     Rejected,
 }

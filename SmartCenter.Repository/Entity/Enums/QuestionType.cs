@@ -2,6 +2,6 @@ namespace SmartCenter.Repository.Entity.Enums;
 
 public enum QuestionType
 {
-    MultipleChoice,
+    MultipleChoice = 1,
     Essay
 }
