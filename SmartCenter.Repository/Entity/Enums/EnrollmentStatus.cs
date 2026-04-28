@@ -2,6 +2,6 @@
 
 public enum EnrollmentStatus
 {
-    Paid,
+    Paid = 1,
     Deposited,
 }

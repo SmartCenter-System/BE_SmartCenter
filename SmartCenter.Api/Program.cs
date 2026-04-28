@@ -9,6 +9,8 @@ using MediaService = SmartCenter.Service.MediaService;
 using CloudinaryService = SmartCenter.Service.CloudinaryService;
 using MailService = SmartCenter.Service.MailService;
 using SePayService = SmartCenter.Service.SePayService;
+using CourseService = SmartCenter.Service.Course;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -18,6 +20,7 @@ builder.Services.AddHttpContextAccessor();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(
@@ -30,7 +33,9 @@ builder.Services.AddSwaggerServices();
 builder.Services.AddScoped<JwtService.IJwtService, JwtService.JwtServices>();
 builder.Services.AddScoped<MediaService.IService, CloudinaryService.Service>();
 builder.Services.AddScoped<MailService.IService, MailService.Service>();
+builder.Services.AddScoped<CourseService.IService, CourseService.Service>();
 
+builder.Services.AddQuartz();
 
 builder.Services.AddQuartzHostedService(options =>
 {
@@ -40,6 +45,7 @@ builder.Services.AddQuartzHostedService(options =>
 builder.Services.AddTransient<GlobalExceptionHandlerMiddleware>();
 var app = builder.Build();
 
+app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

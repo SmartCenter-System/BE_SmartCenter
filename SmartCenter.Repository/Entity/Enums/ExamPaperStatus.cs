@@ -2,7 +2,7 @@
 
 public enum ExamPaperStatus
 {
-    Open,
+    Open = 1,
     Closed,
     Deleted
 }
