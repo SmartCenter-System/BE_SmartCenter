@@ -10,7 +10,7 @@ using CloudinaryService = SmartCenter.Service.CloudinaryService;
 using MailService = SmartCenter.Service.MailService;
 using SePayService = SmartCenter.Service.SePayService;
 using CourseService = SmartCenter.Service.Course;
-
+using CartService = SmartCenter.Service.Cart;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -34,6 +34,7 @@ builder.Services.AddScoped<JwtService.IJwtService, JwtService.JwtServices>();
 builder.Services.AddScoped<MediaService.IService, CloudinaryService.Service>();
 builder.Services.AddScoped<MailService.IService, MailService.Service>();
 builder.Services.AddScoped<CourseService.IService, CourseService.Service>();
+builder.Services.AddScoped<CartService.IService, CartService.Service>();
 
 builder.Services.AddQuartz();
 
