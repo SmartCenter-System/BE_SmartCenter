@@ -6,7 +6,6 @@ public class Request
 {
     public class AddItemToCartRequest
     {
-        public Guid StudentId { get; set; }
         public Guid ItemId { get; set; }
         public int Quantity { get; set; }
         public CartItemType ItemType { get; set; }
@@ -14,7 +13,6 @@ public class Request
 
     public class RemoveItemFromCartRequest
     {
-        public Guid StudentId { get; set; } 
         public Guid ItemId { get; set; }
     }
 }

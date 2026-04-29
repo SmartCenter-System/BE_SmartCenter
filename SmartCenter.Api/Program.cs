@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Quartz;
-using SmartCenter.Extensions;
+using SmartCenter.Api.extensions;
 using SmartCenter.Middlewares;
 using SmartCenter.Repository.Data;
 

@@ -1,10 +1,13 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SmartCenter.Api.extensions;
 using SmartCenter.Service.Cart;
 using SmartCenter.Service.Model;
 
 namespace SmartCenter.Api.Controllers;
 [ApiController]
 [Route("api/[controller]")]
+[Authorize(Policy = JwtExtensions.StudentPolicy)]
 public class CartController: ControllerBase
 {
     private readonly IService _cartService;
@@ -14,12 +17,13 @@ public class CartController: ControllerBase
     }
 
     [HttpPost("create/{studentId}")]
-    public async Task<IActionResult> CreateCart([FromRoute]Guid studentId)
+    public async Task<IActionResult> CreateCart()
     {
         try
         {
+            var studentId = Guid.Parse(User.FindFirst("studentId")!.Value);
             await _cartService.CreateCart(studentId);
-            return Ok(new { message = "Create Cart Successfully" });
+            return Ok(ApiResponseFactory.SuccessResponse(null, "Create Cart Successfully", HttpContext.TraceIdentifier));
         }
         catch (Exception ex)
         {
@@ -28,12 +32,13 @@ public class CartController: ControllerBase
     }
     
     [HttpGet("{studentId}")]
-    public async Task<IActionResult> GetCartItem([FromRoute] Guid studentId)
+    public async Task<IActionResult> GetCartItem()
     {
         try
         {
+            var studentId = Guid.Parse(User.FindFirst("studentId")!.Value);
             var items = await _cartService.GetCartItem(studentId);
-            return Ok(items);
+            return Ok(ApiResponseFactory.SuccessResponse(items, "Get Cart Successfully", HttpContext.TraceIdentifier));
         }
         catch (Exception ex)
         {
@@ -47,7 +52,7 @@ public class CartController: ControllerBase
         try
         {
             await _cartService.AddItemToCart(request);
-            return Ok(new { message = "Add to Cart Successfully" });
+            return Ok(ApiResponseFactory.SuccessResponse(null, "Add Item to Cart Successfully", HttpContext.TraceIdentifier));
         }
         catch (Exception ex)
         {
@@ -61,7 +66,7 @@ public class CartController: ControllerBase
         try
         {
             await _cartService.RemoveItemFromCart(request);
-            return Ok(new { message = "Remove item from cart successfully" });
+            return Ok(ApiResponseFactory.SuccessResponse(null, "Remove item from cart successfully", HttpContext.TraceIdentifier));
         }
         catch (Exception ex)
         {
