@@ -11,6 +11,9 @@ using MailService = SmartCenter.Service.MailService;
 using SePayService = SmartCenter.Service.SePayService;
 using CourseService = SmartCenter.Service.Course;
 using CartService = SmartCenter.Service.Cart;
+using OrderService = SmartCenter.Service.Order;
+
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -35,6 +38,7 @@ builder.Services.AddScoped<MediaService.IService, CloudinaryService.Service>();
 builder.Services.AddScoped<MailService.IService, MailService.Service>();
 builder.Services.AddScoped<CourseService.IService, CourseService.Service>();
 builder.Services.AddScoped<CartService.IService, CartService.Service>();
+builder.Services.AddScoped<OrderService.IService, OrderService.Service>();
 
 builder.Services.AddQuartz();
 
