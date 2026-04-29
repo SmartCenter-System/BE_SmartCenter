@@ -4,15 +4,18 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using SmartCenter.Service.JwtService;
 
-namespace SmartCenter.Extensions;
+namespace SmartCenter.Api.extensions;
 
 public static class JwtExtensions
 {
     public const string AdminPolicy = "AdminPolicy";
-    public const string SellerPolicy = "SellerPolicy";
+    public const string StaffPolicy = "StaffPolicy";
     public const string UserPolicy = "UserPolicy";
-    public const string SellerOrAdminPolicy = "SellerOrAdminPolicy";
-    public const string SellerOrUserPolicy = "SellerOrUserPolicy";
+    public const string StudentPolicy = "StudentPolicy";
+    public const string LecturerPolicy = "LecturerPolicy";
+    public const string StaffOrAdminPolicy = "StaffOrAdminPolicy";
+    public const string StaffOrUserPolicy = "StaffOrUserPolicy";
+    
 
     public static void AddJwtServices(this IServiceCollection services, IConfiguration configuration)
     {
@@ -47,18 +50,24 @@ public static class JwtExtensions
                 policy.RequireRole("Admin"));
             // [Authorize(Policy = JwtExtensions.AdminPolicy)]
 
-            options.AddPolicy(SellerPolicy, policy =>
-                policy.RequireRole("Seller"));
+            options.AddPolicy(StaffPolicy, policy =>
+                policy.RequireRole("Staff"));
             // [Authorize(Policy = JwtExtensions.SellerPolicy)]
 
             options.AddPolicy(UserPolicy, policy =>
                 policy.RequireRole("User"));
 
-            options.AddPolicy(SellerOrUserPolicy, policy =>
-                policy.RequireRole("Seller", "User"));
+            options.AddPolicy(StaffOrUserPolicy, policy =>
+                policy.RequireRole("Staff", "User"));
             
-            options.AddPolicy(SellerOrAdminPolicy, policy =>
-                policy.RequireRole("Seller", "Admin"));
+            options.AddPolicy(StaffOrAdminPolicy, policy =>
+                policy.RequireRole("Staff", "Admin"));
+            
+            options.AddPolicy(StudentPolicy, policy =>
+                policy.RequireRole("Student"));
+            
+            options.AddPolicy(LecturerPolicy, policy =>
+                policy.RequireRole("Lecturer"));
 
             // [Authorize(Policy = JwtExtensions.SellerOrAdminPolicy)]
         });
