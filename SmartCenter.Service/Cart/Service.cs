@@ -17,6 +17,17 @@ public class Service: IService
         _httpContextAccessor = httpContextAccessor;
     }
     
+    private Guid GetStudentId()
+    {
+        var claim = _httpContextAccessor.HttpContext?.User
+                        .FindFirst("studentId")?.Value;
+
+        if (claim == null)
+            throw new UnauthorizedAccessException("Not found information of student");
+
+        return Guid.Parse(claim);
+    }
+    
     public async Task CreateCart(Guid studentId)
     {
         var existCart =  await _dbContext.Carts
@@ -81,9 +92,12 @@ public class Service: IService
 
     public async Task AddItemToCart(Request.AddItemToCartRequest request)
     {
+
+        var studentId = GetStudentId();
+        
         var cart = await _dbContext.Carts
             .Include(x => x.Items)
-            .FirstOrDefaultAsync(x => x.StuId == request.StudentId);
+            .FirstOrDefaultAsync(x => x.StuId == studentId);
         if (cart == null)
             throw new Exception("Cart not found");
 
@@ -136,8 +150,11 @@ public class Service: IService
 
     public async Task RemoveItemFromCart(Request.RemoveItemFromCartRequest request)
     {
+        
+        var studentId = GetStudentId();
+        
         var cartItem = await _dbContext.CartItems
-            .FirstOrDefaultAsync(x => x.Id == request.ItemId && x.Cart.StuId == request.StudentId);
+            .FirstOrDefaultAsync(x => x.Id == request.ItemId && x.Cart.StuId == studentId);
         if (cartItem == null)
             throw new Exception("Cart not found");
         

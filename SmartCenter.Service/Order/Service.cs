@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using SmartCenter.Repository.Data;
 using SmartCenter.Repository.Entity;
@@ -8,14 +9,36 @@ namespace SmartCenter.Service.Order;
 public class Service: IService
 {
     private readonly AppDbContext _context;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public Service(AppDbContext context)
+    public Service(AppDbContext context, IHttpContextAccessor httpContextAccessor)
     {
         _context = context;
+        _httpContextAccessor = httpContextAccessor;
     }
 
-    public async Task<Response.OrderResponse> CreateOrderAsync(Guid studentId, Guid cartId)
+    
+    private Guid GetStudentId()
     {
+        var claim = _httpContextAccessor.HttpContext?.User
+            .FindFirst("studentId")?.Value;
+
+        if (claim == null)
+            throw new UnauthorizedAccessException("Not found information of student");
+
+        return Guid.Parse(claim);
+    }
+    
+    public async Task<Response.OrderResponse> CreateOrderAsync()
+    {
+        var studentId = GetStudentId();
+
+        var cart = await _context.Carts
+            .FirstOrDefaultAsync(x => x.StuId == studentId);
+                   
+        if(cart == null)
+            throw new Exception("Cart not found");
+        
         using var transaction = await _context.Database.BeginTransactionAsync(
             System.Data.IsolationLevel.Serializable);
 
@@ -23,7 +46,7 @@ public class Service: IService
         {
             var cartItems = await _context.CartItems
                 .Include(x => x.Course)
-                .Where(x => x.CartId == cartId)
+                .Where(x => x.CartId == cart.Id)
                 .ToListAsync();
 
             if (!cartItems.Any())
@@ -103,8 +126,10 @@ public class Service: IService
 
     public async Task<Response.OrderResponse?> GetOrderByIdAsync(Guid orderId)
     {
+        var studentId = GetStudentId();
+        
         return await _context.Orders
-            .Where(o => o.Id == orderId)
+            .Where(o => o.Id == orderId && o.StuId == studentId)
             .Select(o => new Response.OrderResponse
             {
                 OrderId = o.Id,
@@ -125,8 +150,10 @@ public class Service: IService
         return $"ORD{DateTime.UtcNow.Ticks}";
     }
     
-    public async Task<List<Response.OrderResponse>> GetOrdersByUserAsync(Guid studentId)
+    public async Task<List<Response.OrderResponse>> GetOrdersByUserAsync()
     {
+        var studentId = GetStudentId();
+        
         return await _context.Orders
             .Where(o => o.StuId == studentId)
             .OrderByDescending(o => o.CreatedAt)
@@ -141,12 +168,14 @@ public class Service: IService
             .ToListAsync();
     }
     
-    public async Task CancelOrderAsync(Guid orderId, Guid studentId)
+    public async Task CancelOrderAsync(Guid orderId)
     {
+        var studentId = GetStudentId();
+
         var order = await _context.Orders
             .FirstOrDefaultAsync(o => o.Id == orderId && o.StuId == studentId);
-
-        if (order == null)
+                        
+        if(order == null)
             throw new Exception("Order not found");
 
         if (order.Status != OrderStatus.Pending)
