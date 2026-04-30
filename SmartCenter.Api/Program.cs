@@ -9,7 +9,6 @@ using MediaService = SmartCenter.Service.MediaService;
 using CloudinaryService = SmartCenter.Service.CloudinaryService;
 using MailService = SmartCenter.Service.MailService;
 using SePayService = SmartCenter.Service.SePayService;
-using CourseService = SmartCenter.Service.Course;
 using EnrollmentService = SmartCenter.Service.EnrollmentService;
 using ConsultationService = SmartCenter.Service.ConsultationService;
 
@@ -31,7 +30,6 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddJwtServices(builder.Configuration);
 builder.Services.AddSwaggerServices();
 
-builder.Services.AddScoped<CourseService.IService, CourseService.Service>();
 builder.Services.AddScoped<JwtService.IJwtService, JwtService.JwtServices>();
 builder.Services.AddScoped<MediaService.IService, CloudinaryService.Service>();
 builder.Services.AddScoped<MailService.IService, MailService.Service>();
