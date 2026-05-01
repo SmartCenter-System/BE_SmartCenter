@@ -2,7 +2,7 @@
 
 public enum OrderStatus
 {
-    Pending,
+    Pending = 1,
     Paid,
     Cancelled,
     Expired

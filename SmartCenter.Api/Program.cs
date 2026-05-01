@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Quartz;
-using SmartCenter.Extensions;
+using SmartCenter.Api.extensions;
 using SmartCenter.Middlewares;
 using SmartCenter.Repository.Data;
 
@@ -9,6 +9,11 @@ using MediaService = SmartCenter.Service.MediaService;
 using CloudinaryService = SmartCenter.Service.CloudinaryService;
 using MailService = SmartCenter.Service.MailService;
 using SePayService = SmartCenter.Service.SePayService;
+using CourseService = SmartCenter.Service.Course;
+using CartService = SmartCenter.Service.Cart;
+using OrderService = SmartCenter.Service.Order;
+
+
 using EnrollmentService = SmartCenter.Service.EnrollmentService;
 using ConsultationService = SmartCenter.Service.ConsultationService;
 
@@ -33,14 +38,17 @@ builder.Services.AddSwaggerServices();
 builder.Services.AddScoped<JwtService.IJwtService, JwtService.JwtServices>();
 builder.Services.AddScoped<MediaService.IService, CloudinaryService.Service>();
 builder.Services.AddScoped<MailService.IService, MailService.Service>();
+builder.Services.AddScoped<CourseService.IService, CourseService.Service>();
+builder.Services.AddScoped<CartService.IService, CartService.Service>();
+builder.Services.AddScoped<OrderService.IService, OrderService.Service>();
 builder.Services.AddScoped<EnrollmentService.IService, EnrollmentService.Service>();
 builder.Services.AddScoped<ConsultationService.IService, ConsultationService.Service>();
 
 
-// builder.Services.AddQuartzHostedService(options =>
-// {
-//     options.WaitForJobsToComplete = true;
-// });
+builder.Services.AddQuartzHostedService(options =>
+{
+    options.WaitForJobsToComplete = true;
+});
 
 builder.Services.AddTransient<GlobalExceptionHandlerMiddleware>();
 var app = builder.Build();

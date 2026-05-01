@@ -2,6 +2,6 @@
 
 public enum DeadlineStatus
 {
-    Processing,
+    Processing = 1,
     Completed,
 }

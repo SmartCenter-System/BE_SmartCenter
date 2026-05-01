@@ -2,6 +2,6 @@
 
 public enum CourseType
 {
-    Online,
+    Online = 1,
     Offline
 }
