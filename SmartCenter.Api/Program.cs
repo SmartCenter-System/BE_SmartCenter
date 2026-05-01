@@ -14,6 +14,9 @@ using CartService = SmartCenter.Service.Cart;
 using OrderService = SmartCenter.Service.Order;
 
 
+using EnrollmentService = SmartCenter.Service.EnrollmentService;
+using ConsultationService = SmartCenter.Service.ConsultationService;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -23,7 +26,6 @@ builder.Services.AddHttpContextAccessor();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(
@@ -39,8 +41,9 @@ builder.Services.AddScoped<MailService.IService, MailService.Service>();
 builder.Services.AddScoped<CourseService.IService, CourseService.Service>();
 builder.Services.AddScoped<CartService.IService, CartService.Service>();
 builder.Services.AddScoped<OrderService.IService, OrderService.Service>();
+builder.Services.AddScoped<EnrollmentService.IService, EnrollmentService.Service>();
+builder.Services.AddScoped<ConsultationService.IService, ConsultationService.Service>();
 
-builder.Services.AddQuartz();
 
 builder.Services.AddQuartzHostedService(options =>
 {
@@ -50,7 +53,6 @@ builder.Services.AddQuartzHostedService(options =>
 builder.Services.AddTransient<GlobalExceptionHandlerMiddleware>();
 var app = builder.Build();
 
-app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
