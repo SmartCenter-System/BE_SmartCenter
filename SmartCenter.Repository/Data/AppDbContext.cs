@@ -102,7 +102,7 @@ public class AppDbContext : DbContext
             builder.Property(u => u.LastName).IsRequired().HasMaxLength(128);
             builder.Property(u => u.PhoneNumber).IsRequired().HasMaxLength(15);
             builder.Property(u => u.Email).IsRequired().HasMaxLength(128);
-            builder.Property(u => u.Message).IsRequired();
+            builder.Property(u => u.Message).HasMaxLength(500);
             builder.Property(u => u.RequestDate).IsRequired().HasDefaultValue(DateTimeOffset.UtcNow);
             builder.Property(u => u.Status).IsRequired().HasDefaultValue(ConsultReqStatus.Pending);
             builder.Property(u => u.Notes).HasMaxLength(500);
@@ -127,7 +127,7 @@ public class AppDbContext : DbContext
             builder.Property(n => n.RefType).HasMaxLength(50);
 
             builder.Property(n => n.IsRead).HasDefaultValue(false);
-            builder.Property(n => n.CreatedAt).HasDefaultValueSql("now()");
+            builder.Property(n => n.CreatedAt).HasDefaultValueSql("GETDATE()");
         });
 
         modelBuilder.Entity<Lecturer>(builder =>
@@ -245,6 +245,7 @@ public class AppDbContext : DbContext
             builder.Property(c => c.CourseName).IsRequired().HasMaxLength(500);
             builder.Property(c => c.Description).IsRequired();
             builder.Property(c => c.CourseType).IsRequired();
+            builder.Property(c => c.BasePrice).IsRequired();
             builder.Property(c => c.IsActive).IsRequired().HasDefaultValue(true);
             builder.Property(c => c.ImgUrl).IsRequired().HasMaxLength(500);
             builder.Property(c => c.StartAt).IsRequired();
