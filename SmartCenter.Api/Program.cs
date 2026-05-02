@@ -12,6 +12,7 @@ using SePayService = SmartCenter.Service.SePayService;
 using CourseService = SmartCenter.Service.Course;
 using CartService = SmartCenter.Service.Cart;
 using OrderService = SmartCenter.Service.Order;
+using AuthService = SmartCenter.Service.Auth;
 
 
 using EnrollmentService = SmartCenter.Service.EnrollmentService;
@@ -41,15 +42,16 @@ builder.Services.AddScoped<MailService.IService, MailService.Service>();
 builder.Services.AddScoped<CourseService.IService, CourseService.Service>();
 builder.Services.AddScoped<CartService.IService, CartService.Service>();
 builder.Services.AddScoped<OrderService.IService, OrderService.Service>();
+builder.Services.AddScoped<AuthService.IService, AuthService.Service>();
 builder.Services.AddScoped<EnrollmentService.IService, EnrollmentService.Service>();
 builder.Services.AddScoped<ConsultationService.IService, ConsultationService.Service>();
-
-
+// ─── Quartz ───────────────────────────────────────────────────────────────────
 builder.Services.AddQuartzHostedService(options =>
 {
     options.WaitForJobsToComplete = true;
 });
 
+// ─── Middleware ────────────────────────────────────────────────────────────────
 builder.Services.AddTransient<GlobalExceptionHandlerMiddleware>();
 var app = builder.Build();
 

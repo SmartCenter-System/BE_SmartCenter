@@ -60,6 +60,8 @@ public class AppDbContext : DbContext
             builder.Property(u => u.Status).IsRequired().HasDefaultValue(UserStatus.Active);
             builder.Property(u => u.Verified).IsRequired();
             builder.Property(u => u.ImgUrl).HasMaxLength(500);
+            builder.Property(u => u.VerifiedCode).IsRequired();
+            
             
             builder.HasMany(u => u.Comments).WithOne(c => c.User).HasForeignKey(c => c.UserId).OnDelete(DeleteBehavior.Cascade);
             builder.HasOne(u => u.ConsultationRequest).WithOne(c => c.User).HasForeignKey<ConsultationRequest>(c => c.UserId).OnDelete(DeleteBehavior.Cascade);
