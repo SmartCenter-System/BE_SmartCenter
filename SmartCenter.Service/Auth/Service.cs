@@ -25,6 +25,9 @@ public class Service: IService
     
     public async Task<string> Register(Request.RegisterRequest request)
     {
+        var transaction = await _dbContext.Database.BeginTransactionAsync();
+        try
+        {
         var emailExists = await _dbContext.Users.AnyAsync(u => u.Email == request.Email);
         
         if (emailExists)
@@ -71,7 +74,14 @@ public class Service: IService
             Subject = "SmartCenter – Mã xác thực email của bạn",
             Body = BuildVerificationEmailBody($"{request.FirstName} {request.LastName}", verifiedCode)
         });
+        await transaction.CommitAsync();
         return "Đăng ký thành công! Vui lòng kiểm tra email để lấy mã xác thực.";
+        }
+        catch (Exception e)
+        {
+            await  transaction.RollbackAsync();
+            throw;
+        }
     }
 
     public async Task<Response.AuthResponse> VerifyEmail(int code)
