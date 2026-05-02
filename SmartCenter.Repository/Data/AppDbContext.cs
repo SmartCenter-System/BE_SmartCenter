@@ -60,6 +60,8 @@ public class AppDbContext : DbContext
             builder.Property(u => u.Status).IsRequired().HasDefaultValue(UserStatus.Active);
             builder.Property(u => u.Verified).IsRequired();
             builder.Property(u => u.ImgUrl).HasMaxLength(500);
+            builder.Property(u => u.VerifiedCode).IsRequired();
+            
             
             builder.HasMany(u => u.Comments).WithOne(c => c.User).HasForeignKey(c => c.UserId).OnDelete(DeleteBehavior.Cascade);
             builder.HasOne(u => u.ConsultationRequest).WithOne(c => c.User).HasForeignKey<ConsultationRequest>(c => c.UserId).OnDelete(DeleteBehavior.Cascade);
@@ -111,7 +113,7 @@ public class AppDbContext : DbContext
             builder.Property(e => e.Action).IsRequired();
             builder.Property(e => e.Entity).IsRequired().HasMaxLength(200);
             builder.Property(e => e.EntityId).IsRequired();
-            builder.Property(e => e.Timestamp).HasDefaultValue("now()");
+            builder.Property(e => e.Timestamp).HasDefaultValueSql("now()");
             builder.Property(e => e.Metadata).HasColumnType("jsonb");
             
         });
@@ -287,7 +289,7 @@ public class AppDbContext : DbContext
         {
             builder.Property(o => o.OrderCode).IsRequired().HasMaxLength(50);
             builder.Property(o => o.SubtotalAmount).IsRequired().HasPrecision(18, 3);
-            builder.Property(o => o.DiscountAmount).HasPrecision(18, 2).HasDefaultValue(0);
+            builder.Property(o => o.DiscountAmount).HasPrecision(18, 2).HasDefaultValue(0m);
             builder.Property(o => o.TotalAmount).IsRequired().HasPrecision(18, 3);
             
             builder.Property(o => o.Status).IsRequired().HasDefaultValue(OrderStatus.Pending);
