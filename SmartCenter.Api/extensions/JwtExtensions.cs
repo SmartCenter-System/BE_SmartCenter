@@ -15,6 +15,7 @@ public static class JwtExtensions
     public const string LecturerPolicy = "LecturerPolicy";
     public const string StaffOrAdminPolicy = "StaffOrAdminPolicy";
     public const string StaffOrUserPolicy = "StaffOrUserPolicy";
+    public const string AdminOrLecturerPolicy = "AdminOrLecturerPolicy";
     
 
     public static void AddJwtServices(this IServiceCollection services, IConfiguration configuration)
@@ -68,6 +69,9 @@ public static class JwtExtensions
             
             options.AddPolicy(LecturerPolicy, policy =>
                 policy.RequireRole("Lecturer"));
+            
+            options.AddPolicy(AdminOrLecturerPolicy, policy =>
+                policy.RequireRole("Admin", "Lecturer"));
 
             // [Authorize(Policy = JwtExtensions.SellerOrAdminPolicy)]
         });
