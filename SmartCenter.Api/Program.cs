@@ -46,6 +46,8 @@ builder.Services.AddScoped<AuthService.IService, AuthService.Service>();
 builder.Services.AddScoped<EnrollmentService.IService, EnrollmentService.Service>();
 builder.Services.AddScoped<ConsultationService.IService, ConsultationService.Service>();
 // ─── Quartz ───────────────────────────────────────────────────────────────────
+builder.Services.AddQuartz();
+
 builder.Services.AddQuartzHostedService(options =>
 {
     options.WaitForJobsToComplete = true;
