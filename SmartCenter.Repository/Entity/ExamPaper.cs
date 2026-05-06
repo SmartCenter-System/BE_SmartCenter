@@ -18,7 +18,7 @@ public class ExamPaper: BaseEntity<Guid>, IAuditableEntity
     
     public required string Title { get; set; }
     public int CountDown { get; set; }
-    public int TotalPoints { get; set; }
+    public decimal TotalPoints { get; set; }
     public ExamPaperStatus Status { get; set; }
     
     public ICollection<ExamManament> ExamManaments { get; set; } =  new List<ExamManament>();
