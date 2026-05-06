@@ -10,4 +10,13 @@ public class Response
         public string Role { get; set; } = string.Empty;
         public string AccessToken { get; set; } = string.Empty;
     }
+    
+    public class LecturerRegisterResponse
+    {
+        public Guid UserId { get; set; }
+        public Guid LecturerId { get; set; }
+        public string FullName { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
+        public string Expertise { get; set; } = string.Empty;
+    }
 }
