@@ -3,6 +3,7 @@ using Quartz;
 using SmartCenter.Api.extensions;
 using SmartCenter.Middlewares;
 using SmartCenter.Repository.Data;
+using DotNetEnv;
 
 using JwtService = SmartCenter.Service.JwtService;
 using MediaService = SmartCenter.Service.MediaService;
@@ -22,6 +23,13 @@ using PaymentService = SmartCenter.Service.Payment;
 
 using EnrollmentService = SmartCenter.Service.EnrollmentService;
 using ConsultationService = SmartCenter.Service.ConsultationService;
+
+
+Env.Load();
+var aspnetCoreEnv  = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", aspnetCoreEnv);
+
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -73,11 +81,14 @@ using (var scope = app.Services.CreateScope())
 }
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+// if (app.Environment.IsDevelopment())
+// {
+//     app.UseSwagger();
+//     app.UseSwaggerUI();
+// }
+
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseAuthentication();
 app.UseAuthorization();
