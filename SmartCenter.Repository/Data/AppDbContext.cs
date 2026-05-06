@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using SmartCenter.Repository.Entity;
 using SmartCenter.Repository.Entity.Enums;
 
@@ -71,6 +70,7 @@ public class AppDbContext : DbContext
             builder.HasOne(u => u.Student).WithOne(s => s.User).HasForeignKey<Student>(s => s.UserId).OnDelete(DeleteBehavior.Cascade);
         });
         
+        
         modelBuilder.Entity<UserSession>( builder => 
         {
             builder.Property(us => us.DeviceFingerprint).IsRequired().HasMaxLength(300);
@@ -127,7 +127,7 @@ public class AppDbContext : DbContext
             builder.Property(n => n.RefType).HasMaxLength(50);
 
             builder.Property(n => n.IsRead).HasDefaultValue(false);
-            builder.Property(n => n.CreatedAt).HasDefaultValueSql("GETDATE()");
+            builder.Property(n => n.CreatedAt).HasDefaultValueSql("now()");
         });
 
         modelBuilder.Entity<Lecturer>(builder =>

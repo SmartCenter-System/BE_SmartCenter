@@ -103,7 +103,7 @@ public class Service: IService
         {
             new Claim("UserId", user.Id.ToString()),
             new Claim("Email", user.Email),
-            new Claim("Role", user.Role.ToString()),
+            new Claim(ClaimTypes.Role, user.Role.ToString()),
         };
  
         if (user.Student != null)
@@ -140,8 +140,13 @@ public class Service: IService
         {
             new Claim("UserId", user.Id.ToString()),
             new Claim("Email", user.Email),
-            new Claim("Role", user.Role.ToString()),
+            new Claim(ClaimTypes.Role, user.Role.ToString()),
         };
+        
+        if (user.Student != null)
+        {
+            claims.Add(new Claim("studentId", user.Student.Id.ToString()));
+        }
         
         var accessToken = _jwtService.GenerateAccessToken(claims);
         return new Response.AuthResponse

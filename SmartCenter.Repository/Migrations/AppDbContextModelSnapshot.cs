@@ -59,7 +59,7 @@ namespace SmartCenter.Repository.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AuditLogs");
+                    b.ToTable("AuditLogs", (string)null);
                 });
 
             modelBuilder.Entity("SmartCenter.Repository.Entity.Cart", b =>
@@ -79,7 +79,7 @@ namespace SmartCenter.Repository.Migrations
                     b.HasIndex("StuId")
                         .IsUnique();
 
-                    b.ToTable("Carts");
+                    b.ToTable("Carts", (string)null);
                 });
 
             modelBuilder.Entity("SmartCenter.Repository.Entity.CartItem", b =>
@@ -120,7 +120,7 @@ namespace SmartCenter.Repository.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.ToTable("CartItems");
+                    b.ToTable("CartItems", (string)null);
                 });
 
             modelBuilder.Entity("SmartCenter.Repository.Entity.Category", b =>
@@ -158,7 +158,7 @@ namespace SmartCenter.Repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("SmartCenter.Repository.Entity.Combo", b =>
@@ -191,7 +191,7 @@ namespace SmartCenter.Repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Combos");
+                    b.ToTable("Combos", (string)null);
                 });
 
             modelBuilder.Entity("SmartCenter.Repository.Entity.ComboCourse", b =>
@@ -226,7 +226,7 @@ namespace SmartCenter.Repository.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.ToTable("ComboCourses");
+                    b.ToTable("ComboCourses", (string)null);
                 });
 
             modelBuilder.Entity("SmartCenter.Repository.Entity.Comment", b =>
@@ -272,7 +272,7 @@ namespace SmartCenter.Repository.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Comments");
+                    b.ToTable("Comments", (string)null);
                 });
 
             modelBuilder.Entity("SmartCenter.Repository.Entity.ConsultationRequest", b =>
@@ -306,8 +306,8 @@ namespace SmartCenter.Repository.Migrations
                         .HasColumnType("character varying(128)");
 
                     b.Property<string>("Message")
-                        .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
 
                     b.Property<string>("Notes")
                         .HasMaxLength(500)
@@ -321,7 +321,7 @@ namespace SmartCenter.Repository.Migrations
                     b.Property<DateTimeOffset>("RequestDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
-                        .HasDefaultValue(new DateTimeOffset(new DateTime(2026, 5, 2, 6, 12, 38, 449, DateTimeKind.Unspecified).AddTicks(4050), new TimeSpan(0, 0, 0, 0, 0)));
+                        .HasDefaultValue(new DateTimeOffset(new DateTime(2026, 5, 5, 17, 16, 28, 306, DateTimeKind.Unspecified).AddTicks(2463), new TimeSpan(0, 0, 0, 0, 0)));
 
                     b.Property<Guid?>("StaffId")
                         .HasColumnType("uuid");
@@ -334,7 +334,7 @@ namespace SmartCenter.Repository.Migrations
                     b.Property<DateTimeOffset?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid>("UserId")
+                    b.Property<Guid?>("UserId")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
@@ -344,7 +344,7 @@ namespace SmartCenter.Repository.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("ConsultationRequests");
+                    b.ToTable("ConsultationRequests", (string)null);
                 });
 
             modelBuilder.Entity("SmartCenter.Repository.Entity.Course", b =>
@@ -408,7 +408,7 @@ namespace SmartCenter.Repository.Migrations
 
                     b.HasIndex("LecId");
 
-                    b.ToTable("Courses");
+                    b.ToTable("Courses", (string)null);
                 });
 
             modelBuilder.Entity("SmartCenter.Repository.Entity.CourseCategory", b =>
@@ -438,7 +438,7 @@ namespace SmartCenter.Repository.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.ToTable("CourseCategories");
+                    b.ToTable("CourseCategories", (string)null);
                 });
 
             modelBuilder.Entity("SmartCenter.Repository.Entity.Deadline", b =>
@@ -477,7 +477,7 @@ namespace SmartCenter.Repository.Migrations
                     b.HasIndex("ExamPaperId")
                         .IsUnique();
 
-                    b.ToTable("Deadlines");
+                    b.ToTable("Deadlines", (string)null);
                 });
 
             modelBuilder.Entity("SmartCenter.Repository.Entity.Document", b =>
@@ -516,7 +516,7 @@ namespace SmartCenter.Repository.Migrations
 
                     b.HasIndex("LessonId");
 
-                    b.ToTable("Document");
+                    b.ToTable("Document", (string)null);
                 });
 
             modelBuilder.Entity("SmartCenter.Repository.Entity.Enrollment", b =>
@@ -557,7 +557,7 @@ namespace SmartCenter.Repository.Migrations
 
                     b.HasIndex("TransactionId");
 
-                    b.ToTable("Enrollments");
+                    b.ToTable("Enrollments", (string)null);
                 });
 
             modelBuilder.Entity("SmartCenter.Repository.Entity.EssayAnswer", b =>
@@ -587,7 +587,7 @@ namespace SmartCenter.Repository.Migrations
 
                     b.HasIndex("QuestionId");
 
-                    b.ToTable("EssayAnswers");
+                    b.ToTable("EssayAnswers", (string)null);
                 });
 
             modelBuilder.Entity("SmartCenter.Repository.Entity.ExamComment", b =>
@@ -604,7 +604,7 @@ namespace SmartCenter.Repository.Migrations
                     b.Property<DateTimeOffset>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
-                        .HasDefaultValue(new DateTimeOffset(new DateTime(2026, 5, 2, 6, 12, 38, 452, DateTimeKind.Unspecified).AddTicks(7582), new TimeSpan(0, 0, 0, 0, 0)));
+                        .HasDefaultValue(new DateTimeOffset(new DateTime(2026, 5, 5, 17, 16, 28, 312, DateTimeKind.Unspecified).AddTicks(7858), new TimeSpan(0, 0, 0, 0, 0)));
 
                     b.Property<Guid>("ExamPaperId")
                         .HasColumnType("uuid");
@@ -634,7 +634,7 @@ namespace SmartCenter.Repository.Migrations
 
                     b.HasIndex("ParentExamCommentId");
 
-                    b.ToTable("ExamComments");
+                    b.ToTable("ExamComments", (string)null);
                 });
 
             modelBuilder.Entity("SmartCenter.Repository.Entity.ExamManament", b =>
@@ -667,7 +667,7 @@ namespace SmartCenter.Repository.Migrations
 
                     b.HasIndex("StudentId");
 
-                    b.ToTable("ExamManagements");
+                    b.ToTable("ExamManagements", (string)null);
                 });
 
             modelBuilder.Entity("SmartCenter.Repository.Entity.ExamManementDetail", b =>
@@ -717,7 +717,7 @@ namespace SmartCenter.Repository.Migrations
 
                     b.HasIndex("MultipleChoiceAnswerId");
 
-                    b.ToTable("ExamManagementDetails");
+                    b.ToTable("ExamManagementDetails", (string)null);
                 });
 
             modelBuilder.Entity("SmartCenter.Repository.Entity.ExamPaper", b =>
@@ -766,7 +766,7 @@ namespace SmartCenter.Repository.Migrations
 
                     b.HasIndex("LessonId");
 
-                    b.ToTable("ExamPapers");
+                    b.ToTable("ExamPapers", (string)null);
                 });
 
             modelBuilder.Entity("SmartCenter.Repository.Entity.ExamPaperDetail", b =>
@@ -796,7 +796,7 @@ namespace SmartCenter.Repository.Migrations
 
                     b.HasIndex("QuestionId");
 
-                    b.ToTable("ExamPaperDetails");
+                    b.ToTable("ExamPaperDetails", (string)null);
                 });
 
             modelBuilder.Entity("SmartCenter.Repository.Entity.LearningProcess", b =>
@@ -842,7 +842,7 @@ namespace SmartCenter.Repository.Migrations
                     b.HasIndex("StuId", "LessonId")
                         .IsUnique();
 
-                    b.ToTable("LearningProcesses");
+                    b.ToTable("LearningProcesses", (string)null);
                 });
 
             modelBuilder.Entity("SmartCenter.Repository.Entity.Lecturer", b =>
@@ -876,7 +876,7 @@ namespace SmartCenter.Repository.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("Lecturers");
+                    b.ToTable("Lecturers", (string)null);
                 });
 
             modelBuilder.Entity("SmartCenter.Repository.Entity.Lesson", b =>
@@ -930,7 +930,7 @@ namespace SmartCenter.Repository.Migrations
 
                     b.HasIndex("SectionId");
 
-                    b.ToTable("Lessons");
+                    b.ToTable("Lessons", (string)null);
                 });
 
             modelBuilder.Entity("SmartCenter.Repository.Entity.MultipleChoiceAnswer", b =>
@@ -963,7 +963,7 @@ namespace SmartCenter.Repository.Migrations
 
                     b.HasIndex("QuestionId");
 
-                    b.ToTable("MultipleChoiceAnswers");
+                    b.ToTable("MultipleChoiceAnswers", (string)null);
                 });
 
             modelBuilder.Entity("SmartCenter.Repository.Entity.Notification", b =>
@@ -1018,7 +1018,7 @@ namespace SmartCenter.Repository.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Notifications");
+                    b.ToTable("Notifications", (string)null);
                 });
 
             modelBuilder.Entity("SmartCenter.Repository.Entity.Order", b =>
@@ -1086,7 +1086,7 @@ namespace SmartCenter.Repository.Migrations
 
                     b.HasIndex("StuId");
 
-                    b.ToTable("Orders");
+                    b.ToTable("Orders", (string)null);
                 });
 
             modelBuilder.Entity("SmartCenter.Repository.Entity.OrderItem", b =>
@@ -1140,7 +1140,7 @@ namespace SmartCenter.Repository.Migrations
 
                     b.HasIndex("OrderId1");
 
-                    b.ToTable("OrderItems");
+                    b.ToTable("OrderItems", (string)null);
                 });
 
             modelBuilder.Entity("SmartCenter.Repository.Entity.Question", b =>
@@ -1171,7 +1171,7 @@ namespace SmartCenter.Repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Questions");
+                    b.ToTable("Questions", (string)null);
                 });
 
             modelBuilder.Entity("SmartCenter.Repository.Entity.ReviewCourse", b =>
@@ -1191,7 +1191,7 @@ namespace SmartCenter.Repository.Migrations
                     b.Property<DateTimeOffset>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
-                        .HasDefaultValue(new DateTimeOffset(new DateTime(2026, 5, 2, 6, 12, 38, 453, DateTimeKind.Unspecified).AddTicks(5799), new TimeSpan(0, 0, 0, 0, 0)));
+                        .HasDefaultValue(new DateTimeOffset(new DateTime(2026, 5, 5, 17, 16, 28, 314, DateTimeKind.Unspecified).AddTicks(9944), new TimeSpan(0, 0, 0, 0, 0)));
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
@@ -1218,7 +1218,7 @@ namespace SmartCenter.Repository.Migrations
 
                     b.HasIndex("StudentId");
 
-                    b.ToTable("ReviewCourses");
+                    b.ToTable("ReviewCourses", (string)null);
                 });
 
             modelBuilder.Entity("SmartCenter.Repository.Entity.Section", b =>
@@ -1257,7 +1257,7 @@ namespace SmartCenter.Repository.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.ToTable("Sections");
+                    b.ToTable("Sections", (string)null);
                 });
 
             modelBuilder.Entity("SmartCenter.Repository.Entity.Student", b =>
@@ -1303,7 +1303,7 @@ namespace SmartCenter.Repository.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("Students");
+                    b.ToTable("Students", (string)null);
                 });
 
             modelBuilder.Entity("SmartCenter.Repository.Entity.Transaction", b =>
@@ -1318,7 +1318,7 @@ namespace SmartCenter.Repository.Migrations
                     b.Property<DateTimeOffset>("ConfirmedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
-                        .HasDefaultValue(new DateTimeOffset(new DateTime(2026, 5, 2, 6, 12, 38, 455, DateTimeKind.Unspecified).AddTicks(5888), new TimeSpan(0, 0, 0, 0, 0)));
+                        .HasDefaultValue(new DateTimeOffset(new DateTime(2026, 5, 5, 17, 16, 28, 318, DateTimeKind.Unspecified).AddTicks(7298), new TimeSpan(0, 0, 0, 0, 0)));
 
                     b.Property<Guid>("ConfirmedByStaffId")
                         .HasColumnType("uuid");
@@ -1348,7 +1348,7 @@ namespace SmartCenter.Repository.Migrations
                     b.HasIndex("OrderId")
                         .IsUnique();
 
-                    b.ToTable("Transactions");
+                    b.ToTable("Transactions", (string)null);
                 });
 
             modelBuilder.Entity("SmartCenter.Repository.Entity.User", b =>
@@ -1416,7 +1416,7 @@ namespace SmartCenter.Repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("SmartCenter.Repository.Entity.UserSession", b =>
@@ -1467,7 +1467,7 @@ namespace SmartCenter.Repository.Migrations
 
                     b.HasIndex("UserId1");
 
-                    b.ToTable("UserSessions");
+                    b.ToTable("UserSessions", (string)null);
                 });
 
             modelBuilder.Entity("SmartCenter.Repository.Entity.AuditLog", b =>
@@ -1581,8 +1581,7 @@ namespace SmartCenter.Repository.Migrations
                     b.HasOne("SmartCenter.Repository.Entity.User", "User")
                         .WithOne("ConsultationRequest")
                         .HasForeignKey("SmartCenter.Repository.Entity.ConsultationRequest", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Course");
 
