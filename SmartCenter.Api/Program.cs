@@ -13,7 +13,8 @@ using CourseService = SmartCenter.Service.Course;
 using CartService = SmartCenter.Service.Cart;
 using OrderService = SmartCenter.Service.Order;
 using AuthService = SmartCenter.Service.Auth;
-
+using SectionService = SmartCenter.Service.Section;
+using LessonService = SmartCenter.Service.Lesson;
 
 using EnrollmentService = SmartCenter.Service.EnrollmentService;
 using ConsultationService = SmartCenter.Service.ConsultationService;
@@ -45,6 +46,8 @@ builder.Services.AddScoped<OrderService.IService, OrderService.Service>();
 builder.Services.AddScoped<AuthService.IService, AuthService.Service>();
 builder.Services.AddScoped<EnrollmentService.IService, EnrollmentService.Service>();
 builder.Services.AddScoped<ConsultationService.IService, ConsultationService.Service>();
+builder.Services.AddScoped<SectionService.IService, SectionService.Service>();
+builder.Services.AddScoped<LessonService.IService, LessonService.Service>();
 // ─── Quartz ───────────────────────────────────────────────────────────────────
 builder.Services.AddQuartz();
 
