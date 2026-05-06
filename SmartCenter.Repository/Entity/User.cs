@@ -15,6 +15,9 @@ public class User: BaseEntity<Guid>, IAuditableEntity
     public UserStatus Status { get; set; }
     public string? ImgUrl { get; set; }
     public bool Verified  { get; set; }
+    public int VerifiedCode  { get; set; }
+    public int ResetPasswordCode { get; set; }
+    
     
     public ConsultationRequest? ConsultationRequest { get; set; }
     

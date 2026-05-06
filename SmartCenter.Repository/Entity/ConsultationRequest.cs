@@ -6,7 +6,7 @@ namespace SmartCenter.Repository.Entity;
 public class ConsultationRequest: BaseEntity<Guid>, IAuditableEntity
 {
     
-    public Guid UserId { get; set; }
+    public Guid? UserId { get; set; }
     public User? User { get; set; }
     
     public Guid CourseId { get; set; }

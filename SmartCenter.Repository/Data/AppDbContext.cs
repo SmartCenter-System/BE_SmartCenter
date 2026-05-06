@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using SmartCenter.Repository.Entity;
 using SmartCenter.Repository.Entity.Enums;
 
@@ -60,6 +59,8 @@ public class AppDbContext : DbContext
             builder.Property(u => u.Status).IsRequired().HasDefaultValue(UserStatus.Active);
             builder.Property(u => u.Verified).IsRequired();
             builder.Property(u => u.ImgUrl).HasMaxLength(500);
+            builder.Property(u => u.VerifiedCode).IsRequired();
+            
             
             builder.HasMany(u => u.Comments).WithOne(c => c.User).HasForeignKey(c => c.UserId).OnDelete(DeleteBehavior.Cascade);
             builder.HasOne(u => u.ConsultationRequest).WithOne(c => c.User).HasForeignKey<ConsultationRequest>(c => c.UserId).OnDelete(DeleteBehavior.Cascade);
@@ -68,6 +69,7 @@ public class AppDbContext : DbContext
             builder.HasOne(u => u.Lecturer).WithOne(l => l.User).HasForeignKey<Lecturer>(l => l.UserId).OnDelete(DeleteBehavior.Cascade);
             builder.HasOne(u => u.Student).WithOne(s => s.User).HasForeignKey<Student>(s => s.UserId).OnDelete(DeleteBehavior.Cascade);
         });
+        
         
         modelBuilder.Entity<UserSession>( builder => 
         {
@@ -100,7 +102,7 @@ public class AppDbContext : DbContext
             builder.Property(u => u.LastName).IsRequired().HasMaxLength(128);
             builder.Property(u => u.PhoneNumber).IsRequired().HasMaxLength(15);
             builder.Property(u => u.Email).IsRequired().HasMaxLength(128);
-            builder.Property(u => u.Message).IsRequired();
+            builder.Property(u => u.Message).HasMaxLength(500);
             builder.Property(u => u.RequestDate).IsRequired().HasDefaultValue(DateTimeOffset.UtcNow);
             builder.Property(u => u.Status).IsRequired().HasDefaultValue(ConsultReqStatus.Pending);
             builder.Property(u => u.Notes).HasMaxLength(500);
@@ -111,7 +113,7 @@ public class AppDbContext : DbContext
             builder.Property(e => e.Action).IsRequired();
             builder.Property(e => e.Entity).IsRequired().HasMaxLength(200);
             builder.Property(e => e.EntityId).IsRequired();
-            builder.Property(e => e.Timestamp).HasDefaultValue("now()");
+            builder.Property(e => e.Timestamp).HasDefaultValueSql("now()");
             builder.Property(e => e.Metadata).HasColumnType("jsonb");
             
         });
@@ -243,6 +245,7 @@ public class AppDbContext : DbContext
             builder.Property(c => c.CourseName).IsRequired().HasMaxLength(500);
             builder.Property(c => c.Description).IsRequired();
             builder.Property(c => c.CourseType).IsRequired();
+            builder.Property(c => c.BasePrice).IsRequired();
             builder.Property(c => c.IsActive).IsRequired().HasDefaultValue(true);
             builder.Property(c => c.ImgUrl).IsRequired().HasMaxLength(500);
             builder.Property(c => c.StartAt).IsRequired();
@@ -287,7 +290,7 @@ public class AppDbContext : DbContext
         {
             builder.Property(o => o.OrderCode).IsRequired().HasMaxLength(50);
             builder.Property(o => o.SubtotalAmount).IsRequired().HasPrecision(18, 3);
-            builder.Property(o => o.DiscountAmount).HasPrecision(18, 2).HasDefaultValue(0);
+            builder.Property(o => o.DiscountAmount).HasPrecision(18, 2).HasDefaultValue(0m);
             builder.Property(o => o.TotalAmount).IsRequired().HasPrecision(18, 3);
             
             builder.Property(o => o.Status).IsRequired().HasDefaultValue(OrderStatus.Pending);
