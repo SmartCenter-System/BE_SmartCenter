@@ -12,7 +12,7 @@ public class Lesson: BaseEntity<Guid>, IAuditableEntity
     public Course Course { get; set; }
     
     public required string Title { get; set; }
-    public required string Description { get; set; }
+    public string? Description { get; set; }
     public required string VideoUrl { get; set; }
     public required int Duration { get; set; }
     public bool IsPreview { get; set; }

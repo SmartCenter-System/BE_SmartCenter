@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using SmartCenter.Repository.Entity;
 using SmartCenter.Repository.Entity.Enums;
 
