@@ -15,6 +15,7 @@ using OrderService = SmartCenter.Service.Order;
 using AuthService = SmartCenter.Service.Auth;
 using ExamPaperService = SmartCenter.Service.ExamPaper;
 
+using PaymentService = SmartCenter.Service.Payment;
 
 using EnrollmentService = SmartCenter.Service.EnrollmentService;
 using ConsultationService = SmartCenter.Service.ConsultationService;
@@ -47,9 +48,9 @@ builder.Services.AddScoped<AuthService.IService, AuthService.Service>();
 builder.Services.AddScoped<EnrollmentService.IService, EnrollmentService.Service>();
 builder.Services.AddScoped<ConsultationService.IService, ConsultationService.Service>();
 builder.Services.AddScoped<ExamPaperService.IService, ExamPaperService.Service>();
+builder.Services.AddScoped<PaymentService.IService, PaymentService.Service>();
 // ─── Quartz ───────────────────────────────────────────────────────────────────
 builder.Services.AddQuartz();
-
 builder.Services.AddQuartzHostedService(options =>
 {
     options.WaitForJobsToComplete = true;

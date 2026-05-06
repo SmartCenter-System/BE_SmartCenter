@@ -9,5 +9,6 @@ public interface IService
     Task<Response.AuthResponse> Login(Request.LoginRequest request);
     Task<string> ForgotPassword(Request.ForgotPasswordRequest request);
     Task<string>  ResetPassword(Request.ResetPasswordRequest request);
+    Task<Response.LecturerRegisterResponse> RegisterLecturer(Request.RegisterLecturerRequest request);
     
 }
