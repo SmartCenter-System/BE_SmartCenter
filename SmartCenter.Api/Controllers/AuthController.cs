@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SmartCenter.Api.extensions;
 using SmartCenter.Service.Auth;
 using SmartCenter.Service.Model;
 
@@ -48,5 +50,13 @@ public class AuthController: ControllerBase
     {
         var message = await _identityService.ResetPassword(request);
         return Ok(ApiResponseFactory.SuccessResponse(null, message, HttpContext.TraceIdentifier));
+    }
+    
+    [Authorize(Policy = JwtExtensions.AdminPolicy)]
+    [HttpPost("register-lecturer")]
+    public async Task<IActionResult> RegisterLecturer([FromBody] Request.RegisterLecturerRequest request)
+    {
+        var result = await _identityService.RegisterLecturer(request);
+        return Ok(ApiResponseFactory.SuccessResponse(result, "Tạo tài khoản giảng viên thành công!", HttpContext.TraceIdentifier));
     }
 }

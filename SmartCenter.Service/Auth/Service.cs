@@ -200,6 +200,61 @@ public class Service: IService
         return "Đặt lại mật khẩu thành công! Vui lòng đăng nhập lại.";
     }
 
+    public async Task<Response.LecturerRegisterResponse> RegisterLecturer(Request.RegisterLecturerRequest request)
+    {
+        var emailExists = await _dbContext.Users.AnyAsync(u => u.Email == request.Email);
+        if (emailExists)
+            throw new ArgumentException("Email đã được sử dụng.");
+ 
+        // Admin tạo tk -> Verified = true lun, kh cần xác thực email
+        var user = new User
+        {
+            Id           = Guid.NewGuid(),
+            FirstName    = request.FirstName,
+            LastName     = request.LastName,
+            Email        = request.Email,
+            PasswordHash = HashPassword(request.Password),
+            Phone        = request.Phone ?? string.Empty,
+            Role         = UserRole.Lecturer,
+            Status       = UserStatus.Active,
+            Verified     = true,
+            VerifiedCode = 0,
+            CreatedAt    = DateTimeOffset.UtcNow,
+        };
+        _dbContext.Users.Add(user);
+ 
+        var lecturer = new Lecturer
+        {
+            Id        = Guid.NewGuid(),
+            UserId    = user.Id,
+            Bio       = request.Bio,
+            Expertise = request.Expertise,
+            CreatedAt = DateTimeOffset.UtcNow,
+        };
+        _dbContext.Lecturers.Add(lecturer);
+        await _dbContext.SaveChangesAsync();
+ 
+        // Gửi email thông báo thông tin đăng nhập cho giáo viên
+        await _mailService.SendMail(new MailContent
+        {
+            To      = request.Email,
+            Subject = "SmartCenter – Tài khoản giảng viên của bạn đã được tạo",
+            Body    = BuildLecturerWelcomeEmailBody(
+                $"{request.FirstName} {request.LastName}",
+                request.Email,
+                request.Password)
+        });
+ 
+        return new Response.LecturerRegisterResponse
+        {
+            UserId     = user.Id,
+            LecturerId = lecturer.Id,
+            FullName   = $"{user.FirstName} {user.LastName}",
+            Email      = user.Email,
+            Expertise  = lecturer.Expertise,
+        };
+    }
+
     private static string HashPassword(string password)
     {
         var bytes = SHA256.HashData(Encoding.UTF8.GetBytes(password));
@@ -260,5 +315,34 @@ public class Service: IService
         </body>
         </html>
         """;
-
+    private static string BuildLecturerWelcomeEmailBody(string fullName, string email, string password) => $"""
+        <!DOCTYPE html><html lang="vi">
+        <head><meta charset="UTF-8"></head>
+        <body style='font-family:Arial,sans-serif;background:#f4f6f8;margin:0;padding:0;'>
+            <table width='100%' cellpadding='0' cellspacing='0'><tr><td align='center' style='padding:40px 0;'>
+                <table width='600' style='background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.08);'>
+                    <tr><td style='background:#4F46E5;padding:30px;text-align:center;'>
+                        <h1 style='color:#fff;margin:0;font-size:24px;'>SmartCenter</h1></td></tr>
+                    <tr><td style='padding:40px 30px;color:#333;'>
+                        <p style='font-size:18px;'>Xin chào <strong>{fullName}</strong>,</p>
+                        <p>Tài khoản giảng viên của bạn tại <strong>SmartCenter</strong> đã được tạo thành công!</p>
+                        <p>Thông tin đăng nhập của bạn:</p>
+                        <table style='background:#f4f6f8;border-radius:8px;padding:20px;width:100%;margin:20px 0;'>
+                            <tr>
+                                <td style='padding:8px 0;color:#555;'><strong>Email:</strong></td>
+                                <td style='padding:8px 0;color:#4F46E5;'>{email}</td>
+                            </tr>
+                            <tr>
+                                <td style='padding:8px 0;color:#555;'><strong>Mật khẩu:</strong></td>
+                                <td style='padding:8px 0;color:#4F46E5;'>{password}</td>
+                            </tr>
+                        </table>
+                        <p style='color:#DC2626;font-size:13px;'>⚠️ Vui lòng đổi mật khẩu sau khi đăng nhập lần đầu.</p>
+                    </td></tr>
+                    <tr><td style='background:#f4f6f8;padding:20px;text-align:center;font-size:12px;color:#888;'>
+                        &copy; 2026 SmartCenter. All rights reserved.</td></tr>
+                </table>
+            </td></tr></table>
+        </body></html>
+        """;
 }
