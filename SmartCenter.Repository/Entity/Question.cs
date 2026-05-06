@@ -8,7 +8,7 @@ public class Question: BaseEntity<Guid>, IAuditableEntity
     
     public required string Title { get; set; }
     public QuestionType TypeOfQuestion { get; set; }
-    public required int Point { get; set; }
+    public required decimal Point { get; set; }
     
     public ICollection<ExamPaperDetail> ExamPaperDetails { get; set; } = new List<ExamPaperDetail>();
     public ICollection<MultipleChoiceAnswer> MultipleChoiceAnswers { get; set; } = new List<MultipleChoiceAnswer>();
