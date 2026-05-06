@@ -21,8 +21,4 @@
     <ItemGroup>
       <ProjectReference Include="..\SmartCenter.Repository\SmartCenter.Repository.csproj" />
     </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Payment\" />
-    </ItemGroup>
 </Project>

@@ -70,6 +70,7 @@ public class AppDbContext : DbContext
             builder.HasOne(u => u.Student).WithOne(s => s.User).HasForeignKey<Student>(s => s.UserId).OnDelete(DeleteBehavior.Cascade);
         });
         
+        
         modelBuilder.Entity<UserSession>( builder => 
         {
             builder.Property(us => us.DeviceFingerprint).IsRequired().HasMaxLength(300);
