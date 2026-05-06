@@ -82,8 +82,8 @@ using (var scope = app.Services.CreateScope())
 //     app.UseSwaggerUI();
 // }
 
-app.UseSwagger();
-app.UseSwaggerUI();
+// app.UseSwagger();
+app.UseSwaggerAPI();
 
 app.UseAuthentication();
 app.UseAuthorization();
