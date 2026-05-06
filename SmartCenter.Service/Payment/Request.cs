@@ -1,4 +1,4 @@
-﻿namespace SmartCenter.Service.SePayService;
+﻿namespace SmartCenter.Service.Payment;
 
 public class Request
 {
