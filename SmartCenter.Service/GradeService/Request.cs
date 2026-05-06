@@ -15,7 +15,7 @@ public class Request
     {
         public Guid ExamManagementDetailId { get; set; }
 
-        public int? Point { get; set; }
+        public decimal? Point { get; set; }
 
         public string? Feedback { get; set; }
     }

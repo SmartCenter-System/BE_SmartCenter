@@ -6,8 +6,8 @@ public class Response
 {
     public class ExamManagementResponse
     {
-        public int PointOfStudent { get; set; }
-        public int PointOfExam { get; set; }
+        public decimal PointOfStudent { get; set; }
+        public decimal PointOfExam { get; set; }
         public ExamPaperStatus Status { get; set; }
         public string Title { get; set; }
         

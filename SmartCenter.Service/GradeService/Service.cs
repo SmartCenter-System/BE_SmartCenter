@@ -162,7 +162,7 @@ public class Service : IService
         return response;
     }
 
-    private static string BuildGradeNotificationEmailBody(string fullName, string examTitle, int totalScore) => $"""
+    private static string BuildGradeNotificationEmailBody(string fullName, string examTitle, decimal totalScore) => $"""
          <!DOCTYPE html>
          <html lang="vi">
          <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>

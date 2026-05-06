@@ -65,7 +65,7 @@ public class Service : IService
             .ToListAsync();
 
         var answersToInsert = new List<ExamManementDetail>();
-        int totalAutoGradedPoints = 0;
+        decimal totalAutoGradedPoints = 0;
 
         foreach (var answerReq in request.ListAnswers)
         {
@@ -89,7 +89,7 @@ public class Service : IService
                 var studentSelectedIds = answerReq.MultipleChoiceAnswerIds ?? new List<Guid>();
 
                 //Chấm điểm phải chọn đủ và chọn đúng đáp án mới cho điểm
-                int calculatedPoint = 0;
+                decimal calculatedPoint = 0;
                 bool isFullyCorrect = (correctAnswersFromDB.Count == studentSelectedIds.Count) &&
                                       studentSelectedIds.All(id => correctAnswersFromDB.Contains(id));
 

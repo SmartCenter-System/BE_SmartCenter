@@ -15,7 +15,7 @@ public class ExamManementDetail: BaseEntity<Guid>, IAuditableEntity
     public MultipleChoiceAnswer? MultipleChoiceAnswer { get; set; }
     
     public string? Answer { get; set; }
-    public int? Point  { get; set; }
+    public decimal? Point  { get; set; }
     public bool IsMultiChoice { get; set; }
     public string? Feedback { get; set; }
     

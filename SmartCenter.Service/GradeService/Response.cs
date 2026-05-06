@@ -6,7 +6,7 @@ public class Response
     {
         public Guid ExamId { get; set; }
         public string ExamTitle { get; set; }
-        public double TotalScore { get; set; } 
+        public Decimal TotalScore { get; set; } 
         public List<ExamQuestionDetail> QuestionDetails { get; set; } = new List<ExamQuestionDetail>();
     }
 
@@ -18,7 +18,7 @@ public class Response
         public bool? IsCorrect { get; set; }
         public Guid? MultipleChoiceAnswerId { get; set; } 
         public string StudentAnswerText { get; set; } 
-        public int Points { get; set; } 
+        public decimal Points { get; set; } 
         public string Feedback { get; set; }
     }
 }
