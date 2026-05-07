@@ -4,9 +4,11 @@
         <TargetFramework>net8.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="DotNetEnv" Version="3.2.0" />
         <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.3.9" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2"/>
     </ItemGroup>
@@ -24,6 +26,11 @@
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\SmartCenter.Service\SmartCenter.Service.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+      <Content Include="..\.dockerignore">
+        <Link>.dockerignore</Link>
+      </Content>
     </ItemGroup>
 
 </Project>
