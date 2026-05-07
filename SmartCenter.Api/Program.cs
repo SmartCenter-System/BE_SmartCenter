@@ -89,7 +89,7 @@ using (var scope = app.Services.CreateScope())
 
 // app.UseSwagger();
 app.UseSwaggerAPI();
-app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
+// app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
 
