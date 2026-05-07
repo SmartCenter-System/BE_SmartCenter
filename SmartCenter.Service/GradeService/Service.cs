@@ -21,16 +21,53 @@ public class Service : IService
 
     private Guid GetStudentId()
     {
-        var userId = _httpContextAccessor.HttpContext!.User.Claims.FirstOrDefault(x => x.Type == "UserId")?.Value;
-        var userIdGuid = Guid.Parse(userId);
-        var student = _dbContext.Students.FirstOrDefault(x => x.Id == userIdGuid);
-        return student.Id;
+        var claim = _httpContextAccessor.HttpContext?.User
+                        .FindFirst("studentId")?.Value
+                    ?? throw new UnauthorizedAccessException("Không tìm thấy thông tin học sinh.");
+        return Guid.Parse(claim);
+    }
+    
+    private Guid GetLecturerId()
+    {
+        var claim = _httpContextAccessor.HttpContext?.User
+                        .FindFirst("lecturerId")?.Value
+                    ?? throw new UnauthorizedAccessException("Không tìm thấy thông tin giảng viên.");
+        return Guid.Parse(claim);
+    }
+    
+    private bool IsAdmin() =>
+        _httpContextAccessor.HttpContext?.User.IsInRole("Admin") ?? false;
+    
+    private async Task AuthorizeLectureAsync(Guid examId)
+    {
+        //phải là giáo viên tạo bài kiểm tra này thì mới được chấm
+        if (IsAdmin()) return;
+        var lecturerId = GetLecturerId();
+        var owns = await _dbContext.ExamPapers
+            .AnyAsync(s => s.Id == examId && s.LecturerId == lecturerId);
+        if (!owns)
+            throw new UnauthorizedAccessException("Bạn không có quyền thao tác với bài này.");
+    }
+
+    private async Task AuthorizeStudentAsync(Guid examId)
+    {
+        //phải là học sinh đã làm bài kiểm tra đó thì mới xem được chi tiết bài làm
+        if (IsAdmin()) return;
+        var studentId = GetStudentId();
+        var owns = await _dbContext.ExamManagements
+            .AnyAsync(s => s.ExamPaperId == examId && s.StudentId == studentId);
+        if (!owns)
+            throw new UnauthorizedAccessException("Bạn không có quyền thao tác với bài này.");
     }
 
     public async Task<string> GradeExam(Request.GradeExamRequest request)
     {
+        await AuthorizeLectureAsync(request.ExamId);
+        
         var User = await _dbContext.Users.Where(x => x.Student.Id == request.StudentId).FirstOrDefaultAsync();
+
         var ExamPaper = await _dbContext.ExamPapers.Where(x => x.Id == request.ExamId).FirstOrDefaultAsync();
+            
         var examManagement = await _dbContext.ExamManagements
             .Include(em => em.ExamManementDetails)
             .ThenInclude(emd => emd.ExamPaperDetail)
@@ -103,7 +140,10 @@ public class Service : IService
 
     public async Task<Response.MyExamDetailsResponse> MyExamDetails(Request.MyDetailsRequest request)
     {
+        await AuthorizeStudentAsync(request.ExamId);
+        
         var studentId = GetStudentId();
+        
         var examSubmission = await _dbContext.ExamManagements
             .Include(em => em.ExamPaper)
             .Include(em => em.ExamManementDetails)

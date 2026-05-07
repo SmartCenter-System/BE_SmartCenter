@@ -85,9 +85,9 @@ public class Service : IService
         var userId = _httpContextAccessor.HttpContext!.User.Claims.FirstOrDefault(x => x.Type == "UserId")?.Value;
         var userIdGuid = Guid.Parse(userId);
 
-        var student =  _dbContext.Students.Where(x => x.UserId == userIdGuid);
+        var Student = await _dbContext.Students.FirstOrDefaultAsync(x => x.UserId == userIdGuid);
 
-        var Student = await student.FirstOrDefaultAsync();
+        
         if (Student == null)
         {
             throw new Exception("Student not found");

@@ -147,6 +147,11 @@ public class Service: IService
         {
             claims.Add(new Claim("studentId", user.Student.Id.ToString()));
         }
+
+        if (user.Lecturer != null)
+        {
+            claims.Add(new Claim("lecturerId", user.Lecturer.Id.ToString()));
+        }
         
         var accessToken = _jwtService.GenerateAccessToken(claims);
         return new Response.AuthResponse
