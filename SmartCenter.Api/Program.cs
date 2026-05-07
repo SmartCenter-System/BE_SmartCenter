@@ -14,6 +14,9 @@ using SePayService = SmartCenter.Service.SePayService;
 using CourseService = SmartCenter.Service.Course;
 using CartService = SmartCenter.Service.Cart;
 using OrderService = SmartCenter.Service.Order;
+using ExamManagementService = SmartCenter.Service.ExamManagementService;
+using GradeService = SmartCenter.Service.GradeService;
+
 using ExamPaperService = SmartCenter.Service.ExamPaper;
 using SectionService = SmartCenter.Service.Section;
 using LessonService = SmartCenter.Service.Lesson;
@@ -55,6 +58,8 @@ builder.Services.AddScoped<OrderService.IService, OrderService.Service>();
 builder.Services.AddScoped<AuthService.IService, AuthService.Service>();
 builder.Services.AddScoped<EnrollmentService.IService, EnrollmentService.Service>();
 builder.Services.AddScoped<ConsultationService.IService, ConsultationService.Service>();
+builder.Services.AddScoped<ExamManagementService.IService, ExamManagementService.Service>();
+builder.Services.AddScoped<GradeService.IService, GradeService.Service>();
 builder.Services.AddScoped<ExamPaperService.IService, ExamPaperService.Service>();
 builder.Services.AddScoped<PaymentService.IService, PaymentService.Service>();
 builder.Services.AddScoped<LessonService.IService, LessonService.Service>();

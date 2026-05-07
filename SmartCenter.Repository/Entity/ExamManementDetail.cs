@@ -11,11 +11,11 @@ public class ExamManementDetail: BaseEntity<Guid>, IAuditableEntity
     public Guid ExamPaperDetailId { get; set; }
     public ExamPaperDetail ExamPaperDetail { get; set; }
     
-    public Guid MultipleChoiceAnswerId { get; set; }
-    public MultipleChoiceAnswer MultipleChoiceAnswer { get; set; }
+    public Guid? MultipleChoiceAnswerId { get; set; }
+    public MultipleChoiceAnswer? MultipleChoiceAnswer { get; set; }
     
-    public required string Answer { get; set; }
-    public required int Point  { get; set; }
+    public string? Answer { get; set; }
+    public decimal? Point  { get; set; }
     public bool IsMultiChoice { get; set; }
     public string? Feedback { get; set; }
     

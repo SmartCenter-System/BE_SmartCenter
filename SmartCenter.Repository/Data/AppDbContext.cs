@@ -200,7 +200,7 @@ public class AppDbContext : DbContext
             builder.Property(e => e.NumberOfLikes).IsRequired().HasDefaultValue(0);
             builder.Property(e => e.NumberOfDislikes).IsRequired().HasDefaultValue(0);
             
-            builder.HasMany(e => e.Comments).WithOne(e => e.ParentExamComment).HasForeignKey(e => e.ParentExamCommentId).OnDelete(DeleteBehavior.Cascade);
+            builder.HasMany(e => e.Comments).WithOne(e => e.ParentExamComment).HasForeignKey(e => e.ParentExamCommentId).IsRequired(false).OnDelete(DeleteBehavior.Cascade);
         });
 
         modelBuilder.Entity<ExamPaperDetail>(builder =>
@@ -234,8 +234,7 @@ public class AppDbContext : DbContext
 
         modelBuilder.Entity<ExamManementDetail>(builder =>
         {
-            builder.Property(e => e.Answer).IsRequired().HasMaxLength(500);
-            builder.Property(e => e.Point).IsRequired();
+            builder.Property(e => e.Answer).HasMaxLength(500);
             builder.Property(e => e.IsMultiChoice).IsRequired();
             builder.Property(e => e.Feedback).HasMaxLength(500);
         });
