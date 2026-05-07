@@ -20,7 +20,7 @@ public class EnrollmentController:ControllerBase
     [HttpGet(template: "MyEnrollments")]
     public async Task<IActionResult> GetMyEnrollments()
     {
-        var result = _enrollmentService.GetMyEnrollment();
+        var result = await _enrollmentService.GetMyEnrollment();
         return Ok(result);
     }
 

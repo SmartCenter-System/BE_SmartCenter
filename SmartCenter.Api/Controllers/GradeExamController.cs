@@ -28,8 +28,21 @@ public class GradeExamController:ControllerBase
     [Authorize(Policy = JwtExtensions.StudentPolicy)]
     public async Task<IActionResult> GetMyExamDetails([FromQuery] Request.MyDetailsRequest request)
     {
-        var result = _gradeService.MyExamDetails(request);
-        return Ok(result);
+        try
+        {
+            var response = await _gradeService.MyExamDetails(request);
+            return Ok(response); // 200 OK
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            // Bắt chính xác lỗi quyền và trả về HTTP 403 Forbidden
+            return StatusCode(403, new { Message = ex.Message }); 
+        }
+        catch (Exception ex)
+        {
+            // Bắt các lỗi chung (ví dụ: không tìm thấy bài thi) trả về HTTP 400 Bad Request
+            return BadRequest(new { Message = ex.Message }); 
+        }
     }
         
 }

@@ -200,7 +200,7 @@ public class AppDbContext : DbContext
             builder.Property(e => e.NumberOfLikes).IsRequired().HasDefaultValue(0);
             builder.Property(e => e.NumberOfDislikes).IsRequired().HasDefaultValue(0);
             
-            builder.HasMany(e => e.Comments).WithOne(e => e.ParentExamComment).HasForeignKey(e => e.ParentExamCommentId).OnDelete(DeleteBehavior.Cascade);
+            builder.HasMany(e => e.Comments).WithOne(e => e.ParentExamComment).HasForeignKey(e => e.ParentExamCommentId).IsRequired(false).OnDelete(DeleteBehavior.Cascade);
         });
 
         modelBuilder.Entity<ExamPaperDetail>(builder =>
