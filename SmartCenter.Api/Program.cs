@@ -8,16 +8,16 @@ using DotNetEnv;
 using JwtService = SmartCenter.Service.JwtService;
 using MediaService = SmartCenter.Service.MediaService;
 using CloudinaryService = SmartCenter.Service.CloudinaryService;
+using AuthService = SmartCenter.Service.Auth;
 using MailService = SmartCenter.Service.MailService;
 using SePayService = SmartCenter.Service.SePayService;
 using CourseService = SmartCenter.Service.Course;
 using CartService = SmartCenter.Service.Cart;
 using OrderService = SmartCenter.Service.Order;
-using AuthService = SmartCenter.Service.Auth;
 using ExamPaperService = SmartCenter.Service.ExamPaper;
-
+using SectionService = SmartCenter.Service.Section;
+using LessonService = SmartCenter.Service.Lesson;
 using PaymentService = SmartCenter.Service.Payment;
-
 using EnrollmentService = SmartCenter.Service.EnrollmentService;
 using ConsultationService = SmartCenter.Service.ConsultationService;
 
@@ -57,6 +57,8 @@ builder.Services.AddScoped<EnrollmentService.IService, EnrollmentService.Service
 builder.Services.AddScoped<ConsultationService.IService, ConsultationService.Service>();
 builder.Services.AddScoped<ExamPaperService.IService, ExamPaperService.Service>();
 builder.Services.AddScoped<PaymentService.IService, PaymentService.Service>();
+builder.Services.AddScoped<LessonService.IService, LessonService.Service>();
+builder.Services.AddScoped<SectionService.IService, SectionService.Service>();
 // ─── Quartz ───────────────────────────────────────────────────────────────────
 builder.Services.AddQuartz();
 builder.Services.AddQuartzHostedService(options =>
