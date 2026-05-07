@@ -19,21 +19,36 @@ public class Service : IService
 
     private Guid GetStudentId()
     {
-        var userId = _httpContextAccessor.HttpContext!.User.Claims.FirstOrDefault(x => x.Type == "UserId")?.Value;
-        var userIdGuid = Guid.Parse(userId);
-        var student = _dbContext.Students.FirstOrDefault(x => x.Id == userIdGuid);
-        return student.Id;
+        var claim = _httpContextAccessor.HttpContext?.User
+                        .FindFirst("studentId")?.Value
+                    ?? throw new UnauthorizedAccessException("Không tìm thấy thông tin học sinh.");
+        return Guid.Parse(claim);
     }
+
+    private Guid GetLecturerId()
+    {
+        var claim = _httpContextAccessor.HttpContext?.User
+                        .FindFirst("lecturerId")?.Value
+                    ?? throw new UnauthorizedAccessException("Không tìm thấy thông tin giảng viên.");
+        return Guid.Parse(claim);
+    }
+
+    private bool IsAdmin() =>
+        _httpContextAccessor.HttpContext?.User.IsInRole("Admin") ?? false;
+
 
     public async Task<string> StartingExam(Guid ExamID)
     {
         //khi gọi API này nghĩa là bắt đầu làm bài
         var StudentId = GetStudentId();
+
         var Exam_Manament = new ExamManament()
         {
             ExamPaperId = ExamID,
             StudentId = StudentId,
             PointsOfStudent = 0,
+            CreatedAt = DateTimeOffset.UtcNow,
+            UpdatedAt = DateTimeOffset.UtcNow
         };
         _dbContext.Add(Exam_Manament);
         await _dbContext.SaveChangesAsync();
@@ -54,106 +69,120 @@ public class Service : IService
             return "Học sinh không có quyền hoặc phiên thi không tồn tại.";
         }
 
-        // Lấy danh sách Question đã trả lời
-        var submittedQuestionIds = request.ListAnswers.Select(x => x.QuestionId).ToList();
-
-        //Gộp toàn bộ câu hỏi và đáp án
-        var validExamDetails = await _dbContext.ExamPaperDetails
+        var allExamDetails = await _dbContext.ExamPaperDetails
             .Include(x => x.Question)
             .ThenInclude(q => q.MultipleChoiceAnswers)
-            .Where(x => x.ExamPaperId == request.ExamId && submittedQuestionIds.Contains(x.QuestionId))
+            .Where(x => x.ExamPaperId == request.ExamId)
             .ToListAsync();
+
+        if (!allExamDetails.Any())
+        {
+            throw new Exception("Đề thi này chưa có câu hỏi nào được thiết lập.");
+        }
 
         var answersToInsert = new List<ExamManementDetail>();
         decimal totalAutoGradedPoints = 0;
+        var studentAnswers = request.ListAnswers ?? new List<Request.AnswerItems>();
 
-        foreach (var answerReq in request.ListAnswers)
+        foreach (var detail in allExamDetails)
         {
-            var matchedDetail = validExamDetails.FirstOrDefault(x => x.QuestionId == answerReq.QuestionId);
+            if (detail.Question == null) continue;
 
-            // Nếu học sinh gửi ID câu hỏi không có trong đề, bỏ qua ngay lập tức
-            if (matchedDetail == null || matchedDetail.Question == null)
-                continue;
+            bool isMultipleChoice = detail.Question.TypeOfQuestion == QuestionType.MultipleChoice;
+            var studentAnswerForThisQuestion = studentAnswers.FirstOrDefault(x => x.QuestionId == detail.QuestionId);
 
-            bool isMultipleChoiceDB = matchedDetail.Question.TypeOfQuestion == QuestionType.MultipleChoice;
-
-            if (isMultipleChoiceDB)
+            if (studentAnswerForThisQuestion == null)
             {
-                // Lấy ID đáp án đúng
-                var correctAnswersFromDB = matchedDetail.Question.MultipleChoiceAnswers
+                answersToInsert.Add(new ExamManementDetail()
+                {
+                    ExamManementId = ExamManagement.Id,
+                    ExamPaperDetailId = detail.Id,
+                    IsMultiChoice = isMultipleChoice,
+                    MultipleChoiceAnswerId = null,
+                    Answer = null,
+                    Point = 0,
+                    CreatedAt = DateTimeOffset.UtcNow,
+                    UpdatedAt = DateTimeOffset.UtcNow
+                });
+                continue;
+            }
+
+            if (isMultipleChoice)
+            {
+                var correctAnswersFromDB = detail.Question.MultipleChoiceAnswers
                     .Where(ans => ans.IsCorrect == true)
                     .Select(ans => ans.Id)
                     .ToList();
 
-                // Danh sách ID đáp án học sinh chọn
-                var studentSelectedIds = answerReq.MultipleChoiceAnswerIds ?? new List<Guid>();
+                var studentSelectedIds = studentAnswerForThisQuestion.MultipleChoiceAnswerIds ?? new List<Guid>();
 
-                //Chấm điểm phải chọn đủ và chọn đúng đáp án mới cho điểm
                 decimal calculatedPoint = 0;
                 bool isFullyCorrect = (correctAnswersFromDB.Count == studentSelectedIds.Count) &&
                                       studentSelectedIds.All(id => correctAnswersFromDB.Contains(id));
 
                 if (isFullyCorrect)
                 {
-                    calculatedPoint = matchedDetail.Question.Point;
+                    calculatedPoint = detail.Question.Point;
                     totalAutoGradedPoints += calculatedPoint;
                 }
 
-                //Nếu học sinh không chọn đáp án nào
                 if (!studentSelectedIds.Any())
                 {
                     answersToInsert.Add(new ExamManementDetail()
                     {
                         ExamManementId = ExamManagement.Id,
+                        ExamPaperDetailId = detail.Id,
+                        IsMultiChoice = true,
                         MultipleChoiceAnswerId = null,
-                        ExamPaperDetailId = matchedDetail.Id,
-                        IsMultiChoice = true,
-                        Point = 0
+                        Point = 0,
+                        CreatedAt = DateTimeOffset.UtcNow,
+                        UpdatedAt = DateTimeOffset.UtcNow
                     });
-                    continue;
                 }
-
-                //Tạo nhiều dòng cho nhiều đáp án và xử lý chống nhân đôi điểm
-                bool isFirstRow = true;
-                foreach (var selectedId in studentSelectedIds)
+                else
                 {
-                    answersToInsert.Add(new ExamManementDetail()
+                    bool isFirstRow = true;
+                    foreach (var selectedId in studentSelectedIds)
                     {
-                        ExamManementId = ExamManagement.Id,
-                        ExamPaperDetailId = matchedDetail.Id,
-                        MultipleChoiceAnswerId = selectedId,
-                        IsMultiChoice = true,
-                        Point = isFirstRow ? calculatedPoint : 0
-                    });
-                    isFirstRow = false;
+                        answersToInsert.Add(new ExamManementDetail()
+                        {
+                            ExamManementId = ExamManagement.Id,
+                            ExamPaperDetailId = detail.Id,
+                            MultipleChoiceAnswerId = selectedId,
+                            IsMultiChoice = true,
+                            Point = isFirstRow ? calculatedPoint : 0,
+                            CreatedAt = DateTimeOffset.UtcNow,
+                            UpdatedAt = DateTimeOffset.UtcNow
+                        });
+                        isFirstRow = false;
+                    }
                 }
             }
-            // Câu tự luận
             else
             {
                 answersToInsert.Add(new ExamManementDetail()
                 {
                     ExamManementId = ExamManagement.Id,
-                    ExamPaperDetailId = matchedDetail.Id,
+                    ExamPaperDetailId = detail.Id,
                     MultipleChoiceAnswerId = null,
-                    Answer = answerReq.AnswerText,
+                    Answer = studentAnswerForThisQuestion.AnswerText,
                     IsMultiChoice = false,
-                    Point = null // Treo điểm chờ giáo viên chấm
+                    Point = 0,
+                    CreatedAt = DateTimeOffset.UtcNow,
+                    UpdatedAt = DateTimeOffset.UtcNow
                 });
             }
         }
 
-
         if (answersToInsert.Any())
         {
             await _dbContext.ExamManagementDetails.AddRangeAsync(answersToInsert);
-
-            // Cập nhật tổng điểm trắc nghiệm vào phiên thi hiện tại
-            ExamManagement.PointsOfStudent = totalAutoGradedPoints;
-            _dbContext.ExamManagements.Update(ExamManagement);
-
-            await _dbContext.SaveChangesAsync();
         }
+
+        ExamManagement.PointsOfStudent = totalAutoGradedPoints;
+        _dbContext.ExamManagements.Update(ExamManagement);
+
+        await _dbContext.SaveChangesAsync();
 
         return "Nộp bài thành công!";
     }
@@ -167,13 +196,13 @@ public class Service : IService
             .Select(x => new Response.ExamManagementResponse
             {
                 PointOfStudent = x.PointsOfStudent,
-                PointOfExam = x.ExamPaper.TotalPoints, 
-                Status = x.ExamPaper.Status,           
-                Title = x.ExamPaper.Title,              
+                PointOfExam = x.ExamPaper.TotalPoints,
+                Status = x.ExamPaper.Status,
+                Title = x.ExamPaper.Title,
             })
             .ToListAsync();
-        
-        return  Exam_Management;
+
+        return Exam_Management;
     }
 
     public async Task<List<Response.ExamManagementResponse>> GetExamByExamsId(Guid ExamID)
@@ -196,4 +225,3 @@ public class Service : IService
         return result;
     }
 }
-
