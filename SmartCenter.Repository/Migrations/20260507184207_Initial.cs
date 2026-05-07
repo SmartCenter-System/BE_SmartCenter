@@ -53,7 +53,7 @@ namespace SmartCenter.Repository.Migrations
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Title = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
                     TypeOfQuestion = table.Column<int>(type: "integer", nullable: false),
-                    Point = table.Column<int>(type: "integer", nullable: false),
+                    Point = table.Column<decimal>(type: "numeric", nullable: false),
                     CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
                     IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
@@ -358,7 +358,7 @@ namespace SmartCenter.Repository.Migrations
                     Email = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
                     PhoneNumber = table.Column<string>(type: "character varying(15)", maxLength: 15, nullable: false),
                     Message = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
-                    RequestDate = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false, defaultValue: new DateTimeOffset(new DateTime(2026, 5, 5, 17, 16, 28, 306, DateTimeKind.Unspecified).AddTicks(2463), new TimeSpan(0, 0, 0, 0, 0))),
+                    RequestDate = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false, defaultValue: new DateTimeOffset(new DateTime(2026, 5, 7, 18, 42, 5, 84, DateTimeKind.Unspecified).AddTicks(4451), new TimeSpan(0, 0, 0, 0, 0))),
                     Status = table.Column<int>(type: "integer", nullable: false, defaultValue: 1),
                     Notes = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
                     CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
@@ -419,7 +419,7 @@ namespace SmartCenter.Repository.Migrations
                     StuId = table.Column<Guid>(type: "uuid", nullable: false),
                     Rating = table.Column<int>(type: "integer", nullable: false, defaultValue: 0),
                     Comment = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
-                    CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false, defaultValue: new DateTimeOffset(new DateTime(2026, 5, 5, 17, 16, 28, 314, DateTimeKind.Unspecified).AddTicks(9944), new TimeSpan(0, 0, 0, 0, 0))),
+                    CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false, defaultValue: new DateTimeOffset(new DateTime(2026, 5, 7, 18, 42, 5, 93, DateTimeKind.Unspecified).AddTicks(3866), new TimeSpan(0, 0, 0, 0, 0))),
                     UpdatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
                     StudentId = table.Column<Guid>(type: "uuid", nullable: true),
                     IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
@@ -561,7 +561,7 @@ namespace SmartCenter.Repository.Migrations
                     Status = table.Column<string>(type: "text", nullable: false),
                     ProviderTransactionCode = table.Column<string>(type: "text", nullable: false),
                     ConfirmedByStaffId = table.Column<Guid>(type: "uuid", nullable: false),
-                    ConfirmedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false, defaultValue: new DateTimeOffset(new DateTime(2026, 5, 5, 17, 16, 28, 318, DateTimeKind.Unspecified).AddTicks(7298), new TimeSpan(0, 0, 0, 0, 0))),
+                    ConfirmedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false, defaultValue: new DateTimeOffset(new DateTime(2026, 5, 7, 18, 42, 5, 96, DateTimeKind.Unspecified).AddTicks(8196), new TimeSpan(0, 0, 0, 0, 0))),
                     CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
                     IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
@@ -608,7 +608,7 @@ namespace SmartCenter.Repository.Migrations
                         column: x => x.SectionId,
                         principalTable: "Sections",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -722,7 +722,7 @@ namespace SmartCenter.Repository.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Document",
+                name: "Documents",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -736,9 +736,9 @@ namespace SmartCenter.Repository.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Document", x => x.Id);
+                    table.PrimaryKey("PK_Documents", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Document_Lessons_LessonId",
+                        name: "FK_Documents_Lessons_LessonId",
                         column: x => x.LessonId,
                         principalTable: "Lessons",
                         principalColumn: "Id",
@@ -755,7 +755,7 @@ namespace SmartCenter.Repository.Migrations
                     LessonId = table.Column<Guid>(type: "uuid", nullable: false),
                     Title = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
                     CountDown = table.Column<int>(type: "integer", nullable: false),
-                    TotalPoints = table.Column<int>(type: "integer", nullable: false),
+                    TotalPoints = table.Column<decimal>(type: "numeric", nullable: false),
                     Status = table.Column<int>(type: "integer", nullable: false, defaultValue: 1),
                     CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
@@ -775,7 +775,7 @@ namespace SmartCenter.Repository.Migrations
                         column: x => x.LessonId,
                         principalTable: "Lessons",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -838,12 +838,12 @@ namespace SmartCenter.Repository.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    ParentExamCommentId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ParentExamCommentId = table.Column<Guid>(type: "uuid", nullable: true),
                     ExamPaperId = table.Column<Guid>(type: "uuid", nullable: false),
                     Content = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
                     NumberOfLikes = table.Column<int>(type: "integer", nullable: false, defaultValue: 0),
                     NumberOfDislikes = table.Column<int>(type: "integer", nullable: false, defaultValue: 0),
-                    CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false, defaultValue: new DateTimeOffset(new DateTime(2026, 5, 5, 17, 16, 28, 312, DateTimeKind.Unspecified).AddTicks(7858), new TimeSpan(0, 0, 0, 0, 0))),
+                    CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false, defaultValue: new DateTimeOffset(new DateTime(2026, 5, 7, 18, 42, 5, 91, DateTimeKind.Unspecified).AddTicks(2152), new TimeSpan(0, 0, 0, 0, 0))),
                     UpdatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
                     IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
                 },
@@ -871,7 +871,7 @@ namespace SmartCenter.Repository.Migrations
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     ExamPaperId = table.Column<Guid>(type: "uuid", nullable: false),
                     StudentId = table.Column<Guid>(type: "uuid", nullable: false),
-                    PointsOfStudent = table.Column<int>(type: "integer", nullable: false),
+                    PointsOfStudent = table.Column<decimal>(type: "numeric", nullable: false),
                     CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
                     IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
@@ -928,9 +928,9 @@ namespace SmartCenter.Repository.Migrations
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     ExamManementId = table.Column<Guid>(type: "uuid", nullable: false),
                     ExamPaperDetailId = table.Column<Guid>(type: "uuid", nullable: false),
-                    MultipleChoiceAnswerId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Answer = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
-                    Point = table.Column<int>(type: "integer", nullable: false),
+                    MultipleChoiceAnswerId = table.Column<Guid>(type: "uuid", nullable: true),
+                    Answer = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
+                    Point = table.Column<decimal>(type: "numeric", nullable: true),
                     IsMultiChoice = table.Column<bool>(type: "boolean", nullable: false),
                     Feedback = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
                     CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
@@ -1049,8 +1049,8 @@ namespace SmartCenter.Repository.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Document_LessonId",
-                table: "Document",
+                name: "IX_Documents_LessonId",
+                table: "Documents",
                 column: "LessonId");
 
             migrationBuilder.CreateIndex(
@@ -1267,7 +1267,7 @@ namespace SmartCenter.Repository.Migrations
                 name: "Deadlines");
 
             migrationBuilder.DropTable(
-                name: "Document");
+                name: "Documents");
 
             migrationBuilder.DropTable(
                 name: "Enrollments");
