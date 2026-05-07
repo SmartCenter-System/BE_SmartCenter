@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SmartCenter.Api.extensions;
+using SmartCenter.Service.Model;
 using SmartCenter.Service.Section;
 
 namespace SmartCenter.Api.Controllers;
@@ -17,23 +18,35 @@ public class SectionController: ControllerBase
 
     [HttpGet]
     public async Task<IActionResult> GetSections(Guid courseId)
-        => Ok(await _sectionService.GetSectionsByCourseAsync(courseId));
+    {
+        var section = await _sectionService.GetSectionsByCourseAsync(courseId);
+        return Ok(ApiResponseFactory.SuccessResponse(section, "Get Section Details Success", HttpContext.TraceIdentifier));
+    }
+
 
     [HttpPost]
     [Authorize(Policy = JwtExtensions.AdminOrLecturerPolicy)]
     public async Task<IActionResult> Create(Guid courseId, [FromBody] Request.CreateSectionRequest request)
-        => Ok(await _sectionService.CreateSectionAsync(courseId, request));
+    {
+        var section = await _sectionService.CreateSectionAsync(courseId, request);
+        return Ok(ApiResponseFactory.SuccessResponse(section, "Create Section Details Success", HttpContext.TraceIdentifier));
+    }
 
     [HttpPut("{sectionId}")]
     [Authorize(Policy = JwtExtensions.AdminOrLecturerPolicy)]
-    public async Task<IActionResult> Update(Guid courseId, Guid sectionId, [FromBody] Request.UpdateSectionRequest request)
-        => Ok(await _sectionService.UpdateSectionAsync(sectionId, request));
+    public async Task<IActionResult> Update(Guid courseId, Guid sectionId,
+        [FromBody] Request.UpdateSectionRequest request)
+    {
+        var section = await _sectionService.UpdateSectionAsync(sectionId, request);
+        return Ok(ApiResponseFactory.SuccessResponse(section, "Get Section Details Success", HttpContext.TraceIdentifier));
+    }
+
 
     [HttpDelete("{sectionId}")]
     [Authorize(Policy = JwtExtensions.AdminOrLecturerPolicy)]
     public async Task<IActionResult> Delete(Guid courseId, Guid sectionId)
     {
         await _sectionService.DeleteSectionAsync(sectionId);
-        return Ok(new { message = "Xóa section thành công." });
+        return Ok(ApiResponseFactory.SuccessResponse(null, "Delete Section Details Success", HttpContext.TraceIdentifier));
     }
 }
