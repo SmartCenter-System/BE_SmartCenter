@@ -34,6 +34,7 @@ public class AppDbContext : DbContext
     public DbSet<Enrollment> Enrollments { get; set; }
     public DbSet<Deadline> Deadlines { get; set; }
     public DbSet<CourseCategory> CourseCategories { get; set; }
+    public DbSet<Document> Documents { get; set; }
     public DbSet<Course> Courses { get; set; }
     public DbSet<Comment> Comments { get; set; }
     public DbSet<ComboCourse> ComboCourses { get; set; }
@@ -276,7 +277,7 @@ public class AppDbContext : DbContext
             builder.Property(s => s.Position).IsRequired().HasMaxLength(100);
             builder.Property(s => s.IsActive).IsRequired().HasDefaultValue(true);
             
-            builder.HasMany(s => s.Lessons).WithOne(s => s.Section).HasForeignKey(s => s.SectionId).OnDelete(DeleteBehavior.Restrict);
+            builder.HasMany(s => s.Lessons).WithOne(s => s.Section).HasForeignKey(s => s.SectionId).OnDelete(DeleteBehavior.Cascade);
         });
 
         modelBuilder.Entity<Enrollment>(builder =>
@@ -346,7 +347,7 @@ public class AppDbContext : DbContext
             builder.HasMany(l => l.Comments).WithOne(l => l.Lesson).HasForeignKey(l => l.LessonId).OnDelete(DeleteBehavior.Cascade);
             builder.HasMany(l => l.Documents).WithOne(l => l.Lesson).HasForeignKey(l => l.LessonId).OnDelete(DeleteBehavior.Restrict);
             builder.HasMany(l => l.LearningProcesses).WithOne(l => l.Lesson).HasForeignKey(l => l.LessonId).OnDelete(DeleteBehavior.Restrict);
-            builder.HasMany(l => l.ExamPapers).WithOne(l => l.Lesson).HasForeignKey(l => l.LessonId).OnDelete(DeleteBehavior.Restrict);
+            builder.HasMany(l => l.ExamPapers).WithOne(l => l.Lesson).HasForeignKey(l => l.LessonId).OnDelete(DeleteBehavior.Cascade);
         });
 
         modelBuilder.Entity<Document>(builder =>
