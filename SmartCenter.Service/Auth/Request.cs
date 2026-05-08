@@ -15,6 +15,7 @@ public class Request
     {
         public required string Email { get; set; }
         public required string Password { get; set; }
+        public string? DeviceFingerprint { get; set; }
     }
 
     public class ForgotPasswordRequest
@@ -38,5 +39,15 @@ public class Request
         
         public required string Bio { get; set; }
         public required string Expertise { get; set; }
+    }
+    
+    public class RefreshTokenRequest
+    {
+        public required string RefreshToken { get; set; }
+    }
+
+    public class LogoutRequest
+    {
+        public required string RefreshToken { get; set; }
     }
 }
