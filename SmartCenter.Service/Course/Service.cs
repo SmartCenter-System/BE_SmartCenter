@@ -202,6 +202,7 @@ public class Service: IService
             .Select(x => new Response.CourseItemResponse
             {
                 Id = x.Course.Id,
+                CateId = x.Course.CourseCategories.Select(c => c.CategoryId).FirstOrDefault(),
                 Title = x.Course.CourseName,
                 Mode = x.Course.CourseType,
                 Price = x.Course.BasePrice,
