@@ -28,7 +28,7 @@ public class GradeExamController:ControllerBase
         ));
     }
 
-    [HttpGet(template: "MyExamDetails")]
+    [HttpGet(template: "my-exam-details")]
     [Authorize(Policy = JwtExtensions.StudentPolicy)]
     public async Task<IActionResult> GetMyExamDetails([FromQuery] Request.MyDetailsRequest request)
     {

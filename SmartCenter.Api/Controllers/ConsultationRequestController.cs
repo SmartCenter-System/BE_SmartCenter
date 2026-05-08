@@ -15,7 +15,7 @@ public class ConsultationRequestController:ControllerBase
         _consultationService = consultationService;
     }
 
-    [HttpPost("CreateConsultationRequest")]
+    [HttpPost("create-consultation-request")]
     public async Task<IActionResult> CreateConsultation([FromForm] Request.ConsultationRequest request)
     {
         return Ok(ApiResponseFactory.SuccessResponse(
