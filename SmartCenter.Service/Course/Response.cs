@@ -6,6 +6,7 @@ public class Response
 {
     public class CourseItemResponse
     {
+        public Guid CateId { get; set; }
         public Guid Id { get; set; }
         public string Title { get; set; } = string.Empty;
         public CourseType Mode  { get; set; }
