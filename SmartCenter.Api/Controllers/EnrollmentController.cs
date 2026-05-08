@@ -18,7 +18,7 @@ public class EnrollmentController : ControllerBase
         _enrollmentService = enrollmentService;
     }
 
-    [HttpGet(template: "MyEnrollments")]
+    [HttpGet(template: "my-enrollments")]
     public async Task<IActionResult> GetMyEnrollments()
     {
         return Ok(ApiResponseFactory.SuccessResponse(
@@ -28,7 +28,7 @@ public class EnrollmentController : ControllerBase
         ));
     }
 
-    [HttpPost(template: "")]
+    [HttpPost(template: "create-enrollment")]
     public async Task<IActionResult> CreateEnrollment([FromBody] Request.EnrollmentRequest request)
     {
         return Ok(ApiResponseFactory.SuccessResponse(
