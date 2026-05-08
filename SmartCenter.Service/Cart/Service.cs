@@ -106,7 +106,7 @@ public class Service: IService
         {
             var course = await _dbContext.Courses
                 .FirstOrDefaultAsync(x => x.Id == request.ItemId && x.IsActive);
-            if (course != null)
+            if (course == null)
                 throw new Exception("Course not found or inactive");
             
             
@@ -126,7 +126,7 @@ public class Service: IService
         {
             var combo = await _dbContext.Combos
                 .FirstOrDefaultAsync(x => x.Id == request.ItemId && x.IsActive);
-            if (combo != null)
+            if (combo == null)
                 throw new Exception("Combo not found or inactive");
             if (cart.Items.Any(x => x.ComboId == request.ItemId))
                 throw new Exception("Combo already exists");
