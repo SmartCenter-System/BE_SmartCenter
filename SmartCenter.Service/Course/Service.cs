@@ -92,6 +92,7 @@ public class Service: IService
                 Title = c.CourseName,
                 Price = c.BasePrice,
                 Mode = c.CourseType,
+                ImgUrl = c.ImgUrl,
                 AvailableSlots = c.MaxStudents -
                                  _dbContext.Enrollments.Count(e =>
                                      e.CourseId == c.Id && e.Status == EnrollmentStatus.Paid),
