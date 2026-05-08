@@ -320,8 +320,7 @@ namespace SmartCenter.Repository.Migrations
 
                     b.Property<DateTimeOffset>("RequestDate")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasDefaultValue(new DateTimeOffset(new DateTime(2026, 5, 8, 7, 52, 29, 786, DateTimeKind.Unspecified).AddTicks(8887), new TimeSpan(0, 0, 0, 0, 0)));
+
 
                     b.Property<Guid?>("StaffId")
                         .HasColumnType("uuid");
@@ -603,8 +602,7 @@ namespace SmartCenter.Repository.Migrations
 
                     b.Property<DateTimeOffset>("CreatedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasDefaultValue(new DateTimeOffset(new DateTime(2026, 5, 8, 7, 52, 29, 797, DateTimeKind.Unspecified).AddTicks(1539), new TimeSpan(0, 0, 0, 0, 0)));
+
 
                     b.Property<Guid>("ExamPaperId")
                         .HasColumnType("uuid");
@@ -1189,8 +1187,7 @@ namespace SmartCenter.Repository.Migrations
 
                     b.Property<DateTimeOffset>("CreatedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasDefaultValue(new DateTimeOffset(new DateTime(2026, 5, 8, 7, 52, 29, 802, DateTimeKind.Unspecified).AddTicks(1442), new TimeSpan(0, 0, 0, 0, 0)));
+
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
@@ -1316,8 +1313,6 @@ namespace SmartCenter.Repository.Migrations
 
                     b.Property<DateTimeOffset>("ConfirmedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasDefaultValue(new DateTimeOffset(new DateTime(2026, 5, 8, 7, 52, 29, 808, DateTimeKind.Unspecified).AddTicks(1797), new TimeSpan(0, 0, 0, 0, 0)));
 
                     b.Property<Guid>("ConfirmedByStaffId")
                         .HasColumnType("uuid");
