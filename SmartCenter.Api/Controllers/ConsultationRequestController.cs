@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using SmartCenter.Service.ConsultationService;
+using SmartCenter.Service.Model;
 
 namespace SmartCenter.Controllers;
 
@@ -17,7 +18,9 @@ public class ConsultationRequestController:ControllerBase
     [HttpPost("CreateConsultationRequest")]
     public async Task<IActionResult> CreateConsultation([FromForm] Request.ConsultationRequest request)
     {
-        var result = await _consultationService.CreateConsultation(request);
-        return Ok(result);
+        return Ok(ApiResponseFactory.SuccessResponse(
+            data: await _consultationService.CreateConsultation(request),
+            message: "Tạo yêu cầu tư vấn thành công."
+        ));
     }
 }
