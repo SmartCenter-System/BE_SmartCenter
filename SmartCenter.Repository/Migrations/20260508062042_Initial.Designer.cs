@@ -12,8 +12,8 @@ using SmartCenter.Repository.Data;
 namespace SmartCenter.Repository.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260507030427_test4")]
-    partial class test4
+    [Migration("20260508062042_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -324,7 +324,7 @@ namespace SmartCenter.Repository.Migrations
                     b.Property<DateTimeOffset>("RequestDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
-                        .HasDefaultValue(new DateTimeOffset(new DateTime(2026, 5, 7, 3, 4, 26, 787, DateTimeKind.Unspecified).AddTicks(3436), new TimeSpan(0, 0, 0, 0, 0)));
+                        .HasDefaultValue(new DateTimeOffset(new DateTime(2026, 5, 8, 6, 20, 42, 71, DateTimeKind.Unspecified).AddTicks(3228), new TimeSpan(0, 0, 0, 0, 0)));
 
                     b.Property<Guid?>("StaffId")
                         .HasColumnType("uuid");
@@ -607,7 +607,7 @@ namespace SmartCenter.Repository.Migrations
                     b.Property<DateTimeOffset>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
-                        .HasDefaultValue(new DateTimeOffset(new DateTime(2026, 5, 7, 3, 4, 26, 791, DateTimeKind.Unspecified).AddTicks(5358), new TimeSpan(0, 0, 0, 0, 0)));
+                        .HasDefaultValue(new DateTimeOffset(new DateTime(2026, 5, 8, 6, 20, 42, 82, DateTimeKind.Unspecified).AddTicks(1211), new TimeSpan(0, 0, 0, 0, 0)));
 
                     b.Property<Guid>("ExamPaperId")
                         .HasColumnType("uuid");
@@ -1193,7 +1193,7 @@ namespace SmartCenter.Repository.Migrations
                     b.Property<DateTimeOffset>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
-                        .HasDefaultValue(new DateTimeOffset(new DateTime(2026, 5, 7, 3, 4, 26, 792, DateTimeKind.Unspecified).AddTicks(5896), new TimeSpan(0, 0, 0, 0, 0)));
+                        .HasDefaultValue(new DateTimeOffset(new DateTime(2026, 5, 8, 6, 20, 42, 86, DateTimeKind.Unspecified).AddTicks(5723), new TimeSpan(0, 0, 0, 0, 0)));
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
@@ -1320,7 +1320,7 @@ namespace SmartCenter.Repository.Migrations
                     b.Property<DateTimeOffset>("ConfirmedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
-                        .HasDefaultValue(new DateTimeOffset(new DateTime(2026, 5, 7, 3, 4, 26, 794, DateTimeKind.Unspecified).AddTicks(8217), new TimeSpan(0, 0, 0, 0, 0)));
+                        .HasDefaultValue(new DateTimeOffset(new DateTime(2026, 5, 8, 6, 20, 42, 93, DateTimeKind.Unspecified).AddTicks(7715), new TimeSpan(0, 0, 0, 0, 0)));
 
                     b.Property<Guid>("ConfirmedByStaffId")
                         .HasColumnType("uuid");
