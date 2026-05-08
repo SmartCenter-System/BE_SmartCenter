@@ -12,7 +12,7 @@ using SmartCenter.Repository.Data;
 namespace SmartCenter.Repository.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260508062042_Initial")]
+    [Migration("20260508065150_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -324,7 +324,7 @@ namespace SmartCenter.Repository.Migrations
                     b.Property<DateTimeOffset>("RequestDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
-                        .HasDefaultValue(new DateTimeOffset(new DateTime(2026, 5, 8, 6, 20, 42, 71, DateTimeKind.Unspecified).AddTicks(3228), new TimeSpan(0, 0, 0, 0, 0)));
+                        .HasDefaultValue(new DateTimeOffset(new DateTime(2026, 5, 8, 6, 51, 50, 338, DateTimeKind.Unspecified).AddTicks(3244), new TimeSpan(0, 0, 0, 0, 0)));
 
                     b.Property<Guid?>("StaffId")
                         .HasColumnType("uuid");
@@ -519,7 +519,7 @@ namespace SmartCenter.Repository.Migrations
 
                     b.HasIndex("LessonId");
 
-                    b.ToTable("Document");
+                    b.ToTable("Documents");
                 });
 
             modelBuilder.Entity("SmartCenter.Repository.Entity.Enrollment", b =>
@@ -607,7 +607,7 @@ namespace SmartCenter.Repository.Migrations
                     b.Property<DateTimeOffset>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
-                        .HasDefaultValue(new DateTimeOffset(new DateTime(2026, 5, 8, 6, 20, 42, 82, DateTimeKind.Unspecified).AddTicks(1211), new TimeSpan(0, 0, 0, 0, 0)));
+                        .HasDefaultValue(new DateTimeOffset(new DateTime(2026, 5, 8, 6, 51, 50, 345, DateTimeKind.Unspecified).AddTicks(7952), new TimeSpan(0, 0, 0, 0, 0)));
 
                     b.Property<Guid>("ExamPaperId")
                         .HasColumnType("uuid");
@@ -1193,7 +1193,7 @@ namespace SmartCenter.Repository.Migrations
                     b.Property<DateTimeOffset>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
-                        .HasDefaultValue(new DateTimeOffset(new DateTime(2026, 5, 8, 6, 20, 42, 86, DateTimeKind.Unspecified).AddTicks(5723), new TimeSpan(0, 0, 0, 0, 0)));
+                        .HasDefaultValue(new DateTimeOffset(new DateTime(2026, 5, 8, 6, 51, 50, 347, DateTimeKind.Unspecified).AddTicks(8617), new TimeSpan(0, 0, 0, 0, 0)));
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
@@ -1320,7 +1320,7 @@ namespace SmartCenter.Repository.Migrations
                     b.Property<DateTimeOffset>("ConfirmedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
-                        .HasDefaultValue(new DateTimeOffset(new DateTime(2026, 5, 8, 6, 20, 42, 93, DateTimeKind.Unspecified).AddTicks(7715), new TimeSpan(0, 0, 0, 0, 0)));
+                        .HasDefaultValue(new DateTimeOffset(new DateTime(2026, 5, 8, 6, 51, 50, 351, DateTimeKind.Unspecified).AddTicks(6447), new TimeSpan(0, 0, 0, 0, 0)));
 
                     b.Property<Guid>("ConfirmedByStaffId")
                         .HasColumnType("uuid");
@@ -1754,7 +1754,7 @@ namespace SmartCenter.Repository.Migrations
                     b.HasOne("SmartCenter.Repository.Entity.Lesson", "Lesson")
                         .WithMany("ExamPapers")
                         .HasForeignKey("LessonId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Lecturer");
@@ -1822,7 +1822,7 @@ namespace SmartCenter.Repository.Migrations
                     b.HasOne("SmartCenter.Repository.Entity.Section", "Section")
                         .WithMany("Lessons")
                         .HasForeignKey("SectionId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Course");
