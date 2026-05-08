@@ -320,7 +320,7 @@ namespace SmartCenter.Repository.Migrations
 
                     b.Property<DateTimeOffset>("RequestDate")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid?>("StaffId")
                         .HasColumnType("uuid");
@@ -602,7 +602,7 @@ namespace SmartCenter.Repository.Migrations
 
                     b.Property<DateTimeOffset>("CreatedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp with time zone");
 
 
                     b.Property<Guid>("ExamPaperId")
@@ -1188,7 +1188,7 @@ namespace SmartCenter.Repository.Migrations
 
                     b.Property<DateTimeOffset>("CreatedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
@@ -1314,7 +1314,7 @@ namespace SmartCenter.Repository.Migrations
 
                     b.Property<DateTimeOffset>("ConfirmedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("ConfirmedByStaffId")
                         .HasColumnType("uuid");
