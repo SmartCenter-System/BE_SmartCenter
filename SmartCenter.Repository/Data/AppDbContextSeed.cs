@@ -29,8 +29,73 @@ public static class AppDbContextSeed
         await SeedExamAsync(context);
         await SeedLearningProcessAsync(context);
         await SeedDocumentsAsync(context);
+        await SeedCategoriesAsync(context);
     }
 
+    
+    private static async Task SeedCategoriesAsync(AppDbContext context)
+    {
+        if (await context.Categories.AnyAsync()) return;
+    
+        var now = DateTimeOffset.UtcNow;
+    
+        // ── Categories ────────────────────────────────────────────────────────
+        var categories = new List<Category>
+        {
+            new() { Id = Guid.NewGuid(), Name = "Toán học",    Description = "Các khóa học Toán từ cơ bản đến nâng cao, luyện thi THPT Quốc gia.", IconUrl = "https://cdn.smartcenter.vn/icons/math.svg",    IsActive = true, CreatedAt = now },
+            new() { Id = Guid.NewGuid(), Name = "Vật lý",      Description = "Khóa học Vật lý cấp 3, bao gồm cơ học, điện học, quang học và hạt nhân.", IconUrl = "https://cdn.smartcenter.vn/icons/physics.svg", IsActive = true, CreatedAt = now },
+            new() { Id = Guid.NewGuid(), Name = "Hóa học",     Description = "Khóa học Hóa học từ đại cương đến hữu cơ, luyện thi THPT.", IconUrl = "https://cdn.smartcenter.vn/icons/chemistry.svg", IsActive = true, CreatedAt = now },
+            new() { Id = Guid.NewGuid(), Name = "Tiếng Anh",   Description = "Luyện ngữ pháp, từ vựng, 4 kỹ năng và thi THPT Quốc gia môn Anh.", IconUrl = "https://cdn.smartcenter.vn/icons/english.svg",  IsActive = true, CreatedAt = now },
+            new() { Id = Guid.NewGuid(), Name = "Ngữ văn",     Description = "Phân tích tác phẩm, kỹ năng nghị luận và luyện thi THPT môn Văn.", IconUrl = "https://cdn.smartcenter.vn/icons/literature.svg",IsActive = true, CreatedAt = now },
+            new() { Id = Guid.NewGuid(), Name = "Luyện thi",   Description = "Các khóa ôn thi THPT Quốc gia toàn diện theo cấu trúc đề thi mới nhất.", IconUrl = "https://cdn.smartcenter.vn/icons/exam.svg",      IsActive = true, CreatedAt = now },
+        };
+    
+        await context.Categories.AddRangeAsync(categories);
+    
+        // ── CourseCategories — gán category cho từng course ───────────────────
+        var courses = await context.Courses.ToListAsync();
+    
+        // Map tên course → category
+        var courseCategories = new List<CourseCategory>();
+    
+        foreach (var course in courses)
+        {
+            var matchedCategoryIds = new List<Guid>();
+    
+            // Gán category chính theo môn
+            if (course.CourseName.Contains("Toán"))
+                matchedCategoryIds.Add(categories[0].Id); // Toán học
+    
+            if (course.CourseName.Contains("Vật lý"))
+                matchedCategoryIds.Add(categories[1].Id); // Vật lý
+    
+            if (course.CourseName.Contains("Hóa"))
+                matchedCategoryIds.Add(categories[2].Id); // Hóa học
+    
+            if (course.CourseName.Contains("Tiếng Anh") || course.CourseName.Contains("Anh"))
+                matchedCategoryIds.Add(categories[3].Id); // Tiếng Anh
+    
+            if (course.CourseName.Contains("Ngữ văn") || course.CourseName.Contains("Văn"))
+                matchedCategoryIds.Add(categories[4].Id); // Ngữ văn
+    
+            if (course.CourseName.Contains("Luyện thi") || course.CourseName.Contains("THPT"))
+                matchedCategoryIds.Add(categories[5].Id); // Luyện thi
+    
+            foreach (var catId in matchedCategoryIds.Distinct())
+            {
+                courseCategories.Add(new CourseCategory
+                {
+                    Id         = Guid.NewGuid(),
+                    CourseId   = course.Id,
+                    CategoryId = catId,
+                    CreatedAt  = now,
+                });
+            }
+        }
+    
+        await context.CourseCategories.AddRangeAsync(courseCategories);
+        await context.SaveChangesAsync();
+    }
     // ═══════════════════════════════════════════════════════════════════════
     // 1. USERS
     // ═══════════════════════════════════════════════════════════════════════

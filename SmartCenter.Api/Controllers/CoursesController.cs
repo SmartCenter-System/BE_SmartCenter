@@ -31,7 +31,7 @@ public class CoursesController: ControllerBase
         return Ok(ApiResponseFactory.SuccessResponse(courseDetail, "Get Course Details Success", HttpContext.TraceIdentifier));
     }
     
-    [Authorize(Policy = JwtExtensions.UserPolicy)]
+    // [Authorize(Policy = JwtExtensions.UserPolicy)]
     [HttpGet("{courseId}/previews")]
     public async Task<IActionResult> GetCoursePreview(Guid courseId)
     {
