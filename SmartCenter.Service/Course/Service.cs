@@ -38,7 +38,7 @@ public class Service: IService
         if (!owns)
             throw new UnauthorizedAccessException("Bạn không có quyền thao tác với khóa học này.");
     }
-
+    
     
     public async Task<PagedResult<Response.CourseItemResponse>> GetCoursesAsync(Request.CourseFilterRequest request)
     {
@@ -185,4 +185,72 @@ public class Service: IService
         _dbContext.Courses.Remove(course);
         await _dbContext.SaveChangesAsync();
     }
+
+    public async Task<List<Response.CourseItemResponse>> GetTop6PopularCoursesAsync()
+    {
+        var topCourses = await _dbContext.Courses
+            .Where(c => c.IsDeleted == false && c.IsActive == true)
+            .Select(c => new
+            {
+                Course = c,
+                ValidEnrollmentCount = c.Enrollments.Count(e => e.Status == EnrollmentStatus.Paid || e.Status == EnrollmentStatus.Deposited)
+            })
+            .OrderByDescending(x => x.ValidEnrollmentCount)
+            .Take(6)
+            .Select(x => new Response.CourseItemResponse
+            {
+                Id = x.Course.Id,
+                Title = x.Course.CourseName,
+                Mode = x.Course.CourseType,
+                Price = x.Course.BasePrice,
+                AvailableSlots = (x.Course.MaxStudents - x.ValidEnrollmentCount) > 0 
+                    ? (x.Course.MaxStudents - x.ValidEnrollmentCount) 
+                    : 0
+            })
+            .ToListAsync();
+
+        return topCourses;
+    }
+
+    public async Task<List<Response.RecentReviewResponse>> GetTop4HighRatedRecentReviewsAsync()
+    {
+        var reviews = await _dbContext.ReviewCourses
+            .Where(r => r.IsDeleted == false)
+            .OrderByDescending(r => r.Rating)
+            .ThenByDescending(r => r.CreatedAt)
+            .Take(4)
+            .Select(r => new Response.RecentReviewResponse()
+            {
+                ReviewId = r.Id,
+                Rating = r.Rating,
+                Comment = r.Comment,
+                CreatedAt = r.CreatedAt,
+                CourseId = r.CourseId,
+                CourseName = r.Course.CourseName,
+                ImgUrl =  r.Course.ImgUrl,
+                StudentId = r.StuId,
+                StudentName = r.Student.User.FirstName + " " + r.Student.User.LastName, 
+            })
+            .ToListAsync();
+
+        return reviews;
+    }
+
+
+    // public async Task<Response.DashboardResponse> GetDashboard(Request.DashboardRequest request)
+    // {
+    //     if (!await _dbContext.Courses.AnyAsync(c => c.Id == request.CourseId))
+    //     {
+    //         throw new Exception("Course not found.");
+    //     }
+    //     
+    //     await AuthorizeCourseAsync(request.CourseId);
+    //
+    //     var Enrollments =  await _dbContext.Enrollments.Where(x => x.CourseId == request.CourseId).ToListAsync();
+    //     
+    //     var NumberStudent = Enrollments.Count();
+    //     
+    //     
+    // }
+    
 }

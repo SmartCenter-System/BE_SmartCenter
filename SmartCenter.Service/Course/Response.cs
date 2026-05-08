@@ -40,4 +40,25 @@ public class Response
         public string Title { get; set; } = string.Empty;
         public bool IsPreview { get; set; }
     }
+    
+    public class DashboardResponse
+    {
+        public int NumberStundentsEnrolled { get; set; }
+        public int Max_Enrolled { get; set; }
+    }
+    
+    public class RecentReviewResponse
+    {
+        public Guid ReviewId { get; set; }
+        public int Rating { get; set; }
+        public string Comment { get; set; }
+        public DateTimeOffset CreatedAt { get; set; }
+
+        public Guid CourseId { get; set; }
+        public string CourseName { get; set; }
+        public string ImgUrl { get; set; }
+
+        public Guid StudentId { get; set; }
+        public string StudentName { get; set; } 
+    }
 }

@@ -11,4 +11,9 @@ public interface IService
     Task<Response.CourseDetailResponse> CreateCourseAsync(Request.CreateCourseRequest request);
     Task<Response.CourseDetailResponse> UpdateCourseAsync(Guid courseId, Request.UpdateCourseRequest request);
     Task DeleteCourseAsync(Guid courseId);
+    
+    // public Task<Response.DashboardResponse> GetDashboard(Request.DashboardRequest request);
+    Task<List<Response.CourseItemResponse>> GetTop6PopularCoursesAsync();
+    Task<List<Response.RecentReviewResponse>> GetTop4HighRatedRecentReviewsAsync();
+
 }
