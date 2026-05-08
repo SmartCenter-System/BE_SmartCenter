@@ -17,7 +17,7 @@ public class ExamManagementController : ControllerBase
         _ExamManagementService = examManagementService;
     }
 
-    [HttpPost(template: "StartExam")]
+    [HttpPost(template: "start-exam")]
     [Authorize(Policy = JwtExtensions.StudentPolicy)]
     public async Task<IActionResult> StartExam(Guid ExamId)
     {
@@ -26,7 +26,7 @@ public class ExamManagementController : ControllerBase
         return Ok(ApiResponseFactory.SuccessResponse(null, result, HttpContext.TraceIdentifier));
     }
 
-    [HttpPost(template: "SubmitExam")]
+    [HttpPost(template: "submit-exam")]
     [Authorize(Policy = JwtExtensions.StudentPolicy)]
     public async Task<IActionResult> SubmitExam([FromForm] Request.SubmitExamRequest request)
     {
@@ -37,7 +37,7 @@ public class ExamManagementController : ControllerBase
         ));
     }
 
-    [HttpGet(template: "MyExams")]
+    [HttpGet(template: "my-exams")]
     [Authorize(Policy = JwtExtensions.StudentPolicy)]
     public async Task<IActionResult> GetMyExams()
     {
@@ -49,7 +49,7 @@ public class ExamManagementController : ControllerBase
     }
 
 
-    [HttpGet(template: "{ExamId}/GetExamsByExamId")]
+    [HttpGet(template: "{ExamId}/get-exams-by-exam-id")]
     [Authorize(Policy = JwtExtensions.LecturerPolicy)]
     public async Task<IActionResult> GetExamByExamId(Guid ExamId)
     {
