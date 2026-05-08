@@ -7,6 +7,7 @@ using SmartCenter.Repository.Entity;
 using SmartCenter.Repository.Entity.Enums;
 using SmartCenter.Service.JwtService;
 using SmartCenter.Service.MailService;
+using SmartCenter.Repository.Entity;
 
 namespace SmartCenter.Service.Auth;
 
@@ -150,24 +151,24 @@ public class Service: IService
         if (user.PasswordHash != HashPassword(request.Password))
             throw new UnauthorizedAccessException("Email hoặc mật khẩu không đúng.");
 
-        var claims = new List<Claim>
-        {
-            new Claim("UserId", user.Id.ToString()),
-            new Claim("Email", user.Email),
-            new Claim(ClaimTypes.Role, user.Role.ToString()),
-        };
-        
-        if (user.Student != null)
-        {
-            claims.Add(new Claim("studentId", user.Student.Id.ToString()));
-        }
-
-        if (user.Lecturer != null)
-        {
-            claims.Add(new Claim("lecturerId", user.Lecturer.Id.ToString()));
-        }
+        var claims      = BuildClaims(user);
         
         var accessToken = _jwtService.GenerateAccessToken(claims);
+        var refreshToken = _jwtService.GenerateRefreshToken();
+        
+        var session = new UserSession
+        {
+            Id                = Guid.NewGuid(),
+            UserId            = user.Id,
+            RefreshToken      = refreshToken,
+            DeviceFingerprint = request.DeviceFingerprint ?? "unknown",
+            ExpiresAt         = DateTimeOffset.UtcNow.AddDays(7),
+            IsRevoked         = false,
+            CreatedAt         = DateTimeOffset.UtcNow,
+        };
+        _dbContext.UserSessions.Add(session);
+        await _dbContext.SaveChangesAsync();
+        
         return new Response.AuthResponse
         {
             UserId = user.Id,
@@ -175,6 +176,7 @@ public class Service: IService
             Fullname = $"{user.FirstName} {user.LastName}",
             Role = user.Role.ToString(),
             AccessToken = accessToken,
+            RefreshToken = refreshToken
         };
     }
 
@@ -282,11 +284,86 @@ public class Service: IService
         };
     }
 
+    public async Task<Response.AuthResponse> RefreshToken(string refreshToken)
+    {
+        var session = await _dbContext.UserSessions
+              .Include(s => s.User)
+                .ThenInclude(u => u!.Student)
+              .Include(s => s.User)
+                .ThenInclude(u => u!.Lecturer)
+              .FirstOrDefaultAsync(s => s.RefreshToken == refreshToken && !s.IsRevoked)
+          ?? throw new UnauthorizedAccessException("Refresh token không hợp lệ hoặc đã hết hạn.");
+
+        if (session.ExpiresAt < DateTimeOffset.UtcNow)
+        {
+            session.IsRevoked = true;
+            await _dbContext.SaveChangesAsync();
+            throw new UnauthorizedAccessException("Refresh token đã hết hạn. Vui lòng đăng nhập lại.");
+        }
+
+        var user = session.User;
+
+        session.IsRevoked = true;
+
+        var newRefreshToken = _jwtService.GenerateRefreshToken();
+        var newSession = new UserSession
+        {
+            Id                = Guid.NewGuid(),
+            UserId            = user!.Id,
+            RefreshToken      = newRefreshToken,
+            DeviceFingerprint = session.DeviceFingerprint,
+            ExpiresAt         = DateTimeOffset.UtcNow.AddDays(7),
+            IsRevoked         = false,
+            CreatedAt         = DateTimeOffset.UtcNow,
+        };
+        _dbContext.UserSessions.Add(newSession);
+        await _dbContext.SaveChangesAsync();
+
+        var claims      = BuildClaims(user);
+        var accessToken = _jwtService.GenerateAccessToken(claims);
+
+        return new Response.AuthResponse
+        {
+            UserId       = user.Id,
+            Email        = user.Email,
+            Fullname     = $"{user.FirstName} {user.LastName}",
+            Role         = user.Role.ToString(),
+            AccessToken  = accessToken,
+            RefreshToken = newRefreshToken,
+        };
+    }
+
+    public async Task Logout(string refreshToken)
+    {
+        var session = await _dbContext.UserSessions
+            .FirstOrDefaultAsync(s => s.RefreshToken == refreshToken && !s.IsRevoked);
+
+        if (session == null) return; 
+
+        session.IsRevoked = true;
+        await _dbContext.SaveChangesAsync();
+    }
+
     private static string HashPassword(string password)
     {
         var bytes = SHA256.HashData(Encoding.UTF8.GetBytes(password));
         return Convert.ToBase64String(bytes);
     }
+    
+    private static List<Claim> BuildClaims(User user)
+    {
+        var claims = new List<Claim>
+        {
+            new("UserId",        user.Id.ToString()),
+            new("Email",         user.Email),
+            new(ClaimTypes.Role, user.Role.ToString()),
+        };
+        if (user.Student  != null) claims.Add(new("studentId",  user.Student.Id.ToString()));
+        if (user.Lecturer != null) claims.Add(new("lecturerId", user.Lecturer.Id.ToString()));
+        return claims;
+    }
+    
+    
     private static string BuildVerificationEmailBody(string fullName, int verifiedCode) => $"""
         <!DOCTYPE html>
         <html lang="vi">

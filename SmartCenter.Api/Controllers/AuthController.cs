@@ -59,4 +59,20 @@ public class AuthController: ControllerBase
         var result = await _identityService.RegisterLecturer(request);
         return Ok(ApiResponseFactory.SuccessResponse(result, "Tạo tài khoản giảng viên thành công!", HttpContext.TraceIdentifier));
     }
+    
+    [HttpPost("refresh")]
+    [AllowAnonymous]
+    public async Task<IActionResult> Refresh([FromBody] Request.RefreshTokenRequest request)
+    {
+        var result = await _identityService.RefreshToken(request.RefreshToken);
+        return Ok(ApiResponseFactory.SuccessResponse(result, "Token refreshed", HttpContext.TraceIdentifier));
+    }
+
+    [HttpPost("logout")]
+    [AllowAnonymous]
+    public async Task<IActionResult> Logout([FromBody] Request.LogoutRequest request)
+    {
+        await _identityService.Logout(request.RefreshToken);
+        return Ok(ApiResponseFactory.SuccessResponse(null, "Đăng xuất thành công", HttpContext.TraceIdentifier));
+    }
 }
