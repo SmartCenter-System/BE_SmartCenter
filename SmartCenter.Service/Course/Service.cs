@@ -66,6 +66,7 @@ public class Service: IService
             .Take(request.PageSize)
             .Select(x => new Response.CourseItemResponse
             {
+                CateId = x.CourseCategories.Select(c => c.CategoryId).FirstOrDefault(),
                 Id = x.Id,
                 Title = x.CourseName,
                 Price = x.BasePrice,
