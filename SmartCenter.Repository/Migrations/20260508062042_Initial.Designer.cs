@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SmartCenter.Repository.Data;
@@ -11,9 +12,11 @@ using SmartCenter.Repository.Data;
 namespace SmartCenter.Repository.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260508062042_Initial")]
+    partial class Initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -516,7 +519,7 @@ namespace SmartCenter.Repository.Migrations
 
                     b.HasIndex("LessonId");
 
-                    b.ToTable("Documents");
+                    b.ToTable("Document");
                 });
 
             modelBuilder.Entity("SmartCenter.Repository.Entity.Enrollment", b =>
@@ -1751,7 +1754,7 @@ namespace SmartCenter.Repository.Migrations
                     b.HasOne("SmartCenter.Repository.Entity.Lesson", "Lesson")
                         .WithMany("ExamPapers")
                         .HasForeignKey("LessonId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Lecturer");
@@ -1819,7 +1822,7 @@ namespace SmartCenter.Repository.Migrations
                     b.HasOne("SmartCenter.Repository.Entity.Section", "Section")
                         .WithMany("Lessons")
                         .HasForeignKey("SectionId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Course");
