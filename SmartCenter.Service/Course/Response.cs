@@ -22,7 +22,7 @@ public class Response
         public decimal Price { get; set; }
         public CourseType Mode { get; set; }
         public int AvailableSlots { get; set; }
-
+        public string ImgUrl { get; set; } = string.Empty;
         public List<SectionResponse> Sections { get; set; } = new();
     }
     
