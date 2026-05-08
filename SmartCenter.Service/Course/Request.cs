@@ -1,3 +1,4 @@
+using MimeKit.Encodings;
 using SmartCenter.Repository.Entity.Enums;
 
 namespace SmartCenter.Service.Course;
@@ -41,4 +42,17 @@ public class Request
         public int? MaxStudents { get; set; }
         public bool? IsActive { get; set; }
     }
+    
+    // public class DashboardRequest
+    // {
+    //     public Guid CourseId { get; set; }
+    //     public List<StudentProcess> ListStudentProcesses { get; set; }
+    // }
+    
+    // public class StudentProcess
+    // {
+    //     public Guid StudentId { get; set; }
+    //     public string StudentName { get; set; }
+    //     
+    // }
 }

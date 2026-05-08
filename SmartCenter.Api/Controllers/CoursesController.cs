@@ -62,4 +62,18 @@ public class CoursesController: ControllerBase
         await  _courseSevice.DeleteCourseAsync(courseId);
         return Ok(ApiResponseFactory.SuccessResponse(null, "Delete Course Success", HttpContext.TraceIdentifier));
     }
+
+    [HttpGet("Top6MostPopularCourses")]
+    public async Task<IActionResult> GetTop6PopularCoursesAsync()
+    {
+        var result = await _courseSevice.GetTop6PopularCoursesAsync();
+        return Ok(ApiResponseFactory.SuccessResponse(result, "Get Top6 Popular Courses", HttpContext.TraceIdentifier));
+    }
+
+    [HttpGet("GetTop4HighRatedRecentReviewsAsync")]
+    public async Task<IActionResult> GetTop4HighRatedRecentReviewsAsync()
+    {
+        var result = await _courseSevice.GetTop4HighRatedRecentReviewsAsync();
+        return Ok(ApiResponseFactory.SuccessResponse(result, "Get Top4 High Rated Recent Reviews", HttpContext.TraceIdentifier));
+    }
 }
