@@ -67,6 +67,7 @@ public class Service: IService
             .Select(x => new Response.CourseItemResponse
             {
                 CateId = x.CourseCategories.Select(c => c.CategoryId).FirstOrDefault(),
+                CateName = x.CourseCategories.Select(c => c.Category.Name).FirstOrDefault(),
                 Id = x.Id,
                 Title = x.CourseName,
                 Price = x.BasePrice,
