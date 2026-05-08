@@ -40,17 +40,13 @@ public class Service: IService
         return MapToResponse(document);
     }
     
-    private Guid GetLecturerId()
-    {
-        var claim = _httpContextAccessor.HttpContext?.User
-                        .FindFirst("lecturerId")?.Value
-                    ?? throw new UnauthorizedAccessException("Không tìm thấy thông tin giảng viên.");
-        return Guid.Parse(claim);
-    }
+    
     
     private async Task AuthorizeLessonAsync(Guid lessonId)
     {
-        var lecturerId = GetLecturerId();
+        var lecturerId = _httpContextAccessor.HttpContext!.User.Claims.FirstOrDefault(x => x.Type == "lecturerId")?.Value;
+        var lecturerIdGuid = Guid.Parse(lecturerId!);
+        
         var courseLecId = await _dbContext.Lessons
             .Where(l => l.Id == lessonId)
             .Select(l => (Guid?)l.Section.Course.LecId)
@@ -58,7 +54,7 @@ public class Service: IService
         if (courseLecId == null)
             throw new KeyNotFoundException($"Không tìm thấy bài học có ID {lessonId}.");
         
-        if (courseLecId != lecturerId)
+        if (courseLecId != lecturerIdGuid)
             throw new UnauthorizedAccessException("Bạn không có quyền thao tác với bài học này.");
     }
     
