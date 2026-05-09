@@ -358,7 +358,7 @@ namespace SmartCenter.Repository.Migrations
                     Email = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
                     PhoneNumber = table.Column<string>(type: "character varying(15)", maxLength: 15, nullable: false),
                     Message = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
-                    RequestDate = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false, defaultValue: new DateTimeOffset(new DateTime(2026, 5, 8, 6, 51, 50, 338, DateTimeKind.Unspecified).AddTicks(3244), new TimeSpan(0, 0, 0, 0, 0))),
+                    RequestDate = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false, defaultValue: new DateTimeOffset(new DateTime(2026, 5, 8, 8, 0, 47, 493, DateTimeKind.Unspecified).AddTicks(5405), new TimeSpan(0, 0, 0, 0, 0))),
                     Status = table.Column<int>(type: "integer", nullable: false, defaultValue: 1),
                     Notes = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
                     CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
@@ -419,7 +419,7 @@ namespace SmartCenter.Repository.Migrations
                     StuId = table.Column<Guid>(type: "uuid", nullable: false),
                     Rating = table.Column<int>(type: "integer", nullable: false, defaultValue: 0),
                     Comment = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
-                    CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false, defaultValue: new DateTimeOffset(new DateTime(2026, 5, 8, 6, 51, 50, 347, DateTimeKind.Unspecified).AddTicks(8617), new TimeSpan(0, 0, 0, 0, 0))),
+                    CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false, defaultValue: new DateTimeOffset(new DateTime(2026, 5, 8, 8, 0, 47, 513, DateTimeKind.Unspecified).AddTicks(2863), new TimeSpan(0, 0, 0, 0, 0))),
                     UpdatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
                     StudentId = table.Column<Guid>(type: "uuid", nullable: true),
                     IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
@@ -561,7 +561,7 @@ namespace SmartCenter.Repository.Migrations
                     Status = table.Column<string>(type: "text", nullable: false),
                     ProviderTransactionCode = table.Column<string>(type: "text", nullable: false),
                     ConfirmedByStaffId = table.Column<Guid>(type: "uuid", nullable: false),
-                    ConfirmedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false, defaultValue: new DateTimeOffset(new DateTime(2026, 5, 8, 6, 51, 50, 351, DateTimeKind.Unspecified).AddTicks(6447), new TimeSpan(0, 0, 0, 0, 0))),
+                    ConfirmedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false, defaultValue: new DateTimeOffset(new DateTime(2026, 5, 8, 8, 0, 47, 519, DateTimeKind.Unspecified).AddTicks(2529), new TimeSpan(0, 0, 0, 0, 0))),
                     CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
                     IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
@@ -843,7 +843,7 @@ namespace SmartCenter.Repository.Migrations
                     Content = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
                     NumberOfLikes = table.Column<int>(type: "integer", nullable: false, defaultValue: 0),
                     NumberOfDislikes = table.Column<int>(type: "integer", nullable: false, defaultValue: 0),
-                    CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false, defaultValue: new DateTimeOffset(new DateTime(2026, 5, 8, 6, 51, 50, 345, DateTimeKind.Unspecified).AddTicks(7952), new TimeSpan(0, 0, 0, 0, 0))),
+                    CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false, defaultValue: new DateTimeOffset(new DateTime(2026, 5, 8, 8, 0, 47, 509, DateTimeKind.Unspecified).AddTicks(8270), new TimeSpan(0, 0, 0, 0, 0))),
                     UpdatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
                     IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
                 },

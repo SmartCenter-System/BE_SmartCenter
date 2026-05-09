@@ -6,6 +6,8 @@ public class Response
 {
     public class CourseItemResponse
     {
+        public Guid CateId { get; set; }
+        public string? CateName { get; set; }
         public Guid Id { get; set; }
         public string Title { get; set; } = string.Empty;
         public CourseType Mode  { get; set; }
@@ -22,7 +24,7 @@ public class Response
         public decimal Price { get; set; }
         public CourseType Mode { get; set; }
         public int AvailableSlots { get; set; }
-
+        public string ImgUrl { get; set; } = string.Empty;
         public List<SectionResponse> Sections { get; set; } = new();
     }
     
@@ -42,11 +44,11 @@ public class Response
         public bool IsPreview { get; set; }
     }
     
-    public class DashboardResponse
-    {
-        public int NumberStundentsEnrolled { get; set; }
-        public int Max_Enrolled { get; set; }
-    }
+    // public class DashboardResponse
+    // {
+    //     public int NumberStundentsEnrolled { get; set; }
+    //     public int Max_Enrolled { get; set; }
+    // }
     
     public class RecentReviewResponse
     {
@@ -61,5 +63,14 @@ public class Response
 
         public Guid StudentId { get; set; }
         public string StudentName { get; set; } 
+    }
+    
+    public class DashboardResponse
+    {
+        public int TotalWatchTimeMinutes { get; set; } 
+        public int CompletedLessons { get; set; }     
+        public int InProgressLessons { get; set; }     
+        public DateTimeOffset WeekStart { get; set; }  
+        public DateTimeOffset WeekEnd { get; set; }    
     }
 }

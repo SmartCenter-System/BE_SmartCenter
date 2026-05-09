@@ -319,8 +319,9 @@ namespace SmartCenter.Repository.Migrations
                         .HasColumnType("character varying(15)");
 
                     b.Property<DateTimeOffset>("RequestDate")
-                        .ValueGeneratedOnAdd();
-
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValue(new DateTimeOffset(new DateTime(2026, 5, 8, 8, 0, 47, 493, DateTimeKind.Unspecified).AddTicks(5405), new TimeSpan(0, 0, 0, 0, 0)));
 
                     b.Property<Guid?>("StaffId")
                         .HasColumnType("uuid");
@@ -601,8 +602,9 @@ namespace SmartCenter.Repository.Migrations
                         .HasColumnType("character varying(500)");
 
                     b.Property<DateTimeOffset>("CreatedAt")
-                        .ValueGeneratedOnAdd();
-
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValue(new DateTimeOffset(new DateTime(2026, 5, 8, 8, 0, 47, 509, DateTimeKind.Unspecified).AddTicks(8270), new TimeSpan(0, 0, 0, 0, 0)));
 
                     b.Property<Guid>("ExamPaperId")
                         .HasColumnType("uuid");
@@ -1186,8 +1188,9 @@ namespace SmartCenter.Repository.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<DateTimeOffset>("CreatedAt")
-                        .ValueGeneratedOnAdd();
-
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValue(new DateTimeOffset(new DateTime(2026, 5, 8, 8, 0, 47, 513, DateTimeKind.Unspecified).AddTicks(2863), new TimeSpan(0, 0, 0, 0, 0)));
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
@@ -1312,7 +1315,9 @@ namespace SmartCenter.Repository.Migrations
                         .HasColumnType("numeric");
 
                     b.Property<DateTimeOffset>("ConfirmedAt")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValue(new DateTimeOffset(new DateTime(2026, 5, 8, 8, 0, 47, 519, DateTimeKind.Unspecified).AddTicks(2529), new TimeSpan(0, 0, 0, 0, 0)));
 
                     b.Property<Guid>("ConfirmedByStaffId")
                         .HasColumnType("uuid");
