@@ -15,5 +15,6 @@ public interface IService
     // public Task<Response.DashboardResponse> GetDashboard(Request.DashboardRequest request);
     Task<List<Response.CourseItemResponse>> GetTop6PopularCoursesAsync();
     Task<List<Response.RecentReviewResponse>> GetTop4HighRatedRecentReviewsAsync();
+    Task<Response.DashboardResponse> GetDashboardAsync();
 
 }
