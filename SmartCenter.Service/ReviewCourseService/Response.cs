@@ -10,4 +10,15 @@ public class Response
         public string? Comment { get; set; }
         public DateTimeOffset CreatedAt { get; set; }
     }
+    
+    public class ReviewDetailResponse
+    {
+        public Guid ReviewId { get; set; }
+        public int Rating { get; set; }
+        public string? Comment { get; set; }
+        public DateTimeOffset CreatedAt { get; set; }
+ 
+        public Guid StudentId { get; set; }
+        public string StudentName { get; set; }
+    }
 }

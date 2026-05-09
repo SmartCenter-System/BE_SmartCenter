@@ -23,4 +23,12 @@ public class ReviewCourseController:ControllerBase
         return Ok(ApiResponseFactory.SuccessResponse(await _reviewService.CreateReviewCourseAsync(request),
             "Đánh giá khóa học thành oông", HttpContext.TraceIdentifier));
     }
+    
+    [HttpGet("get-review-course")]
+
+    public async Task<IActionResult> GetReviewsAsync(Guid courseId, Guid? studentId)
+    {
+        return Ok(ApiResponseFactory.SuccessResponse(await _reviewService.GetReviewCourseAsync(courseId, studentId),
+            "Lấy Review nè", HttpContext.TraceIdentifier));
+    }
 }
