@@ -17,7 +17,7 @@ public class UserController : ControllerBase
         _UserService = userService;
     }
 
-    [HttpGet(template: "get-profile")]
+    [HttpGet("profile")]
     [Authorize(Policy = JwtExtensions.LectureOrStudentPolicy)]
     public async Task<IActionResult> GetProfile()
     {
@@ -25,7 +25,7 @@ public class UserController : ControllerBase
             HttpContext.TraceIdentifier));
     }
 
-    [HttpPost(template: "update-profile")]
+    [HttpPost("update-profile")]
     [Authorize(Policy = JwtExtensions.LectureOrStudentPolicy)]
     public async Task<IActionResult> UpdateProfile(Request.UpdateProfileRequest request)
     {
