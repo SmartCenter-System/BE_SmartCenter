@@ -106,4 +106,18 @@ public class Service : IService
 
         await _dbContext.SaveChangesAsync();
     }
+    
+    public async Task UnLockUserAsync(Guid userId)
+    {
+        var user = await _dbContext.Users.FindAsync(userId)
+                   ?? throw new KeyNotFoundException("Không tìm thấy người dùng.");
+
+        if (user.Status == UserStatus.Inactive)
+            throw new InvalidOperationException("Tài khoản này đã mở rồi.");
+
+        user.Status    = UserStatus.Active;
+        user.UpdatedAt = DateTimeOffset.UtcNow;
+
+        await _dbContext.SaveChangesAsync();
+    }
 }
