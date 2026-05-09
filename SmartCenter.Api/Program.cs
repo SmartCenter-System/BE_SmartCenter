@@ -16,7 +16,6 @@ using CartService = SmartCenter.Service.Cart;
 using OrderService = SmartCenter.Service.Order;
 using ExamManagementService = SmartCenter.Service.ExamManagementService;
 using GradeService = SmartCenter.Service.GradeService;
-
 using ExamPaperService = SmartCenter.Service.ExamPaper;
 using SectionService = SmartCenter.Service.Section;
 using LessonService = SmartCenter.Service.Lesson;
@@ -25,11 +24,11 @@ using EnrollmentService = SmartCenter.Service.EnrollmentService;
 using ConsultationService = SmartCenter.Service.ConsultationService;
 using DocumentService = SmartCenter.Service.Document;
 using ComboService = SmartCenter.Service.Combo;
-
 using UserService = SmartCenter.Service.UserService;
-
 using CommentService = SmartCenter.Service.Comment;
 using ProgressService = SmartCenter.Service.Progress;
+using ReviewCourseService = SmartCenter.Service.ReviewCourseService;
+
 
 
 
@@ -79,7 +78,7 @@ builder.Services.AddScoped<UserService.IService, UserService.Service>();
 
 builder.Services.AddScoped<CommentService.IService, CommentService.Service>();
 builder.Services.AddScoped<ProgressService.IService, ProgressService.Service>();
-
+builder.Services.AddScoped<ReviewCourseService.IService, ReviewCourseService.Service>();
 
 // ─── Quartz ───────────────────────────────────────────────────────────────────
 builder.Services.AddQuartz();
