@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SmartCenter.Api.extensions;
 using SmartCenter.Service.GradeService;
+using SmartCenter.Service.Model;
 
 namespace SmartCenter.Api.Controllers;
 
@@ -20,29 +21,22 @@ public class GradeExamController:ControllerBase
     [Authorize(Policy = JwtExtensions.LecturerPolicy)]
     public async Task<IActionResult> GradeExam([FromBody] Request.GradeExamRequest request)
     {
-        var result = await _gradeService.GradeExam(request);
-        return Ok(result);
+        return Ok(ApiResponseFactory.SuccessResponse(
+            data: await _gradeService.GradeExam(request),
+            message: "Hoàn tất yêu cầu chấm điểm bài thi.",
+            traceId: HttpContext.TraceIdentifier
+        ));
     }
 
-    [HttpGet(template: "MyExamDetails")]
+    [HttpGet(template: "my-exam-details")]
     [Authorize(Policy = JwtExtensions.StudentPolicy)]
     public async Task<IActionResult> GetMyExamDetails([FromQuery] Request.MyDetailsRequest request)
     {
-        try
-        {
-            var response = await _gradeService.MyExamDetails(request);
-            return Ok(response); // 200 OK
-        }
-        catch (UnauthorizedAccessException ex)
-        {
-            // Bắt chính xác lỗi quyền và trả về HTTP 403 Forbidden
-            return StatusCode(403, new { Message = ex.Message }); 
-        }
-        catch (Exception ex)
-        {
-            // Bắt các lỗi chung (ví dụ: không tìm thấy bài thi) trả về HTTP 400 Bad Request
-            return BadRequest(new { Message = ex.Message }); 
-        }
+        return Ok(ApiResponseFactory.SuccessResponse(
+            data: await _gradeService.MyExamDetails(request),
+            message: "Lấy chi tiết kết quả bài thi thành công.",
+            traceId: HttpContext.TraceIdentifier
+        ));
     }
         
 }

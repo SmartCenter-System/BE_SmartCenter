@@ -2,12 +2,13 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SmartCenter.Api.extensions;
 using SmartCenter.Service.ExamManagementService;
+using SmartCenter.Service.Model;
 
 namespace SmartCenter.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ExamManagementController:ControllerBase
+public class ExamManagementController : ControllerBase
 {
     private readonly IService _ExamManagementService;
 
@@ -16,36 +17,45 @@ public class ExamManagementController:ControllerBase
         _ExamManagementService = examManagementService;
     }
 
-    [HttpPost(template:"Start Exam")]
+    [HttpPost(template: "start-exam")]
     [Authorize(Policy = JwtExtensions.StudentPolicy)]
     public async Task<IActionResult> StartExam(Guid ExamId)
     {
         var result = await _ExamManagementService.StartingExam(ExamId);
-        return Ok(result);
+
+        return Ok(ApiResponseFactory.SuccessResponse(null, result, HttpContext.TraceIdentifier));
     }
 
-    [HttpPost(template: "Submit Exam")]
+    [HttpPost(template: "submit-exam")]
     [Authorize(Policy = JwtExtensions.StudentPolicy)]
-    public async Task<IActionResult> SubmitExam([FromForm]Request.SubmitExamRequest request)
+    public async Task<IActionResult> SubmitExam([FromForm] Request.SubmitExamRequest request)
     {
-        var result = await _ExamManagementService.SubmittedExam(request);
-        return Ok(result);
+        return Ok(ApiResponseFactory.SuccessResponse(
+            data: await _ExamManagementService.SubmittedExam(request),
+            message: "Nộp bài thi thành công.",
+            traceId: HttpContext.TraceIdentifier
+        ));
     }
 
-    [HttpGet(template: "My Exams")]
+    [HttpGet(template: "my-exams")]
     [Authorize(Policy = JwtExtensions.StudentPolicy)]
     public async Task<IActionResult> GetMyExams()
     {
-        var result = await _ExamManagementService.GetMyExams();
-        return Ok(result);
+        return Ok(ApiResponseFactory.SuccessResponse(
+            data: await _ExamManagementService.GetMyExams(),
+            message: "Lấy danh sách bài thi thành công.",
+            traceId: HttpContext.TraceIdentifier
+        ));
     }
 
-    [HttpGet(template: "{ExamId}/Get Exams By ExamId")]
+
+    [HttpGet(template: "{ExamId}/get-exams-by-exam-id")]
     [Authorize(Policy = JwtExtensions.LecturerPolicy)]
     public async Task<IActionResult> GetExamByExamId(Guid ExamId)
     {
-        var result = await _ExamManagementService.GetExamByExamsId(ExamId);
-        return Ok(result);
+        return Ok(ApiResponseFactory.SuccessResponse(
+            data: await _ExamManagementService.GetExamByExamsId(ExamId),
+            message: "Lấy thông tin bài thi thành công."
+        ));
     }
-    
 }

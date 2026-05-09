@@ -139,7 +139,8 @@ public class Service: IService
                 {
                     CourseId = i.CourseId,
                     CourseTitle = i.ItemName,
-                    UnitPrice = i.UnitPrice
+                    UnitPrice = i.UnitPrice,
+                    Quantity = i.Quantity
                 }).ToList()
             })
             .FirstOrDefaultAsync();

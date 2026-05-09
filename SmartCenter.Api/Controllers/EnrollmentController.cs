@@ -2,13 +2,14 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SmartCenter.Repository.Entity;
 using SmartCenter.Service.EnrollmentService;
+using SmartCenter.Service.Model;
 
 namespace SmartCenter.Controllers;
 
 [Authorize]
 [ApiController]
 [Route("[controller]")]
-public class EnrollmentController:ControllerBase
+public class EnrollmentController : ControllerBase
 {
     private readonly IService _enrollmentService;
 
@@ -17,17 +18,23 @@ public class EnrollmentController:ControllerBase
         _enrollmentService = enrollmentService;
     }
 
-    [HttpGet(template: "MyEnrollments")]
+    [HttpGet(template: "my-enrollments")]
     public async Task<IActionResult> GetMyEnrollments()
     {
-        var result = await _enrollmentService.GetMyEnrollment();
-        return Ok(result);
+        return Ok(ApiResponseFactory.SuccessResponse(
+            data: await _enrollmentService.GetMyEnrollment(),
+            message: "Lấy danh sách khóa học đã đăng ký thành công.",
+            traceId: HttpContext.TraceIdentifier
+        ));
     }
 
-    [HttpPost(template: "")]
+    [HttpPost(template: "create-enrollment")]
     public async Task<IActionResult> CreateEnrollment([FromBody] Request.EnrollmentRequest request)
     {
-        var result = await _enrollmentService.CreateEnrollment(request);
-        return Ok(result);
+        return Ok(ApiResponseFactory.SuccessResponse(
+            data: await _enrollmentService.CreateEnrollment(request),
+            message: "Đăng ký khóa học thành công.",
+            HttpContext.TraceIdentifier
+        ));
     }
 }
