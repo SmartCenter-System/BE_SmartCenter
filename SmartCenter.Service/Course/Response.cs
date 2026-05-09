@@ -13,6 +13,7 @@ public class Response
         public CourseType Mode  { get; set; }
         public decimal Price { get; set; }
         public int AvailableSlots { get; set; }
+        public string? ImgUrl { get; set; }
     }
     
     public class CourseDetailResponse
@@ -43,11 +44,11 @@ public class Response
         public bool IsPreview { get; set; }
     }
     
-    public class DashboardResponse
-    {
-        public int NumberStundentsEnrolled { get; set; }
-        public int Max_Enrolled { get; set; }
-    }
+    // public class DashboardResponse
+    // {
+    //     public int NumberStundentsEnrolled { get; set; }
+    //     public int Max_Enrolled { get; set; }
+    // }
     
     public class RecentReviewResponse
     {
@@ -62,5 +63,14 @@ public class Response
 
         public Guid StudentId { get; set; }
         public string StudentName { get; set; } 
+    }
+    
+    public class DashboardResponse
+    {
+        public int TotalWatchTimeMinutes { get; set; } 
+        public int CompletedLessons { get; set; }     
+        public int InProgressLessons { get; set; }     
+        public DateTimeOffset WeekStart { get; set; }  
+        public DateTimeOffset WeekEnd { get; set; }    
     }
 }
