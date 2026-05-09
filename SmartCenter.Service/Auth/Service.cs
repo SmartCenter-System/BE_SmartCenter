@@ -92,7 +92,7 @@ public class Service: IService
     public async Task<Response.AuthResponse> VerifyEmail(int code)
     {
         var user = await _dbContext.Users
-                       .Include(u => u.Student)
+                       .Include(u => u.Student).Include(user => user.Lecturer)
                        .FirstOrDefaultAsync(u => u.VerifiedCode == code && !u.Verified)
                    ?? throw new KeyNotFoundException("Mã xác thực không hợp lệ hoặc đã được sử dụng.");
 
@@ -122,6 +122,7 @@ public class Service: IService
 
         if (user.Student != null)
             claims.Add(new Claim("studentId", user.Student.Id.ToString()));
+        if (user.Lecturer != null) claims.Add(new("lecturerId", user.Lecturer.Id.ToString()));
 
         var accessToken = _jwtService.GenerateAccessToken(claims);
 
@@ -151,7 +152,7 @@ public class Service: IService
         if (user.PasswordHash != HashPassword(request.Password))
             throw new UnauthorizedAccessException("Email hoặc mật khẩu không đúng.");
 
-        var claims      = BuildClaims(user);
+        var claims   = BuildClaims(user);
         
         var accessToken = _jwtService.GenerateAccessToken(claims);
         var refreshToken = _jwtService.GenerateRefreshToken();

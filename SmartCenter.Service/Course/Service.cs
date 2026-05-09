@@ -18,6 +18,17 @@ public class Service: IService
         _httpContextAccessor = httpContextAccessor;
     }
     
+    private Guid GetStudentId()
+    {
+        var claim = _httpContextAccessor.HttpContext?.User
+            .FindFirst("studentId")?.Value;
+
+        if (claim == null)
+            throw new UnauthorizedAccessException("Not found information of student");
+
+        return Guid.Parse(claim);
+    }
+    
     private Guid GetLecturerId()
     {
         var claim = _httpContextAccessor.HttpContext?.User
@@ -207,6 +218,7 @@ public class Service: IService
                 Title = x.Course.CourseName,
                 Mode = x.Course.CourseType,
                 Price = x.Course.BasePrice,
+                ImgUrl =  x.Course.ImgUrl,
                 AvailableSlots = (x.Course.MaxStudents - x.ValidEnrollmentCount) > 0 
                     ? (x.Course.MaxStudents - x.ValidEnrollmentCount) 
                     : 0
@@ -241,6 +253,44 @@ public class Service: IService
     }
 
 
+    public async Task<Response.DashboardResponse> GetDashboardAsync()
+    {
+        var studentId = GetStudentId(); 
+        var now       = DateTimeOffset.UtcNow;
+    
+        
+        var dayOfWeek  = (int)now.DayOfWeek;
+        var startOfWeek = now.AddDays(-(dayOfWeek == 0 ? 6 : dayOfWeek - 1)).Date;
+        var endOfWeek   = startOfWeek.AddDays(7);
+    
+        
+        var weeklyProcesses = await _dbContext.LearningProcesses
+            .Where(lp => lp.StuId         == studentId
+                      && lp.LastWatchedAt >= startOfWeek
+                      && lp.LastWatchedAt <  endOfWeek)
+            .Include(lp => lp.Lesson)
+            .ToListAsync();
+    
+        
+        var totalWatchTimeMinutes = weeklyProcesses
+            .Where(lp => lp.IsCompleted)
+            .Sum(lp => lp.WatchTime) / 60;
+    
+        
+        var completedCount = weeklyProcesses.Count(lp => lp.IsCompleted);
+    
+        
+        var inProgressCount = weeklyProcesses.Count(lp => !lp.IsCompleted);
+    
+        return new Response.DashboardResponse
+        {
+            TotalWatchTimeMinutes = totalWatchTimeMinutes,
+            CompletedLessons      = completedCount,
+            InProgressLessons     = inProgressCount,
+            WeekStart             = DateTimeOffset.Parse(startOfWeek.ToString()),
+            WeekEnd               = DateTimeOffset.Parse(endOfWeek.AddDays(-1).ToString()),
+        };
+    }
     // public async Task<Response.DashboardResponse> GetDashboard(Request.DashboardRequest request)
     // {
     //     if (!await _dbContext.Courses.AnyAsync(c => c.Id == request.CourseId))

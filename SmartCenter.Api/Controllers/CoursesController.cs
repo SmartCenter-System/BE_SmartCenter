@@ -76,4 +76,12 @@ public class CoursesController: ControllerBase
         var result = await _courseSevice.GetTop4HighRatedRecentReviewsAsync();
         return Ok(ApiResponseFactory.SuccessResponse(result, "Get Top4 High Rated Recent Reviews", HttpContext.TraceIdentifier));
     }
+    
+    [HttpGet("dashboard")]
+    [Authorize(Policy = JwtExtensions.StudentPolicy)]
+    public async Task<IActionResult> GetDashboard()
+    {
+        var result = await _courseSevice.GetDashboardAsync();
+        return Ok(ApiResponseFactory.SuccessResponse(result, "Get dashboard success", HttpContext.TraceIdentifier));
+    }
 }

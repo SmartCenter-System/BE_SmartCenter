@@ -46,4 +46,39 @@ public class Service:IService
         var fileExtension = Path.GetExtension(file.FileName).ToLowerInvariant();
         return allowedExtensions.Contains(fileExtension);
     }
+    
+    // UploadFileAsync: upload PDF, DOCX... lên Cloudinary dùng RawUploadParams
+    public async Task<(string FileUrl, string PublicId)> UploadFileAsync(IFormFile file)
+    {
+        await using var stream = file.OpenReadStream();
+ 
+        var uploadParams = new RawUploadParams
+        {
+            File           = new FileDescription(file.FileName, stream),
+            Folder         = "smartcenter/documents",
+            UseFilename    = true,
+            UniqueFilename = true,
+        };
+ 
+        var uploadResult = await _cloudinary.UploadAsync(uploadParams);
+ 
+        if (uploadResult.Error != null)
+            throw new Exception($"Cloudinary upload failed: {uploadResult.Error.Message}");
+ 
+        return (uploadResult.SecureUrl.ToString(), uploadResult.PublicId);
+    }
+ 
+    // DeleteFileAsync: xóa file khỏi Cloudinary theo publicId
+    public async Task DeleteFileAsync(string publicId)
+    {
+        var deleteParams = new DeletionParams(publicId)
+        {
+            ResourceType = ResourceType.Raw
+        };
+ 
+        var result = await _cloudinary.DestroyAsync(deleteParams);
+ 
+        if (result.Error != null)
+            throw new Exception($"Cloudinary delete failed: {result.Error.Message}");
+    }
 }
