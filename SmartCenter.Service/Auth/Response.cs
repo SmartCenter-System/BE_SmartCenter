@@ -10,6 +10,8 @@ public class Response
         public string Role { get; set; } = string.Empty;
         public string AccessToken { get; set; } = string.Empty;
         public string  RefreshToken { get; set; } = string.Empty;
+        
+        public string Phone { get; set; } = string.Empty;
     }
     
     public class LecturerRegisterResponse

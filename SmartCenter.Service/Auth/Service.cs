@@ -177,7 +177,8 @@ public class Service: IService
             Fullname = $"{user.FirstName} {user.LastName}",
             Role = user.Role.ToString(),
             AccessToken = accessToken,
-            RefreshToken = refreshToken
+            RefreshToken = refreshToken,
+            Phone = user.Phone!
         };
     }
 
