@@ -11,6 +11,7 @@ public class Response
         public CourseType Mode  { get; set; }
         public decimal Price { get; set; }
         public int AvailableSlots { get; set; }
+        public string? ImgUrl { get; set; }
     }
     
     public class CourseDetailResponse

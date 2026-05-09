@@ -319,7 +319,7 @@ namespace SmartCenter.Repository.Migrations
                         .HasColumnType("character varying(15)");
 
                     b.Property<DateTimeOffset>("RequestDate")
-                        .ValueGeneratedOnAdd()
+                        .ValueGeneratedOnAdd();
 
 
                     b.Property<Guid?>("StaffId")
@@ -601,7 +601,7 @@ namespace SmartCenter.Repository.Migrations
                         .HasColumnType("character varying(500)");
 
                     b.Property<DateTimeOffset>("CreatedAt")
-                        .ValueGeneratedOnAdd()
+                        .ValueGeneratedOnAdd();
 
 
                     b.Property<Guid>("ExamPaperId")
@@ -1186,7 +1186,7 @@ namespace SmartCenter.Repository.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<DateTimeOffset>("CreatedAt")
-                        .ValueGeneratedOnAdd()
+                        .ValueGeneratedOnAdd();
 
 
                     b.Property<bool>("IsDeleted")
@@ -1312,7 +1312,7 @@ namespace SmartCenter.Repository.Migrations
                         .HasColumnType("numeric");
 
                     b.Property<DateTimeOffset>("ConfirmedAt")
-                        .ValueGeneratedOnAdd()
+                        .ValueGeneratedOnAdd();
 
                     b.Property<Guid>("ConfirmedByStaffId")
                         .HasColumnType("uuid");
