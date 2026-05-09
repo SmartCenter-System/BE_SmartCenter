@@ -30,4 +30,11 @@ public class AdminController: ControllerBase
         var result = await _adminService.GetOrdersAsync(request);
         return Ok(ApiResponseFactory.SuccessResponse(result, "Get orders success", HttpContext.TraceIdentifier));
     }
+    
+    [HttpPatch("users/{userId}/lock")]
+    public async Task<IActionResult> LockUser(Guid userId)
+    {
+        await _adminService.LockUserAsync(userId);
+        return Ok(ApiResponseFactory.SuccessResponse(null, "Khóa tài khoản thành công.", HttpContext.TraceIdentifier));
+    }
 }

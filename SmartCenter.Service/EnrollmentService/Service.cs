@@ -97,6 +97,7 @@ public class Service : IService
 
         var selectedEnrollment = enrollment.Select(x => new Response.MyEnrollmentResponse()
         {
+            CourseId = x.Course.Id,
             CourseName = x.Course.CourseName,
             BasePrice = x.Course.BasePrice,
             CourseType = x.Course.CourseType,

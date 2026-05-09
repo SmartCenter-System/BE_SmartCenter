@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using SmartCenter.Repository.Data;
+using SmartCenter.Repository.Entity.Enums;
 using SmartCenter.Service.Base;
 
 namespace SmartCenter.Service.Admin;
@@ -90,5 +91,19 @@ public class Service : IService
             Items = items,
             Total = total,
         };
+    }
+    
+    public async Task LockUserAsync(Guid userId)
+    {
+        var user = await _dbContext.Users.FindAsync(userId)
+                   ?? throw new KeyNotFoundException("Không tìm thấy người dùng.");
+
+        if (user.Status == UserStatus.Inactive)
+            throw new InvalidOperationException("Tài khoản này đã bị khóa rồi.");
+
+        user.Status    = UserStatus.Inactive;
+        user.UpdatedAt = DateTimeOffset.UtcNow;
+
+        await _dbContext.SaveChangesAsync();
     }
 }
