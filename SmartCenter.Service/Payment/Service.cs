@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using SmartCenter.Repository.Data;
@@ -115,7 +116,17 @@ public async Task HandleWebhookAsync(Request.SepayWebhookRequest request)
             request.Content ??
             request.Description ??
             string.Empty;
-        var raw  = description.Replace("SMARTCENTER", "").Trim();
+        
+        var match = Regex.Match(
+            description,
+            @"[a-fA-F0-9]{32}");
+        
+        if (!match.Success)
+        {
+            throw new Exception("Không tìm thấy GUID");
+        }
+        
+        var raw = match.Value;
  
         Guid? orderId = null;
         
