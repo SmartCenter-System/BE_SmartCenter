@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SmartCenter.Api.extensions;
 using SmartCenter.Service.ExamPaper;
 using SmartCenter.Service.Model;
 
@@ -46,5 +48,12 @@ public class ExamPaperController: ControllerBase
     {
         await _examService.DeleteExamPaperAsync(examId);
         return Ok(ApiResponseFactory.SuccessResponse(null, "Remove Exams Success", HttpContext.TraceIdentifier));
+    }
+
+    [HttpPost("add-questions")]
+    [Authorize(Policy = JwtExtensions.LecturerPolicy)]
+    public async Task<IActionResult> AddQuestionToExam(Guid ExamID,Request.AddMultipleQuestionsRequest request)
+    {
+        return Ok(ApiResponseFactory.SuccessResponse(await _examService.AddMultipleQuestionsToExamAsync(ExamID,request), "Add Multiple Questions Success", HttpContext.TraceIdentifier));
     }
 }
