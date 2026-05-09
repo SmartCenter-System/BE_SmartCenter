@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using SmartCenter.Repository.Data;
 using SmartCenter.Repository.Entity;
 using SmartCenter.Repository.Entity.Enums;
+using SmartCenter.Service.Base;
 
 namespace SmartCenter.Service.ReviewCourseService;
 
@@ -111,5 +112,39 @@ public class Service : IService
             })
             .ToListAsync();
         return reviews;
+    }
+    
+    public async Task<PagedResult<Response.ReviewAllResponse>> GetAllReviewsAsync(int pageIndex, int pageSize)
+    {
+        var query = _dbContext.ReviewCourses
+            .Where(r => r.IsDeleted == false)
+            .Include(r => r.Student)
+            .ThenInclude(s => s.User)
+            .Include(r => r.Course);
+
+        var total = await query.CountAsync();
+
+        var items = await query
+            .OrderByDescending(r => r.CreatedAt)
+            .Skip((pageIndex - 1) * pageSize)
+            .Take(pageSize)
+            .Select(r => new Response.ReviewAllResponse()
+            {
+                ReviewId    = r.Id,
+                Rating      = r.Rating,
+                Comment     = r.Comment,
+                CreatedAt   = r.CreatedAt,
+                StudentId   = r.StuId,
+                StudentName = (r.Student.User.FirstName + " " + r.Student.User.LastName).Trim(),
+                CourseId    = r.CourseId,
+                CourseName  = r.Course.CourseName,
+            })
+            .ToListAsync();
+
+        return new PagedResult<Response.ReviewAllResponse>
+        {
+            Items     = items,
+            Total     = total,
+        };
     }
 }
