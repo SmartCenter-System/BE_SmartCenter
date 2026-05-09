@@ -236,6 +236,7 @@ public class Service: IService
                 Title = x.Course.CourseName,
                 Mode = x.Course.CourseType,
                 Price = x.Course.BasePrice,
+                ImgUrl =  x.Course.ImgUrl,
                 AvailableSlots = (x.Course.MaxStudents - x.ValidEnrollmentCount) > 0 
                     ? (x.Course.MaxStudents - x.ValidEnrollmentCount) 
                     : 0

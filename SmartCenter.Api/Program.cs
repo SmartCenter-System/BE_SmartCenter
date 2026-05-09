@@ -23,7 +23,11 @@ using LessonService = SmartCenter.Service.Lesson;
 using PaymentService = SmartCenter.Service.Payment;
 using EnrollmentService = SmartCenter.Service.EnrollmentService;
 using ConsultationService = SmartCenter.Service.ConsultationService;
+using DocumentService = SmartCenter.Service.Document;
 using ComboService = SmartCenter.Service.Combo;
+using CommentService = SmartCenter.Service.Comment;
+using ProgressService = SmartCenter.Service.Progress;
+
 
 Env.Load();
 var aspnetCoreEnv  = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
@@ -64,7 +68,11 @@ builder.Services.AddScoped<ExamPaperService.IService, ExamPaperService.Service>(
 builder.Services.AddScoped<PaymentService.IService, PaymentService.Service>();
 builder.Services.AddScoped<LessonService.IService, LessonService.Service>();
 builder.Services.AddScoped<SectionService.IService, SectionService.Service>();
+builder.Services.AddScoped<DocumentService.IService, DocumentService.Service>();
 builder.Services.AddScoped<ComboService.IService, ComboService.Service>();
+builder.Services.AddScoped<CommentService.IService, CommentService.Service>();
+builder.Services.AddScoped<ProgressService.IService, ProgressService.Service>();
+
 // ─── Quartz ───────────────────────────────────────────────────────────────────
 builder.Services.AddQuartz();
 builder.Services.AddQuartzHostedService(options =>
