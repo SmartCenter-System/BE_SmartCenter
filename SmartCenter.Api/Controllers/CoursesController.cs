@@ -31,7 +31,7 @@ public class CoursesController: ControllerBase
         return Ok(ApiResponseFactory.SuccessResponse(courseDetail, "Get Course Details Success", HttpContext.TraceIdentifier));
     }
     
-    [Authorize(Policy = JwtExtensions.UserPolicy)]
+    // [Authorize(Policy = JwtExtensions.UserPolicy)]
     [HttpGet("{courseId}/previews")]
     public async Task<IActionResult> GetCoursePreview(Guid courseId)
     {
@@ -75,5 +75,13 @@ public class CoursesController: ControllerBase
     {
         var result = await _courseSevice.GetTop4HighRatedRecentReviewsAsync();
         return Ok(ApiResponseFactory.SuccessResponse(result, "Get Top4 High Rated Recent Reviews", HttpContext.TraceIdentifier));
+    }
+    
+    [HttpGet("dashboard")]
+    [Authorize(Policy = JwtExtensions.StudentPolicy)]
+    public async Task<IActionResult> GetDashboard()
+    {
+        var result = await _courseSevice.GetDashboardAsync();
+        return Ok(ApiResponseFactory.SuccessResponse(result, "Get dashboard success", HttpContext.TraceIdentifier));
     }
 }
