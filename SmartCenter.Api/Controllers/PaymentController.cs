@@ -21,9 +21,9 @@ public class PaymentController: ControllerBase
     
     // [Authorize(Policy = JwtExtensions.StudentPolicy)]
     [HttpPost("create-link")]
-    public async Task<IActionResult> CreatePaymentLink([FromQuery] Guid orderId)
+    public async Task<IActionResult> CreatePaymentLink([FromBody] Request.CreatePaymentRequest request)
     {
-        var result = await _paymentService.CreatePaymentLinkAsync(orderId);
+        var result = await _paymentService.CreatePaymentLinkAsync(request);
         return Ok(ApiResponseFactory.SuccessResponse(result, "Tạo link thanh toán thành công!", HttpContext.TraceIdentifier));
     }
     
