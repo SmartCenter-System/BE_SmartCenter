@@ -35,7 +35,7 @@ public class Service : IService
         {
             throw new ArgumentException("Điểm đánh giá phải nằm trong khoảng từ 1 đến 5.");
         }
-        
+
         var courseExists = await _dbContext.Courses
             .AnyAsync(c => c.Id == request.CourseId && c.IsDeleted == false);
 
@@ -47,12 +47,12 @@ public class Service : IService
         var hasEnrolled = await _dbContext.Enrollments
             .AnyAsync(e => e.StuId == studentId
                            && e.CourseId == request.CourseId
-                           && e.Status == EnrollmentStatus.Paid); 
+                           && e.Status == EnrollmentStatus.Paid);
         if (!hasEnrolled)
         {
             throw new UnauthorizedAccessException("Bạn chưa đăng ký hoặc chưa hoàn tất thanh toán cho khóa học này.");
         }
-        
+
         var newReview = new ReviewCourse()
         {
             Id = Guid.NewGuid(),
@@ -60,10 +60,10 @@ public class Service : IService
             CourseId = request.CourseId,
             Rating = request.Rating,
             Comment = request.Comment,
-            CreatedAt = DateTime.UtcNow, 
+            CreatedAt = DateTimeOffset.UtcNow,
             IsDeleted = false
         };
-        
+
         _dbContext.ReviewCourses.Add(newReview);
         await _dbContext.SaveChangesAsync();
 
@@ -75,5 +75,41 @@ public class Service : IService
             Comment = newReview.Comment,
             CreatedAt = newReview.CreatedAt
         };
+    }
+
+    public async Task<List<Response.ReviewDetailResponse>> GetReviewCourseAsync(Guid courseId, Guid? studentId)
+    {
+        var courseExists = await _dbContext.Courses
+            .AnyAsync(c => c.Id == courseId && c.IsDeleted == false);
+
+        if (!courseExists)
+        {
+            throw new Exception("Khóa học không tồn tại hoặc đã bị gỡ bỏ.");
+        }
+
+        var query = _dbContext.ReviewCourses
+            .Include(r => r.Student)
+            .ThenInclude(s => s.User)
+            .Where(r => r.CourseId == courseId && r.IsDeleted == false)
+            .AsQueryable();
+
+        if (studentId.HasValue)
+        {
+            query = query.Where(r => r.StuId == studentId.Value);
+        }
+
+        var reviews = await query
+            .OrderByDescending(r => r.CreatedAt)
+            .Select(r => new Response.ReviewDetailResponse()
+            {
+                ReviewId = r.Id,
+                Rating = r.Rating,
+                Comment = r.Comment,
+                CreatedAt = r.CreatedAt,
+                StudentId = r.StuId,
+                StudentName = (r.Student.User.FirstName + " " + r.Student.User.LastName).Trim()
+            })
+            .ToListAsync();
+        return reviews;
     }
 }
