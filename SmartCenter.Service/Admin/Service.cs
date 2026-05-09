@@ -112,7 +112,7 @@ public class Service : IService
         var user = await _dbContext.Users.FindAsync(userId)
                    ?? throw new KeyNotFoundException("Không tìm thấy người dùng.");
 
-        if (user.Status == UserStatus.Inactive)
+        if (user.Status == UserStatus.Active)
             throw new InvalidOperationException("Tài khoản này đã mở rồi.");
 
         user.Status    = UserStatus.Active;
