@@ -143,28 +143,46 @@ public class Service: IService
 
     public async Task<Response.CourseDetailResponse> CreateCourseAsync(Request.CreateCourseRequest request)
     {
-        var lecturerId = IsAdmin()? Guid.Empty : GetLecturerId();
+        Guid lecturerId;
 
-        var course = new Repository.Entity.Course()
+        if (IsAdmin())
         {
-            Id = Guid.NewGuid(),
-            LecId = lecturerId,
-            CourseName = request.CourseName,
-            Description = request.Description,
-            BasePrice = request.BasePrice,
-            ImgUrl = request.ImgUrl,
-            CourseType = request.CourseType,
-            StartAt = request.StartAt,
-            EndAt = request.EndAt,
-            MaxStudents = request.MaxStudents,
+            if (!request.LecturerId.HasValue)
+                throw new Exception("Admin phải chỉ định LecturerId khi tạo khóa học.");
+
+            var lecturerExists = await _dbContext.Lecturers
+                .AnyAsync(l => l.Id == request.LecturerId.Value);
+
+            if (!lecturerExists)
+                throw new Exception("Không tìm thấy giảng viên.");
+
+            lecturerId = request.LecturerId.Value;
+        }
+        else
+        {
+            lecturerId = GetLecturerId();
+        }
+
+        var course = new Repository.Entity.Course
+        {
+            Id           = Guid.NewGuid(),
+            LecId        = lecturerId,
+            CourseName   = request.CourseName,
+            Description  = request.Description,
+            BasePrice    = request.BasePrice,
+            ImgUrl       = request.ImgUrl,
+            CourseType   = request.CourseType,
+            StartAt      = request.StartAt,
+            EndAt        = request.EndAt,
+            MaxStudents  = request.MaxStudents,
             AcademicYear = request.AcademicYear,
-            IsActive = false,
-            CreatedAt = DateTimeOffset.UtcNow,
+            IsActive     = false,
+            CreatedAt    = DateTimeOffset.UtcNow,
         };
-        
+
         _dbContext.Courses.Add(course);
         await _dbContext.SaveChangesAsync();
-        
+
         return (await GetCourseDetailAsync(course.Id))!;
     }
 
