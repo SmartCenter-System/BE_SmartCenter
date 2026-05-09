@@ -6,4 +6,5 @@ public interface IService
 {
     Task<PagedResult<Response.UserItemResponse>>  GetUsersAsync(Request.GetUsersRequest request);
     Task<PagedResult<Response.OrderItemResponse>> GetOrdersAsync(Request.GetOrdersRequest request);
+    Task LockUserAsync(Guid userId);
 }
