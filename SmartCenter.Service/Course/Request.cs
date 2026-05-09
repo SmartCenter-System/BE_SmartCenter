@@ -29,6 +29,7 @@ public class Request
         public DateTimeOffset EndAt { get; set; }
         public int MaxStudents { get; set; }
         public int AcademicYear { get; set; }
+        public Guid? LecturerId { get; set; }
     }
 
     public class UpdateCourseRequest
