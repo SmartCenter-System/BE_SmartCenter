@@ -7,6 +7,7 @@ public class Response
 {
     public class MyEnrollmentResponse
     {
+        public Guid CourseId { get; set; }
         public string CourseName { get; set; }
         
         public decimal BasePrice { get; set; }
