@@ -22,39 +22,91 @@ public class Service : IService
         _httpContextAccessor = httpContextAccessor;
     }
 
-    public async Task<Response.CreatePaymentResponse> CreatePaymentLinkAsync(Guid orderId)
+    public async Task<Response.CreatePaymentResponse> CreatePaymentLinkAsync(Request.CreatePaymentRequest request)
+{
+    var studentId = _httpContextAccessor.HttpContext!.User
+        .Claims.FirstOrDefault(x => x.Type == "studentId")?.Value;
+    var studentIdGuid = Guid.Parse(studentId!);
+
+    // 1. Validate course
+    var course = await _dbContext.Courses
+        .FirstOrDefaultAsync(c => c.Id == request.CourseId && c.IsActive)
+        ?? throw new KeyNotFoundException("Không tìm thấy khóa học.");
+
+    // 2. Kiểm tra đã mua chưa
+    var alreadyEnrolled = await _dbContext.Enrollments
+        .AnyAsync(e => e.CourseId == request.CourseId
+                    && e.StuId   == studentIdGuid
+                    && e.Status  == EnrollmentStatus.Paid);
+    if (alreadyEnrolled)
+        throw new InvalidOperationException("Bạn đã mua khóa học này rồi.");
+
+    // 3. Dùng lại Order Pending còn hạn nếu có
+    var existingOrder = await _dbContext.Orders
+        .Include(o => o.OrderItems)
+        .Where(o => o.StuId  == studentIdGuid
+                 && o.Status == OrderStatus.Pending
+                 && o.ExpireAt > DateTimeOffset.UtcNow)
+        .FirstOrDefaultAsync(o => o.OrderItems.Any(oi => oi.CourseId == request.CourseId));
+
+    Repository.Entity.Order order;
+
+    if (existingOrder != null)
     {
-        var studentId = _httpContextAccessor.HttpContext!.User.Claims.FirstOrDefault(x => x.Type == "studentId")?.Value;
-        var studentIdGuid = Guid.Parse(studentId!);
-
-        var order = await _dbContext.Orders
-            .FirstOrDefaultAsync(o => o.Id == orderId && o.StuId == studentIdGuid);
-
-        if (order == null)
-            throw new KeyNotFoundException("Không tìm thấy đơn hàng.");
-
-        if (order.Status != OrderStatus.Pending)
-            throw new InvalidOperationException("Đơn hàng không ở trạng thái chờ thanh toán.");
-        
-        var description = $"SMARTCENTER - {order.Id}";
-
-        var qrCode = $"https://qr.sepay.vn/img?acc={BankAccount}" +
-                     $"&bank={BankName}" +
-                     $"&amount={(int)order.TotalAmount}" +
-                     $"&des={description}" +
-                     $"&template=gronly";
-
-        return new Response.CreatePaymentResponse
-        {
-            OrderId = order.Id,
-            OrderCode = order.OrderCode,
-            TotalAmount = order.TotalAmount,
-            BankName = BankName,
-            BankAccount = BankAccount,
-            Description = description,
-            QRCode = qrCode
-        };
+        order = existingOrder;
     }
+    else
+    {
+        // 4. Tạo Order mới
+        order = new Repository.Entity.Order()
+        {
+            Id             = Guid.NewGuid(),
+            StuId          = studentIdGuid,
+            OrderCode      = $"ORD{DateTimeOffset.UtcNow.Ticks}",
+            Status         = OrderStatus.Pending,
+            PaymentMethod  = PaymentMethod.BankTransfer,
+            SubtotalAmount = course.BasePrice,
+            DiscountAmount = 0,
+            TotalAmount    = course.BasePrice,
+            CreatedAt      = DateTimeOffset.UtcNow,
+            ExpireAt       = DateTimeOffset.UtcNow.AddMinutes(15),
+        };
+        _dbContext.Orders.Add(order);
+
+        _dbContext.OrderItems.Add(new OrderItem
+        {
+            Id        = Guid.NewGuid(),
+            OrderId   = order.Id,
+            CourseId  = course.Id,
+            ItemName  = course.CourseName,
+            UnitPrice = course.BasePrice,
+            Quantity  = 1,
+            CreatedAt = DateTimeOffset.UtcNow,
+        });
+
+        await _dbContext.SaveChangesAsync();
+    }
+
+    // 5. Tạo QR
+    var description = $"SMARTCENTER {order.OrderCode}";
+    var qrCode = $"https://qr.sepay.vn/img?acc={BankAccount}" +
+                 $"&bank={BankName}" +
+                 $"&amount={(int)order.TotalAmount}" +
+                 $"&des={Uri.EscapeDataString(description)}" +
+                 $"&template=gronly";
+
+    return new Response.CreatePaymentResponse
+    {
+        OrderId     = order.Id,
+        OrderCode   = order.OrderCode,
+        TotalAmount = order.TotalAmount,
+        BankName    = BankName,
+        BankAccount = BankAccount,
+        Description = description,
+        QRCode      = qrCode,
+        ExpireAt    = order.ExpireAt,
+    };
+}
 
 
 public async Task HandleWebhookAsync(Request.SepayWebhookRequest request)

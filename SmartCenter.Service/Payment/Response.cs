@@ -11,5 +11,6 @@ public class Response
         public string BankAccount { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public string QRCode { get; set; } = string.Empty;
+        public DateTimeOffset ExpireAt { get; set; }
     }
 }

@@ -17,4 +17,8 @@ public class Request
         public string Accumulated { get; set; }
         public string Id { get; set; }
     }
+    public class CreatePaymentRequest
+    {
+        public Guid CourseId { get; set; }
+    }
 }
