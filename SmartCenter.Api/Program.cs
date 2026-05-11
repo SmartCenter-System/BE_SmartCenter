@@ -31,6 +31,7 @@ using ReviewCourseService = SmartCenter.Service.ReviewCourseService;
 using CategoryService = SmartCenter.Service.CategoryService;
 
 using AdminService = SmartCenter.Service.Admin;
+using StaffService = SmartCenter.Service.Staff;
 
 
 Env.Load();
@@ -83,6 +84,8 @@ builder.Services.AddScoped<ProgressService.IService, ProgressService.Service>();
 builder.Services.AddScoped<ReviewCourseService.IService, ReviewCourseService.Service>();
 builder.Services.AddScoped<CategoryService.IService, CategoryService.Service>();
 builder.Services.AddScoped<AdminService.IService, AdminService.Service>();
+builder.Services.AddScoped<StaffService.IService, StaffService.Service>();
+
 
 
 // ─── Quartz ───────────────────────────────────────────────────────────────────
