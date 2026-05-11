@@ -2,51 +2,37 @@
 using MailKit.Security;
 using Microsoft.Extensions.Configuration;
 using MimeKit;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Text.Json;
+
 namespace SmartCenter.Service.MailService;
 
 public class Service : IService
 {
-    private readonly string _apiKey;
-    private readonly string _fromEmail;
-    private readonly string _displayName;
-    private readonly HttpClient _httpClient;
+    private readonly MailOptions _mailOptions = new();
 
-    public Service(IConfiguration config, IHttpClientFactory httpClientFactory)
+    public Service(IConfiguration configuration)
     {
-        _apiKey      = config["ResendOptions:ApiKey"]!;
-        _fromEmail   = config["ResendOptions:FromEmail"]!;
-        _displayName = config["ResendOptions:DisplayName"]!;
-        _httpClient  = httpClientFactory.CreateClient();
+        configuration.GetSection(nameof(MailOptions)).Bind(_mailOptions);
     }
-
+    
     public async Task SendMail(MailContent mailContent)
     {
-        var payload = new
-        {
-            from    = $"{_displayName} <{_fromEmail}>",
-            to      = new[] { mailContent.To },
-            subject = mailContent.Subject,
-            html    = mailContent.Body,
-        };
+        MimeMessage email = new();
+        email.Sender = new MailboxAddress(_mailOptions?.DisplayName, _mailOptions!.Mail);
+        email.From.Add(new MailboxAddress(_mailOptions?.DisplayName, _mailOptions!.Mail));
+        email.To.Add(MailboxAddress.Parse(mailContent.To));
+        email.Subject = mailContent.Subject;
 
-        var request = new HttpRequestMessage(HttpMethod.Post, "https://api.resend.com/emails")
-        {
-            Content = new StringContent(
-                JsonSerializer.Serialize(payload),
-                Encoding.UTF8,
-                "application/json")
-        };
-        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _apiKey);
 
-        var response = await _httpClient.SendAsync(request);
+        BodyBuilder builder = new();
+        builder.HtmlBody = mailContent.Body;
+        email.Body = builder.ToMessageBody();
+        
+        using SmtpClient smtp = new();
 
-        if (!response.IsSuccessStatusCode)
-        {
-            var error = await response.Content.ReadAsStringAsync();
-            throw new Exception($"Resend API error: {error}");
-        }
+        await smtp.ConnectAsync(_mailOptions?.Host, _mailOptions!.Port, SecureSocketOptions.StartTls);
+        await smtp.AuthenticateAsync(_mailOptions.Mail, _mailOptions.Password);
+        await smtp.SendAsync(email);
+
+        await smtp.DisconnectAsync(true);
     }
 }
