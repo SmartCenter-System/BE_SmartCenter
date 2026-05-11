@@ -65,25 +65,23 @@ public class Service: IService
 
         await _dbContext.SaveChangesAsync();
         await transaction.CommitAsync();
-
-        _ = Task.Run(async () =>
+        
+        try
         {
-            try
+            await _mailService.SendMail(new MailContent
             {
-                await _mailService.SendMail(new MailContent
-                {
-                    To      = request.Email,
-                    Subject = "SmartCenter – Mã xác thực email của bạn",
-                    Body    = BuildVerificationEmailBody($"{request.FirstName} {request.LastName}", verifiedCode)
-                });
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("SEND MAIL ERROR:");
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.StackTrace);
-            }
-        });
+                To      = request.Email,
+                Subject = "SmartCenter – Mã xác thực email của bạn",
+                Body    = BuildVerificationEmailBody($"{request.FirstName} {request.LastName}", verifiedCode)
+            });
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("SEND MAIL ERROR:");
+            Console.WriteLine(ex.Message);
+            Console.WriteLine(ex.StackTrace);
+        }
+
 
         return "Đăng ký thành công! Vui lòng kiểm tra email để lấy mã xác thực.";
     }
