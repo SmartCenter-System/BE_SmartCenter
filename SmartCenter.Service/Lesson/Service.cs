@@ -54,6 +54,10 @@ public class Service: IService
             .Select(l => new Response.LessonResponse
             {
                 Id          = l.Id,
+                ExamId       = _dbContext.ExamPapers
+                    .Where(e => e.LessonId == l.Id)
+                    .Select(e => (Guid?)e.Id)
+                    .FirstOrDefault(), 
                 Title       = l.Title,
                 Description = l.Description,
                 VideoUrl    = l.VideoUrl,

@@ -16,23 +16,23 @@ public class Service : IService
     
     public async Task SendMail(MailContent mailContent)
     {
-        MimeMessage email = new();
+        var email = new MimeMessage();
         email.Sender = new MailboxAddress(_mailOptions?.DisplayName, _mailOptions!.Mail);
         email.From.Add(new MailboxAddress(_mailOptions?.DisplayName, _mailOptions!.Mail));
         email.To.Add(MailboxAddress.Parse(mailContent.To));
         email.Subject = mailContent.Subject;
 
-
-        BodyBuilder builder = new();
-        builder.HtmlBody = mailContent.Body;
+        var builder = new BodyBuilder { HtmlBody = mailContent.Body };
         email.Body = builder.ToMessageBody();
-        
-        using SmtpClient smtp = new();
 
-        await smtp.ConnectAsync(_mailOptions?.Host, _mailOptions!.Port, SecureSocketOptions.StartTls);
+        using var smtp = new SmtpClient();
+
+        smtp.Timeout = 60000;
+
+        await smtp.ConnectAsync(_mailOptions?.Host, _mailOptions!.Port,
+            SecureSocketOptions.SslOnConnect);
         await smtp.AuthenticateAsync(_mailOptions.Mail, _mailOptions.Password);
         await smtp.SendAsync(email);
-
         await smtp.DisconnectAsync(true);
     }
 }
