@@ -58,6 +58,7 @@ builder.Services.AddJwtServices(builder.Configuration);
 builder.Services.AddSwaggerServices();
 
 builder.Services.AddScoped<JwtService.IJwtService, JwtService.JwtServices>();
+builder.Services.AddHttpClient();
 builder.Services.AddScoped<MediaService.IService, CloudinaryService.Service>();
 builder.Services.AddScoped<MailService.IService, MailService.Service>();
 builder.Services.AddScoped<CourseService.IService, CourseService.Service>();
@@ -82,6 +83,7 @@ builder.Services.AddScoped<ProgressService.IService, ProgressService.Service>();
 builder.Services.AddScoped<ReviewCourseService.IService, ReviewCourseService.Service>();
 builder.Services.AddScoped<CategoryService.IService, CategoryService.Service>();
 builder.Services.AddScoped<AdminService.IService, AdminService.Service>();
+
 
 // ─── Quartz ───────────────────────────────────────────────────────────────────
 builder.Services.AddQuartz();
