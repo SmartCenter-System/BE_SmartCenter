@@ -77,7 +77,12 @@ public class Service: IService
                     Body    = BuildVerificationEmailBody($"{request.FirstName} {request.LastName}", verifiedCode)
                 });
             }
-            catch { /* log lỗi nếu cần, không throw */ }
+            catch (Exception ex)
+            {
+                Console.WriteLine("SEND MAIL ERROR:");
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+            }
         });
 
         return "Đăng ký thành công! Vui lòng kiểm tra email để lấy mã xác thực.";

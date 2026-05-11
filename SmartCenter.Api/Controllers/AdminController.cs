@@ -40,9 +40,9 @@ public class AdminController : ControllerBase
     }
 
     [HttpPatch("users/{userId}/unlock")]
-    public async Task<IActionResult> UnLockUserAsync(Guid userId)
+    public async Task<IActionResult> UnLockUser(Guid userId)
     {
-        await _adminService.LockUserAsync(userId);
+        await _adminService.UnLockUserAsync(userId);
         return Ok(ApiResponseFactory.SuccessResponse(null, "Mở tài khoản thành công.", HttpContext.TraceIdentifier));
     }
 

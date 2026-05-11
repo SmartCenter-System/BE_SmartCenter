@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using SmartCenter.Repository.Data;
@@ -88,7 +89,7 @@ public class Service : IService
     }
 
     // 5. Tạo QR
-    var description = $"SMARTCENTER {order.OrderCode}";
+    var description = $"SMARTCENTER{order.Id.ToString("N")}";
     var qrCode = $"https://qr.sepay.vn/img?acc={BankAccount}" +
                  $"&bank={BankName}" +
                  $"&amount={(int)order.TotalAmount}" +
@@ -111,8 +112,21 @@ public class Service : IService
 
 public async Task HandleWebhookAsync(Request.SepayWebhookRequest request)
     {
-        var description = request.Code ?? string.Empty;
-        var raw  = description.Replace("SMARTCENTER", "").Trim();
+        var description =
+            request.Content ??
+            request.Description ??
+            string.Empty;
+        
+        var match = Regex.Match(
+            description,
+            @"[a-fA-F0-9]{32}");
+        
+        if (!match.Success)
+        {
+            throw new Exception("Không tìm thấy GUID");
+        }
+        
+        var raw = match.Value;
  
         Guid? orderId = null;
         
@@ -163,7 +177,7 @@ public async Task HandleWebhookAsync(Request.SepayWebhookRequest request)
             OrderId                 = order.Id,
             Amount                  = request.TransferAmount,
             Status                  = "Completed",
-            ProviderTransactionCode = request.Id ?? Guid.NewGuid().ToString(),
+            ProviderTransactionCode = request.Id.ToString(),
             ConfirmedByStaffId      = Guid.Empty,
             ConfirmedAt             = DateTimeOffset.UtcNow,
             CreatedAt               = DateTimeOffset.UtcNow,
