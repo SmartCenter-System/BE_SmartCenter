@@ -26,12 +26,13 @@ public class Service : IService
         email.Body = builder.ToMessageBody();
 
         using var smtp = new SmtpClient();
-
         smtp.Timeout = 60000;
 
-        await smtp.ConnectAsync(_mailOptions?.Host, _mailOptions!.Port,
-            SecureSocketOptions.SslOnConnect);
-        await smtp.AuthenticateAsync(_mailOptions.Mail, _mailOptions.Password);
+        await smtp.ConnectAsync(_mailOptions!.Host, _mailOptions.Port,
+            SecureSocketOptions.SslOnConnect); 
+
+        await smtp.AuthenticateAsync("resend", _mailOptions.Password);
+
         await smtp.SendAsync(email);
         await smtp.DisconnectAsync(true);
     }
