@@ -53,6 +53,7 @@ public class GlobalExceptionHandlerMiddleware : IMiddleware
             UnauthorizedAccessException => StatusCodes.Status401Unauthorized,
             KeyNotFoundException => StatusCodes.Status404NotFound,
             _ => StatusCodes.Status500InternalServerError
+            
         };
     }
 

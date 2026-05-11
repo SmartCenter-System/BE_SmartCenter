@@ -23,4 +23,18 @@ public class Response
         public string  PaymentStatus { get; set; } = string.Empty;
         public DateTimeOffset CreatedAt { get; set; }
     }
+    
+    public class DashBoardCourseResponse
+    {
+        public decimal totalRevenue { get; set; }
+        public int totalStudents { get; set; }
+        public int totalCourses { get; set; }
+        public List<revenueChart> revenueCharts { get; set; }
+    }
+
+    public class revenueChart()
+    {
+     public string month { get; set; } 
+     public decimal revenue { get; set; }  
+    }
 }
