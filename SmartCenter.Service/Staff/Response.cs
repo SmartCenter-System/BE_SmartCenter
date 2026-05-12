@@ -21,4 +21,15 @@ public class Response
         public string Status { get; set; } = string.Empty;
         public DateTimeOffset CreateAt { get; set; }
     }
+    
+    public class EnrollmentItemResponse
+    {
+        public Guid   EnrollmentId    { get; set; }
+        public Guid   StudentId       { get; set; }
+        public string StudentName     { get; set; } = string.Empty;
+        public Guid   CourseId        { get; set; }
+        public string CourseName      { get; set; } = string.Empty;
+        public int    ProgressPercent { get; set; }
+        public DateTimeOffset EnrolledAt { get; set; }
+    }
 }

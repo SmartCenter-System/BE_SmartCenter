@@ -11,4 +11,6 @@ public interface IService
     Task<string> RejectConsultation(Guid ConsultationId);
     
     Task<PagedResult<Response.ConsultationItemResponse>> GetConsultationsAsync(Request.ConsultationRequest request);
+    
+    Task<PagedResult<Response.EnrollmentItemResponse>> GetEnrollmentsAsync(Request.GetEnrollmentsRequest request);
 }
