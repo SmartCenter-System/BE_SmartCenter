@@ -32,6 +32,7 @@ using CategoryService = SmartCenter.Service.CategoryService;
 
 using AdminService = SmartCenter.Service.Admin;
 using StaffService = SmartCenter.Service.Staff;
+using LecturerService = SmartCenter.Service.Lecture;
 
 
 Env.Load();
@@ -85,6 +86,7 @@ builder.Services.AddScoped<ReviewCourseService.IService, ReviewCourseService.Ser
 builder.Services.AddScoped<CategoryService.IService, CategoryService.Service>();
 builder.Services.AddScoped<AdminService.IService, AdminService.Service>();
 builder.Services.AddScoped<StaffService.IService, StaffService.Service>();
+builder.Services.AddScoped<LecturerService.IService, LecturerService.Service>();
 
 
 
