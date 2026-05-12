@@ -7,7 +7,7 @@ using SmartCenter.Service.Model;
 namespace SmartCenter.Api.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 public class GradeExamController:ControllerBase
 {
     private readonly IService _gradeService;

@@ -7,7 +7,7 @@ using SmartCenter.Service.UserService;
 namespace SmartCenter.Api.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 public class UserController : ControllerBase
 {
     private readonly IService _UserService;
