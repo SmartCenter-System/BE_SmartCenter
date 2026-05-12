@@ -289,6 +289,47 @@ public class Service: IService
         };
     }
 
+    public async Task RegisterStaff(Request.RegisterStaffRequest request)
+    {
+        var emailExists = await _dbContext.Users.AnyAsync(u => u.Email == request.Email);
+        if (emailExists)
+            throw new ArgumentException("Email đã được sử dụng");
+
+        var user = new User()
+        {
+            Id = Guid.NewGuid(),
+            FirstName = request.FirstName,
+            LastName = request.LastName,
+            Email = request.Email,
+            PasswordHash = HashPassword(request.Password),
+            Phone = request.Phone ?? string.Empty,
+            Role = UserRole.Staff,
+            Status = UserStatus.Active,
+            Verified = true,
+            VerifiedCode = 0,
+            CreatedAt = DateTimeOffset.UtcNow,
+        };
+        _dbContext.Users.Add(user);
+        await _dbContext.SaveChangesAsync();
+        
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                await _mailService.SendMail(new MailContent
+                {
+                    To      = request.Email,
+                    Subject = "SmartCenter – Tài khoản nhân viên của bạn đã được tạo",
+                    Body    = BuildStaffWelcomeEmailBody(
+                        $"{request.FirstName} {request.LastName}",
+                        request.Email,
+                        request.Password)
+                });
+            }
+            catch { /**/ }
+        });
+    }
+
     public async Task<Response.AuthResponse> RefreshToken(string refreshToken)
     {
         var session = await _dbContext.UserSessions
@@ -703,6 +744,265 @@ public class Service: IService
                             color:#475569;
                         ">
                             Tài khoản giảng viên của bạn trên
+                            <strong style="color:#2563EB;">SmartCenter</strong>
+                            đã được tạo thành công.
+                        </p>
+        
+                        <p style="
+                            margin:0 0 34px;
+                            font-size:16px;
+                            line-height:1.9;
+                            color:#475569;
+                        ">
+                            Bạn có thể sử dụng thông tin bên dưới để đăng nhập vào hệ thống.
+                        </p>
+        
+                        <!-- Login Info Card -->
+                        <table width="100%" cellpadding="0" cellspacing="0"
+                               style="
+                                    background:#F8FAFC;
+                                    border:1px solid #E2E8F0;
+                                    border-radius:20px;
+                                    padding:30px;
+                                    margin:32px 0;
+                               ">
+        
+                            <tr>
+                                <td style="
+                                    padding-bottom:24px;
+                                    border-bottom:1px solid #E2E8F0;
+                                ">
+        
+                                    <p style="
+                                        margin:0 0 8px;
+                                        font-size:13px;
+                                        color:#64748B;
+                                        text-transform:uppercase;
+                                        letter-spacing:1px;
+                                    ">
+                                        Email đăng nhập
+                                    </p>
+        
+                                    <p style="
+                                        margin:0;
+                                        font-size:18px;
+                                        color:#2563EB;
+                                        font-weight:700;
+                                        word-break:break-all;
+                                    ">
+                                        {email}
+                                    </p>
+        
+                                </td>
+                            </tr>
+        
+                            <tr>
+                                <td style="padding-top:24px;">
+        
+                                    <p style="
+                                        margin:0 0 8px;
+                                        font-size:13px;
+                                        color:#64748B;
+                                        text-transform:uppercase;
+                                        letter-spacing:1px;
+                                    ">
+                                        Mật khẩu tạm thời
+                                    </p>
+        
+                                    <p style="
+                                        margin:0;
+                                        font-size:18px;
+                                        color:#F59E0B;
+                                        font-weight:700;
+                                        letter-spacing:1px;
+                                    ">
+                                        {password}
+                                    </p>
+        
+                                </td>
+                            </tr>
+        
+                        </table>
+        
+                        <!-- Warning -->
+                        <div style="
+                            background:#FEF3C7;
+                            border-left:5px solid #FACC15;
+                            border-radius:14px;
+                            padding:18px 20px;
+                            margin-top:36px;
+                        ">
+        
+                            <p style="
+                                margin:0;
+                                color:#92400E;
+                                font-size:14px;
+                                line-height:1.8;
+                            ">
+                                Vui lòng thay đổi mật khẩu ngay sau lần đăng nhập đầu tiên
+                                để đảm bảo an toàn cho tài khoản của bạn.
+                            </p>
+        
+                        </div>
+        
+                        <!-- Button -->
+                        <div style="text-align:center; margin-top:42px;">
+        
+                            <a href="#"
+                               style="
+                                    display:inline-block;
+                                    background:#2563EB;
+                                    color:#ffffff;
+                                    text-decoration:none;
+                                    padding:16px 34px;
+                                    border-radius:14px;
+                                    font-size:15px;
+                                    font-weight:700;
+                                    box-shadow:0 10px 24px rgba(37,99,235,0.25);
+                               ">
+                                Đăng nhập hệ thống
+                            </a>
+        
+                        </div>
+        
+                    </td>
+                </tr>
+        
+                <!-- Footer -->
+                <tr>
+                    <td style="
+                        background:#0F172A;
+                        padding:34px 24px;
+                        text-align:center;
+                    ">
+        
+                        <p style="
+                            margin:0 0 10px;
+                            color:#ffffff;
+                            font-size:20px;
+                            font-weight:700;
+                        ">
+                            SmartCenter
+                        </p>
+        
+                        <p style="
+                            margin:0 0 16px;
+                            color:#94A3B8;
+                            font-size:14px;
+                            line-height:1.7;
+                        ">
+                            Nền tảng học tập hiện đại dành cho giáo viên và học sinh.
+                        </p>
+        
+                        <p style="
+                            margin:0;
+                            color:#64748B;
+                            font-size:12px;
+                        ">
+                            © 2026 SmartCenter. All rights reserved.
+                        </p>
+        
+                    </td>
+                </tr>
+        
+            </table>
+        
+        </td>
+        </tr>
+        </table>
+        
+        </body>
+        </html>
+        
+        """;
+    private static string BuildStaffWelcomeEmailBody(string fullName, string email, string password) => $"""
+        <!DOCTYPE html>
+        <html lang="vi">
+        <head>
+            <meta charset="UTF-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+            <title>SmartCenter Lecturer Account</title>
+        </head>
+        
+        <body style="
+            margin:0;
+            padding:0;
+            background:#eef4ff;
+            font-family:Arial,Helvetica,sans-serif;
+        ">
+        
+        <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+        <td align="center" style="padding:40px 16px;">
+        
+            <!-- Container -->
+            <table width="600" cellpadding="0" cellspacing="0" border="0"
+                   style="
+                        background:#ffffff;
+                        border-radius:24px;
+                        overflow:hidden;
+                        box-shadow:0 12px 40px rgba(37,99,235,0.12);
+                   ">
+        
+                <!-- Header -->
+                <tr>
+                    <td style="
+                        background:linear-gradient(135deg,#2563EB 0%, #1D4ED8 100%);
+                        padding:48px 32px;
+                        text-align:center;
+                    ">
+        
+                        <!-- Logo -->
+                        <!-- <img src="YOUR_LOGO_URL"
+                             alt="SmartCenter"
+                             width="72"
+                             style="
+                                display:block;
+                                margin:0 auto 24px;
+                             " /> -->
+        
+                        <h1 style="
+                            margin:0;
+                            color:#ffffff;
+                            font-size:36px;
+                            font-weight:800;
+                            letter-spacing:1px;
+                        ">
+                            SmartCenter
+                        </h1>
+        
+                        <p style="
+                            margin:16px 0 0;
+                            color:rgba(255,255,255,0.9);
+                            font-size:16px;
+                            line-height:1.7;
+                        ">
+                            Hệ thống quản lý học tập thông minh
+                        </p>
+        
+                    </td>
+                </tr>
+        
+                <!-- Body -->
+                <tr>
+                    <td style="padding:50px 40px; color:#1E293B;">
+        
+                        <p style="
+                            margin:0 0 18px;
+                            font-size:26px;
+                            font-weight:700;
+                            color:#0F172A;
+                        ">
+                            Xin chào <strong style="color:#FACC15;">{fullName}</strong>,
+                        </p>
+        
+                        <p style="
+                            margin:0 0 18px;
+                            font-size:16px;
+                            line-height:1.9;
+                            color:#475569;
+                        ">
+                            Tài khoản nhân viên của bạn trên
                             <strong style="color:#2563EB;">SmartCenter</strong>
                             đã được tạo thành công.
                         </p>
