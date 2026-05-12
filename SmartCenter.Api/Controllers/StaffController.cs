@@ -48,4 +48,12 @@ public class StaffController : ControllerBase
         var result = await _staffService.GetConsultationsAsync(request);
         return Ok(ApiResponseFactory.SuccessResponse(result, "Get consultations success", HttpContext.TraceIdentifier));
     }
+    
+    [HttpGet]
+    [Authorize(Policy = JwtExtensions.StaffOrAdminPolicy)]
+    public async Task<IActionResult> GetEnrollments([FromQuery] Request.GetEnrollmentsRequest request)
+    {
+        var result = await _staffService.GetEnrollmentsAsync(request);
+        return Ok(ApiResponseFactory.SuccessResponse(result, "Get enrollments success", HttpContext.TraceIdentifier));
+    }
 }
