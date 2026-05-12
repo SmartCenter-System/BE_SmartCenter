@@ -49,7 +49,7 @@ public class StaffController : ControllerBase
         return Ok(ApiResponseFactory.SuccessResponse(result, "Get consultations success", HttpContext.TraceIdentifier));
     }
     
-    [HttpGet]
+    [HttpGet("Enrollment")]
     [Authorize(Policy = JwtExtensions.StaffOrAdminPolicy)]
     public async Task<IActionResult> GetEnrollments([FromQuery] Request.GetEnrollmentsRequest request)
     {
