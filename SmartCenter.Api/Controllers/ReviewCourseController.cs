@@ -7,7 +7,7 @@ using SmartCenter.Service.ReviewCourseService;
 namespace SmartCenter.Api.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 public class ReviewCourseController:ControllerBase
 {
     private IService _reviewService;

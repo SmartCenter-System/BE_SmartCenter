@@ -8,7 +8,7 @@ namespace SmartCenter.Controllers;
 
 [Authorize]
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 public class EnrollmentController : ControllerBase
 {
     private readonly IService _enrollmentService;

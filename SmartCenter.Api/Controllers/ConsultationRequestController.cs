@@ -5,7 +5,7 @@ using SmartCenter.Service.Model;
 namespace SmartCenter.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 public class ConsultationRequestController:ControllerBase
 {
     private readonly IService _consultationService;
