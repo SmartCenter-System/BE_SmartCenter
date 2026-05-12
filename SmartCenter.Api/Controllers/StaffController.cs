@@ -40,4 +40,12 @@ public class StaffController : ControllerBase
         return Ok(ApiResponseFactory.SuccessResponse(await _staffService.RejectConsultation(consultationId),
             "Đã từ chối yêu cầu", HttpContext.TraceIdentifier));
     }
+    
+    [HttpGet]
+    [Authorize(Policy = JwtExtensions.StaffOrAdminPolicy)]
+    public async Task<IActionResult> GetConsultations([FromQuery] Request.ConsultationRequest request)
+    {
+        var result = await _staffService.GetConsultationsAsync(request);
+        return Ok(ApiResponseFactory.SuccessResponse(result, "Get consultations success", HttpContext.TraceIdentifier));
+    }
 }
