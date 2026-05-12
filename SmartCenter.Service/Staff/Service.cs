@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using SmartCenter.Repository.Data;
 using SmartCenter.Repository.Entity.Enums;
+using SmartCenter.Service.Base;
 
 namespace SmartCenter.Service.Staff;
 
@@ -100,5 +101,40 @@ public class Service : IService
         Consultation.UpdatedAt = DateTime.UtcNow;
         await _dbContext.SaveChangesAsync();
         return "Đã từ chối yêu cầu";
+    }
+
+    public async Task<PagedResult<Response.ConsultationItemResponse>> GetConsultationsAsync(Request.ConsultationRequest request)
+    {
+        var query = _dbContext.ConsultationRequests.AsQueryable();
+
+        if (request.Status.HasValue)
+        {
+            query = query.Where(c => c.Status == request.Status.Value);
+        }
+
+        var total = await query.CountAsync();
+
+        var items = await query
+            .OrderByDescending(c => c.RequestDate)
+            .Skip((request.PageIndex - 1) * request.PageSize)
+            .Take(request.PageSize)
+            .Select(c => new Response.ConsultationItemResponse()
+            {
+                Id = c.Id,
+                FullName = c.FirstName + " " + c.LastName,
+                Email = c.Email,
+                Phone = c.PhoneNumber,
+                CourseId = c.CourseId,
+                CourseName = c.Course != null ? c.Course.CourseName : null,
+                Note = c.Notes,
+                Status = c.Status.ToString(),
+                CreateAt = c.RequestDate,
+            }).ToListAsync();
+
+        return new PagedResult<Response.ConsultationItemResponse>()
+        {
+            Items = items,
+            Total = total
+        };
     }
 }

@@ -9,5 +9,16 @@ public class Response
         public int pendingOrders { get; set; }
     }
         
-   
+    public class ConsultationItemResponse
+    {
+        public Guid Id { get; set; }
+        public string FullName  { get; set; }
+        public string Email { get; set; }
+        public string Phone { get; set; }
+        public Guid? CourseId { get; set; }
+        public string? CourseName { get; set; }
+        public string? Note { get; set; }
+        public string Status { get; set; } = string.Empty;
+        public DateTimeOffset CreateAt { get; set; }
+    }
 }
