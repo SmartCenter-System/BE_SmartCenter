@@ -53,4 +53,12 @@ public class AdminController : ControllerBase
         return Ok(ApiResponseFactory.SuccessResponse(await _adminService.GetDashBoardCourseAsync(year), "Thành công",
             HttpContext.TraceIdentifier));
     }
+    
+    [HttpGet("users/{userId}")]
+    [Authorize(Policy = JwtExtensions.StaffOrAdminPolicy)]
+    public async Task<IActionResult> GetUserDetail(Guid userId)
+    {
+        var result = await _adminService.GetUserDetailAsync(userId);
+        return Ok(ApiResponseFactory.SuccessResponse(result, "Lấy thông tin người dùng thành công", HttpContext.TraceIdentifier));
+    }
 }
