@@ -10,4 +10,12 @@ public class Request
         public int PageIndex { get; set; } = 1;
         public int PageSize { get; set; } = 10;
     }
+    
+    public class GetEnrollmentsRequest
+    {
+        public string? SearchName   { get; set; } 
+        public Guid?   CourseId { get; set; }
+        public int PageIndex    { get; set; } = 1;
+        public int PageSize     { get; set; } = 20;
+    }
 }
