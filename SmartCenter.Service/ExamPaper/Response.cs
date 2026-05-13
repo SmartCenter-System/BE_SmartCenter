@@ -45,4 +45,9 @@ public class Response
         public string Content { get; set; } = null!;
         public bool IsCorrect { get; set; }
     }
+
+    public class ExamDetailResponse: ExamResponse
+    {
+        public List<QuestionDetailResponse> ListQuestions { get; set; } = new List<QuestionDetailResponse>();
+    }
 }

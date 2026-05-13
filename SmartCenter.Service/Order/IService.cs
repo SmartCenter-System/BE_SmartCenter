@@ -9,4 +9,6 @@ public interface IService
     Task<List<Response.OrderResponse>> GetOrdersByUserAsync();
 
     Task CancelOrderAsync(Guid orderId);
+    
+    Task<String> ConfirmOrderAsync(Guid orderId);
 }
