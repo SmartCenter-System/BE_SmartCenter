@@ -59,6 +59,13 @@ public class AuthController: ControllerBase
         var result = await _identityService.RegisterLecturer(request);
         return Ok(ApiResponseFactory.SuccessResponse(result, "Tạo tài khoản giảng viên thành công!", HttpContext.TraceIdentifier));
     }
+    [Authorize(Policy = JwtExtensions.AdminPolicy)]
+    [HttpPost("register-staff")]
+    public async Task<IActionResult> RegisterStaff([FromBody] Request.RegisterStaffRequest request)
+    {
+        await _identityService.RegisterStaff(request);
+        return Ok(ApiResponseFactory.SuccessResponse(null, "Tạo tài khoản giảng viên thành công!", HttpContext.TraceIdentifier));
+    }
     
     [HttpPost("refresh")]
     [AllowAnonymous]

@@ -7,7 +7,7 @@ using SmartCenter.Service.Staff;
 namespace SmartCenter.Api.Controllers;
 
 [ApiController]
-[Route("api/staff")]
+[Route("api/ConsultationRequest")]
 public class StaffController : ControllerBase
 {
     private readonly IService _staffService;
@@ -25,7 +25,7 @@ public class StaffController : ControllerBase
             HttpContext.TraceIdentifier));
     }
 
-    [HttpPost("accept-consultation")]
+    [HttpPost("{id}/accept")]
     [Authorize(Policy = JwtExtensions.StaffPolicy)]
     public async Task<IActionResult> AcceptConsultation(Guid consultationId)
     {
@@ -33,11 +33,27 @@ public class StaffController : ControllerBase
             "Nhận đơn thành công", HttpContext.TraceIdentifier));
     }
     
-    [HttpPost("reject-consultation")]
+    [HttpPost("{id}/reject")]
     [Authorize(Policy = JwtExtensions.StaffPolicy)]
     public async Task<IActionResult> RejectConsultation(Guid consultationId)
     {
         return Ok(ApiResponseFactory.SuccessResponse(await _staffService.RejectConsultation(consultationId),
-            "Đã từ chối", HttpContext.TraceIdentifier));
+            "Đã từ chối yêu cầu", HttpContext.TraceIdentifier));
+    }
+    
+    [HttpGet]
+    [Authorize(Policy = JwtExtensions.StaffOrAdminPolicy)]
+    public async Task<IActionResult> GetConsultations([FromQuery] Request.ConsultationRequest request)
+    {
+        var result = await _staffService.GetConsultationsAsync(request);
+        return Ok(ApiResponseFactory.SuccessResponse(result, "Get consultations success", HttpContext.TraceIdentifier));
+    }
+    
+    [HttpGet("Enrollment")]
+    [Authorize(Policy = JwtExtensions.StaffOrAdminPolicy)]
+    public async Task<IActionResult> GetEnrollments([FromQuery] Request.GetEnrollmentsRequest request)
+    {
+        var result = await _staffService.GetEnrollmentsAsync(request);
+        return Ok(ApiResponseFactory.SuccessResponse(result, "Get enrollments success", HttpContext.TraceIdentifier));
     }
 }

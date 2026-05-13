@@ -154,7 +154,7 @@ public async Task HandleWebhookAsync(Request.SepayWebhookRequest request)
         }
  
         var order = await _dbContext.Orders
-            .Include(o => o.Items)
+            .Include(o => o.OrderItems)
             .FirstOrDefaultAsync(o => o.Id == orderId);
  
         if (order == null)
@@ -176,7 +176,7 @@ public async Task HandleWebhookAsync(Request.SepayWebhookRequest request)
             Id                      = Guid.NewGuid(),
             OrderId                 = order.Id,
             Amount                  = request.TransferAmount,
-            Status                  = "Completed",
+            Status                  = "Full_Complete",
             ProviderTransactionCode = request.Id.ToString(),
             ConfirmedByStaffId      = Guid.Empty,
             ConfirmedAt             = DateTimeOffset.UtcNow,
@@ -186,7 +186,7 @@ public async Task HandleWebhookAsync(Request.SepayWebhookRequest request)
         await _dbContext.SaveChangesAsync();
  
         // Tạo Enrollment cho từng course trong OrderItems
-        var enrollments = order.Items
+        var enrollments = order.OrderItems!
             .Where(o => o.CourseId.HasValue)
             .Select(o => new Enrollment
             {

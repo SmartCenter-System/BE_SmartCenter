@@ -175,4 +175,22 @@ public class Service : IService
         await _dbContext.SaveChangesAsync();
     }
 
+    public async Task<Response.UserDetailResponse> GetUserDetailAsync(Guid userId)
+    {
+        var userExist = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
+        if (userExist == null)
+            throw new Exception("Nguời dùng không tìm thấy.");
+
+        var user = new Response.UserDetailResponse()
+        {
+            Id = userId,
+            FullName = userExist.LastName + " " + userExist.FirstName,
+            Email = userExist.Email,
+            Role = userExist.Role,
+            Status = userExist.Status,
+            CreatedAt = userExist.CreatedAt,
+        };
+
+        return user;
+    }
 }

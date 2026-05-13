@@ -8,7 +8,7 @@ namespace SmartCenter.Api.Controllers;
 
 [ApiController]
 [Route("api/documents")]
-[Authorize(Policy = JwtExtensions.LecturerPolicy)]
+
 public class DocumentController: ControllerBase
 {
     private readonly IService _documentService;
@@ -17,7 +17,7 @@ public class DocumentController: ControllerBase
     {
         _documentService = documentService;
     }
-    
+    [Authorize(Policy = JwtExtensions.LecturerPolicy)]
     [HttpPost("upload")]
     public async Task<IActionResult> UploadDocument(
         [FromQuery] Guid lessonId,
@@ -33,7 +33,7 @@ public class DocumentController: ControllerBase
         var result = await _documentService.GetDocumentsByLessonAsync(lessonId);
         return Ok(ApiResponseFactory.SuccessResponse(result, "Lấy danh sách tài liệu thành công!", HttpContext.TraceIdentifier));
     }
-    
+    [Authorize(Policy = JwtExtensions.LecturerPolicy)]
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteDocument(Guid id)
     {

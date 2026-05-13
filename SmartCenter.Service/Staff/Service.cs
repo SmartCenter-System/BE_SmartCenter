@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using SmartCenter.Repository.Data;
 using SmartCenter.Repository.Entity.Enums;
+using SmartCenter.Service.Base;
 
 namespace SmartCenter.Service.Staff;
 
@@ -101,4 +102,100 @@ public class Service : IService
         await _dbContext.SaveChangesAsync();
         return "Đã từ chối yêu cầu";
     }
+
+    public async Task<PagedResult<Response.ConsultationItemResponse>> GetConsultationsAsync(Request.ConsultationRequest request)
+    {
+        var query = _dbContext.ConsultationRequests.AsQueryable();
+
+        if (request.Status.HasValue)
+        {
+            query = query.Where(c => c.Status == request.Status.Value);
+        }
+
+        var total = await query.CountAsync();
+
+        var items = await query
+            .OrderByDescending(c => c.RequestDate)
+            .Skip((request.PageIndex - 1) * request.PageSize)
+            .Take(request.PageSize)
+            .Select(c => new Response.ConsultationItemResponse()
+            {
+                Id = c.Id,
+                FullName = c.FirstName + " " + c.LastName,
+                Email = c.Email,
+                Phone = c.PhoneNumber,
+                CourseId = c.CourseId,
+                CourseName = c.Course != null ? c.Course.CourseName : null,
+                Note = c.Notes,
+                Status = c.Status.ToString(),
+                CreateAt = c.RequestDate,
+            }).ToListAsync();
+
+        return new PagedResult<Response.ConsultationItemResponse>()
+        {
+            Items = items,
+            Total = total
+        };
+    }
+    
+    public async Task<PagedResult<Response.EnrollmentItemResponse>> GetEnrollmentsAsync(Request.GetEnrollmentsRequest request)
+{
+    var query = _dbContext.Enrollments
+        .Include(e => e.Student)
+            .ThenInclude(s => s.User)
+        .Include(e => e.Course)
+            .ThenInclude(c => c.Lessons)
+        .AsQueryable();
+
+    if (!string.IsNullOrWhiteSpace(request.SearchName))
+    {
+        var keyword = request.SearchName.Trim().ToLower();
+        query = query.Where(e =>
+            (e.Student.User.FirstName + " " + e.Student.User.LastName)
+            .ToLower().Contains(keyword));
+    }
+
+    if (request.CourseId.HasValue)
+        query = query.Where(e => e.CourseId == request.CourseId.Value);
+
+    var total = await query.CountAsync();
+
+    var enrollments = await query
+        .OrderByDescending(e => e.EnrollmentDate)
+        .Skip((request.PageIndex - 1) * request.PageSize)
+        .Take(request.PageSize)
+        .ToListAsync();
+
+    // Tính progressPercent: số lesson đã hoàn thành / tổng lesson của course
+    var items = new List<Response.EnrollmentItemResponse>();
+    foreach (var e in enrollments)
+    {
+        var totalLessons = e.Course.Lessons.Count;
+        var completedLessons = await _dbContext.LearningProcesses
+            .CountAsync(lp => lp.StuId    == e.StuId
+                           && lp.Lesson.CourseId == e.CourseId
+                           && lp.IsCompleted);
+
+        var progress = totalLessons > 0
+            ? (int)Math.Round((double)completedLessons / totalLessons * 100)
+            : 0;
+
+        items.Add(new Response.EnrollmentItemResponse()
+        {
+            EnrollmentId    = e.Id,
+            StudentId       = e.StuId,
+            StudentName     = e.Student.User.FirstName + " " + e.Student.User.LastName,
+            CourseId        = e.CourseId,
+            CourseName      = e.Course.CourseName,
+            ProgressPercent = progress,
+            EnrolledAt      = e.EnrollmentDate,
+        });
+    }
+
+    return new PagedResult<Response.EnrollmentItemResponse>
+    {
+        Items = items,
+        Total = total,
+    };
+}
 }

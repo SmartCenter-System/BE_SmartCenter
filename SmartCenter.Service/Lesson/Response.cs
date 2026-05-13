@@ -5,6 +5,7 @@ public class Response
     public class LessonResponse
     {
         public Guid Id { get; set; }
+        public Guid? ExamId { get; set; }
         public string Title { get; set; } = string.Empty;
         public string? Description { get; set; }
         public string VideoUrl { get; set; } = string.Empty;

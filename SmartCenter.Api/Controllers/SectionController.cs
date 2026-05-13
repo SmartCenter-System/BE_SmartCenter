@@ -7,8 +7,8 @@ using SmartCenter.Service.Section;
 namespace SmartCenter.Api.Controllers;
 
 [ApiController]
-[Route("[controller]")]
-public class SectionController : ControllerBase
+[Route("api/[controller]")]
+public class SectionController: ControllerBase
 {
     private readonly IService _sectionService;
 

@@ -10,6 +10,7 @@ public interface IService
     Task<string> ForgotPassword(Request.ForgotPasswordRequest request);
     Task<string>  ResetPassword(Request.ResetPasswordRequest request);
     Task<Response.LecturerRegisterResponse> RegisterLecturer(Request.RegisterLecturerRequest request);
+    Task RegisterStaff(Request.RegisterStaffRequest request);
     Task<Response.AuthResponse> RefreshToken(string refreshToken);
     Task Logout(string refreshToken);
 

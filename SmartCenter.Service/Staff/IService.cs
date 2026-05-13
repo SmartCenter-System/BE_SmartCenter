@@ -1,3 +1,5 @@
+using SmartCenter.Service.Base;
+
 namespace SmartCenter.Service.Staff;
 
 public interface IService
@@ -7,4 +9,8 @@ public interface IService
     Task<String> AcceptConsultation(Guid ConsultationId);
 
     Task<string> RejectConsultation(Guid ConsultationId);
+    
+    Task<PagedResult<Response.ConsultationItemResponse>> GetConsultationsAsync(Request.ConsultationRequest request);
+    
+    Task<PagedResult<Response.EnrollmentItemResponse>> GetEnrollmentsAsync(Request.GetEnrollmentsRequest request);
 }

@@ -10,4 +10,6 @@ public interface IService
     Task<Response.DashBoardCourseResponse> GetDashBoardCourseAsync(int? year);
     Task UnLockUserAsync(Guid userId);
 
+    
+    Task<Response.UserDetailResponse> GetUserDetailAsync(Guid userId);
 }
