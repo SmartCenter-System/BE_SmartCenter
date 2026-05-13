@@ -1215,6 +1215,115 @@ public static class AppDbContextSeed
         await context.SaveChangesAsync();
     }
         
+    
+    
+    // ═══════════════════════════════════════════════════════════════════════
+    // 10. COMMENTS (3–5 comment mỗi Lesson)
+    // ═══════════════════════════════════════════════════════════════════════
+ 
+    private static async Task SeedCommentsAsync(AppDbContext context)
+    {
+        if (await context.Comments.AnyAsync()) return;
+ 
+        var now      = DateTimeOffset.UtcNow;
+        var lessons  = await context.Lessons.ToListAsync();
+        var students = await context.Students.Include(s => s.User).ToListAsync();
+        var lecturers = await context.Lecturers.Include(l => l.User).ToListAsync();
+ 
+        // Pool comment theo chủ đề — dùng luân phiên
+        var commentPool = new[]
+        {
+            "Thầy/cô có thể giải thích lại phần này rõ hơn không ạ? Em chưa hiểu lắm.",
+            "Bài này hay quá, em đã hiểu sau khi xem lại lần 2!",
+            "Cho em hỏi phần ví dụ thứ 2 tại sao lại ra kết quả đó ạ?",
+            "Em cảm ơn thầy/cô, phần giải thích rất dễ hiểu!",
+            "Video chất lượng tốt, nội dung súc tích. 👍",
+            "Em làm bài tập cuối video không ra, mong thầy/cô hướng dẫn thêm.",
+            "Tại sao bước 3 lại không dùng công thức kia ạ? Em thấy cũng hợp lý.",
+            "Phần này liên quan đến bài trước như thế nào ạ thầy/cô?",
+            "Bài giảng rõ ràng, em nắm được hết rồi. Cảm ơn ạ!",
+            "Em xem đi xem lại 3 lần vẫn chưa hiểu phần cuối, thầy/cô giúp em với.",
+            "Nội dung bài học rất thực tế, dễ áp dụng vào bài thi.",
+            "Thầy/cô dạy hay lắm, em subscribe khóa này là quyết định đúng đắn!",
+            "Phần ví dụ minh họa rất trực quan, em thích cách giảng này.",
+            "Em có thể hỏi thêm tài liệu tham khảo cho phần này không ạ?",
+            "Bài này em thi thử được 8/10, cảm ơn thầy/cô nhiều!",
+            "Giọng thầy/cô dễ nghe, tốc độ vừa phải, rất phù hợp.",
+            "Em vừa áp dụng cách này vào đề thi thử, ra kết quả đúng luôn!",
+            "Có thể làm thêm bài tập nâng cao cho phần này không ạ?",
+            "Slide bài giảng rõ ràng, em tải về ôn tập rất tiện.",
+            "Phần này khó hơn em nghĩ, may có video giải thích chi tiết.",
+        };
+ 
+        var replyPool = new[]
+        {
+            "Bạn có thể xem lại phần timestamp 5:30, thầy/cô giải thích kỹ ở đó.",
+            "Mình cũng thắc mắc chỗ đó, sau đó hiểu rồi. Bạn thử làm lại ví dụ đi!",
+            "Đúng rồi bạn ơi, phần đó mình cũng làm mãi mới ra.",
+            "Bạn thử xem bài trước liên quan, sẽ hiểu hơn phần này.",
+            "Mình đồng ý, bài này học xong tự tin hơn nhiều!",
+        };
+ 
+        var comments  = new List<Comment>();
+        var allUserIds = students.Select(s => s.User.Id)
+            .Concat(lecturers.Select(l => l.User.Id))
+            .ToList();
+ 
+        int poolIdx  = 0;
+        int replyIdx = 0;
+        int minuteOffset = 0;
+ 
+        var rng = new Random(42); // seed cố định để tái lập được
+ 
+        foreach (var lesson in lessons)
+        {
+            int commentCount = rng.Next(3, 6); // 3–5 comment
+ 
+            for (int c = 0; c < commentCount; c++)
+            {
+                var userId  = allUserIds[(poolIdx + c) % allUserIds.Count];
+                var content = commentPool[poolIdx % commentPool.Length];
+                poolIdx++;
+ 
+                var parent = new Comment
+                {
+                    Id               = Guid.NewGuid(),
+                    LessonId         = lesson.Id,
+                    UserId           = userId,
+                    ParentCommentId  = null,
+                    Content          = content,
+                    DepthLevel       = 0,
+                    IsLocked         = false,
+                    CreatedAt        = now.AddMinutes(-(minuteOffset++)),
+                };
+                comments.Add(parent);
+ 
+                // 1 reply cho comment đầu tiên của mỗi lesson
+                if (c == 0)
+                {
+                    var replyUserId = allUserIds[(poolIdx + 1) % allUserIds.Count];
+                    comments.Add(new Comment
+                    {
+                        Id              = Guid.NewGuid(),
+                        LessonId        = lesson.Id,
+                        UserId          = replyUserId,
+                        ParentCommentId = parent.Id,
+                        Content         = replyPool[replyIdx % replyPool.Length],
+                        DepthLevel      = 1,
+                        IsLocked        = false,
+                        CreatedAt       = now.AddMinutes(-(minuteOffset - 1) + 5),
+                    });
+                    replyIdx++;
+                }
+            }
+        }
+ 
+        await context.Comments.AddRangeAsync(comments);
+        await context.SaveChangesAsync();
+    }
+    
+    
+    
     // ═══════════════════════════════════════════════════════════════════════
     // HELPERS
     // ═══════════════════════════════════════════════════════════════════════
