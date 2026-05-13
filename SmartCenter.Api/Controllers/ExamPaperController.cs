@@ -56,6 +56,12 @@ public class ExamPaperController: ControllerBase
     {
         return Ok(ApiResponseFactory.SuccessResponse(await _examService.AddMultipleQuestionsToExamAsync(ExamID,request), "Add Multiple Questions Success", HttpContext.TraceIdentifier));
     }
-    
-    
+
+    [HttpGet("{examId}")]
+    [Authorize(Policy = JwtExtensions.AdminOrLecturerPolicy)]
+    public async Task<IActionResult> GetExamDetails(Guid examId)
+    {
+        return Ok(ApiResponseFactory.SuccessResponse(await _examService.GetExamDetailAsync(examId), "Success", HttpContext.TraceIdentifier));
+
+    }
 }

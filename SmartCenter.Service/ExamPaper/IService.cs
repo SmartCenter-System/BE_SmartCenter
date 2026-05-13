@@ -8,4 +8,6 @@ public interface IService
     Task<Response.DeadlineResponse> SetDeadlineAsync(Guid examId, Request.SetDeadlineRequest request);  
     Task DeleteExamPaperAsync(Guid examId);
     Task<Response.AddMultipleQuestionsResponse> AddMultipleQuestionsToExamAsync(Guid examId, Request.AddMultipleQuestionsRequest request);
+    
+    Task<Response.ExamDetailResponse> GetExamDetailAsync(Guid examId);
 }

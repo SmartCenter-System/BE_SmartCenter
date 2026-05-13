@@ -233,7 +233,7 @@ public class Service : IService
         {
             throw new ArgumentException("Danh sách câu hỏi không được để trống.");
         }
-        
+
         await AuthorizeExamAsync(examId);
 
         var exam = await _dbContext.ExamPapers.FirstOrDefaultAsync(e => e.Id == examId);
@@ -267,7 +267,7 @@ public class Service : IService
 
                 _dbContext.Questions.UpdateRange(existingQuestions);
             }
-            
+
             var questionsToAdd = new List<Question>();
             var examDetailsToAdd = new List<ExamPaperDetail>();
             var mcAnswersToAdd = new List<MultipleChoiceAnswer>();
@@ -295,11 +295,12 @@ public class Service : IService
                     Title = newQuestion.Title,
                     TypeOfQuestion = newQuestion.TypeOfQuestion
                 };
-                
+
                 if (qRequest.TypeOfQuestion == QuestionType.MultipleChoice)
                 {
                     if (qRequest.MultipleChoiceAnswers == null || !qRequest.MultipleChoiceAnswers.Any())
-                        throw new ArgumentException($"Lỗi ở câu hỏi số {i + 1}: Câu hỏi trắc nghiệm phải có ít nhất 1 đáp án.");
+                        throw new ArgumentException(
+                            $"Lỗi ở câu hỏi số {i + 1}: Câu hỏi trắc nghiệm phải có ít nhất 1 đáp án.");
 
                     if (!qRequest.MultipleChoiceAnswers.Any(a => a.IsCorrect))
                         throw new ArgumentException($"Lỗi ở câu hỏi số {i + 1}: Phải có ít nhất 1 đáp án đúng.");
@@ -324,19 +325,20 @@ public class Service : IService
                 else if (qRequest.TypeOfQuestion == QuestionType.Essay)
                 {
                     if (string.IsNullOrWhiteSpace(qRequest.EssayContext))
-                        throw new ArgumentException($"Lỗi ở câu hỏi số {i + 1}: Vui lòng cung cấp nội dung đề bài (EssayContext).");
+                        throw new ArgumentException(
+                            $"Lỗi ở câu hỏi số {i + 1}: Vui lòng cung cấp nội dung đề bài (EssayContext).");
 
                     var essayAnswer = new EssayAnswer()
                     {
                         Id = Guid.NewGuid(),
                         QuestionId = questionId,
-                        Content = qRequest.EssayContext 
+                        Content = qRequest.EssayContext
                     };
                     essayAnswersToAdd.Add(essayAnswer);
 
                     detailResponse.EssayContext = essayAnswer.Content;
                 }
-                
+
                 examDetailsToAdd.Add(new ExamPaperDetail
                 {
                     Id = Guid.NewGuid(),
@@ -346,6 +348,7 @@ public class Service : IService
 
                 responseItems.Add(detailResponse);
             }
+
             await _dbContext.Questions.AddRangeAsync(questionsToAdd);
             await _dbContext.ExamPaperDetails.AddRangeAsync(examDetailsToAdd);
 
@@ -366,5 +369,46 @@ public class Service : IService
             await transaction.RollbackAsync();
             throw;
         }
+    }
+
+    public async Task<Response.ExamDetailResponse> GetExamDetailAsync(Guid examId)
+    {
+        var examDetail = await _dbContext.ExamPapers
+            .Where(e => e.Id == examId)
+            .Select(e => new Response.ExamDetailResponse
+            {
+                Id = e.Id,
+                Title = e.Title,
+                CountDown = e.CountDown,
+                TotalPoints = e.TotalPoints,
+                Status = e.Status,
+                LessonId = e.LessonId,
+                ListQuestions = e.ExamPaperDetails.Select(epd => new Response.QuestionDetailResponse
+                {
+                    QuestionId = epd.Question.Id,
+                    Title = epd.Question.Title,
+                    TypeOfQuestion = epd.Question.TypeOfQuestion,
+                    MultipleChoiceAnswers =
+                        epd.Question.TypeOfQuestion == QuestionType.MultipleChoice
+                            ? epd.Question.MultipleChoiceAnswers.Select(mc => new Response.AnswerOptionResponse
+                            {
+                                AnswerId = mc.Id,
+                                Content = mc.Content,
+                                IsCorrect = mc.IsCorrect
+                            }).ToList()
+                            : new List<Response.AnswerOptionResponse>(),
+                    EssayContext = epd.Question.TypeOfQuestion == QuestionType.Essay
+                        ? epd.Question.EssayAnswers.Select(ea => ea.Content).FirstOrDefault()
+                        : null
+                }).ToList()
+            })
+            .FirstOrDefaultAsync();
+
+        if (examDetail == null)
+        {
+            throw new Exception("Không tìm thấy bài kiểm tra");
+        }
+
+        return examDetail;
     }
 }

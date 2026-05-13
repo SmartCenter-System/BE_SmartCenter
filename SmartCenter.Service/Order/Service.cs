@@ -187,4 +187,18 @@ public class Service: IService
 
         await _context.SaveChangesAsync();
     }
+
+    public async Task<string> ConfirmOrderAsync(Guid orderId)
+    {
+        var order = await _context.Orders.FirstOrDefaultAsync(x => x.Id == orderId);
+
+        if (order == null)
+        {
+            throw new Exception("Order not found");
+        }
+
+        order.Status = OrderStatus.Expired;
+
+        return "Xác nhận đơn hàng thành công";
+    }
 }
