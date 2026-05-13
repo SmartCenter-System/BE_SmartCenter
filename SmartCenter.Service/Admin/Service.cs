@@ -131,7 +131,7 @@ public class Service : IService
         var TotalStudent = Enrollment.Select(x => x.StuId).Count();
 
         var totalRevenue = await Enrollment.SumAsync(x => x.Transaction.Amount);
-        
+
 
         var revenueByMonthRaw = await Enrollment
             .GroupBy(x => new { x.EnrollmentDate.Year, x.EnrollmentDate.Month })
@@ -142,7 +142,7 @@ public class Service : IService
                 TotalAmount = g.Sum(x => x.Transaction.Amount)
             })
             .ToListAsync();
-        
+
         var revenueChart = revenueByMonthRaw
             .Select(x => new Response.revenueChart
             {

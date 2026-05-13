@@ -46,7 +46,7 @@ public class AdminController : ControllerBase
         return Ok(ApiResponseFactory.SuccessResponse(null, "Mở tài khoản thành công.", HttpContext.TraceIdentifier));
     }
 
-    [HttpGet("admin/dashboard/stats")]
+    [HttpGet("dashboard/stats")]
     [Authorize(Policy = JwtExtensions.AdminPolicy)]
     public async Task<IActionResult> GetDashboardStats(int? year)
     {

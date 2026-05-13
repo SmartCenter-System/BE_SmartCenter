@@ -58,14 +58,10 @@ public class Service : IService
             result.IconUrl = request.CategoryIConUrl;
         }
 
-        if (request.isActive != null)
-        {
-            result.IsActive = request.isActive.Value;
-        }
-        
         result.UpdatedAt = DateTimeOffset.UtcNow;
-        
+
         await _dbContext.SaveChangesAsync();
+
         return "Cập nhật thành công";
     }
 
@@ -83,5 +79,21 @@ public class Service : IService
         await _dbContext.SaveChangesAsync();
 
         return "Tạo mới môn học thành công";
+    }
+
+    public async Task<string> DeleteCategory(Guid categoryId, bool isActive)
+    {
+        var cate = await _dbContext.Categories.FirstOrDefaultAsync(x => x.Id == categoryId);
+
+        if (cate == null)
+        {
+            throw new Exception("Category not found");
+        }
+
+        cate.IsActive = isActive;
+
+        await _dbContext.SaveChangesAsync();
+
+        return "Xóa thành công";
     }
 }
