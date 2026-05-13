@@ -30,6 +30,7 @@ public static class AppDbContextSeed
         await SeedLearningProcessAsync(context);
         await SeedDocumentsAsync(context);
         await SeedCategoriesAsync(context);
+        await SeedCombosAsync(context);
     }
 
     
@@ -1094,6 +1095,75 @@ public static class AppDbContextSeed
         await context.SaveChangesAsync();
     }
 
+        // ═══════════════════════════════════════════════════════════════════════
+        // 8. COMBOS + COMBO COURSES
+        // ═══════════════════════════════════════════════════════════════════════
+     
+        private static async Task SeedCombosAsync(AppDbContext context)
+        {
+            if (await context.Combos.AnyAsync()) return;
+     
+            var now     = DateTimeOffset.UtcNow;
+            var courses = await context.Courses.ToListAsync();
+            var carts   = await context.Carts.ToListAsync();
+     
+            // ── Tạo 4 Combo ──────────────────────────────────────────────────
+            var comboData = new[]
+            {
+                ("Combo Luyện thi THPT Khoa học Tự nhiên",  20, new[] { 1, 3, 5 }),   // Toán 12, Vật lý 12, Hóa 12
+                ("Combo Luyện thi THPT Khoa học Xã hội",    15, new[] { 7, 9 }),       // Tiếng Anh THPT, Ngữ văn 12
+                ("Combo Nền tảng Lớp 10",                   10, new[] { 0, 2, 4, 6 }), // Toán 10, Vật lý 11, Hóa 10, Tiếng Anh 10
+                ("Combo Toán & Lý Toàn Diện",               18, new[] { 0, 1, 2, 3 }), // Toán 10, Toán 12, Vật lý 11, Vật lý 12
+            };
+     
+            var combos = comboData.Select(d => new Combo
+            {
+                Id              = Guid.NewGuid(),
+                Name            = d.Item1,
+                DiscountPercent = d.Item2,
+                IsActive        = true,
+                CreatedAt       = now,
+            }).ToList();
+     
+            await context.Combos.AddRangeAsync(combos);
+     
+            // ── Tạo CartItem cho Combo (gắn vào cart của student 0, 1, 2, 3) ─
+            var comboCartItems = new List<CartItem>();
+            for (int i = 0; i < combos.Count; i++)
+            {
+                comboCartItems.Add(new CartItem
+                {
+                    Id        = Guid.NewGuid(),
+                    CartId    = carts[i].Id,
+                    ComboId   = combos[i].Id,
+                    ItemType  = CartItemType.Combo,
+                    Quantity  = 1,
+                    CreatedAt = now,
+                });
+            }
+            await context.CartItems.AddRangeAsync(comboCartItems);
+     
+            // ── Tạo ComboCourse ────────────────────────────────────────────────
+            var comboCourses = new List<ComboCourse>();
+            for (int ci = 0; ci < combos.Count; ci++)
+            {
+                var (_, _, courseIndexes) = comboData[ci];
+                foreach (var idx in courseIndexes)
+                {
+                    comboCourses.Add(new ComboCourse
+                    {
+                        Id          = Guid.NewGuid(),
+                        ComboId     = combos[ci].Id,
+                        CourseId    = courses[idx].Id,
+                        CartItemId  = comboCartItems[ci].Id,
+                        CreatedAt   = now,
+                    });
+                }
+            }
+     
+            await context.ComboCourses.AddRangeAsync(comboCourses);
+            await context.SaveChangesAsync();
+        }
     // ═══════════════════════════════════════════════════════════════════════
     // HELPERS
     // ═══════════════════════════════════════════════════════════════════════
