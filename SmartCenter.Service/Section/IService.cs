@@ -6,4 +6,5 @@ public interface IService
     Task<Response.SectionResponse> CreateSectionAsync(Guid courseId, Request.CreateSectionRequest request);
     Task<Response.SectionResponse> UpdateSectionAsync(Guid sectionId, Request.UpdateSectionRequest request);
     Task DeleteSectionAsync(Guid sectionId);
+    Task<Response.SectionListResponse> ListSectionsAsync(Guid SectionId);
 }

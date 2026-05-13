@@ -8,7 +8,6 @@ public class Request
         public string? CategoryName { get; set; }
         public string? CategoryDescription { get; set; }
         public string? CategoryIConUrl { get; set; }
-        public bool? isActive { get; set; }
     }
     
     public class CreateCategoryRequest()
