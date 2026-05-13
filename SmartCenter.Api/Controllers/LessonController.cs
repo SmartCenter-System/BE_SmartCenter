@@ -52,4 +52,12 @@ public class LessonController : ControllerBase
         await _lessonService.DeleteLessonAsync(lessonId);
         return Ok(ApiResponseFactory.SuccessResponse(null, "Delete Lesson Details Success", HttpContext.TraceIdentifier));
     }
+
+    [HttpGet("{lessonId}")]
+    [Authorize(Policy = JwtExtensions.AdminOrLecturerPolicy)]
+    public async Task<IActionResult> GetLessionById(Guid lessonId)
+    {
+        await _lessonService.GetLessonAsync(lessonId);
+        return Ok(ApiResponseFactory.SuccessResponse(await _lessonService.GetLessonAsync(lessonId), "Success", HttpContext.TraceIdentifier));
+    }
 }

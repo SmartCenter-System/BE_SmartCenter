@@ -8,4 +8,10 @@ public class Response
         public string Title { get; set; } = string.Empty;
         public int Order { get; set; }
     }
+
+    public class SectionListResponse : SectionResponse
+    {
+        public List<Lesson.Response.LessonResponse> ListLessions { get; set; }
+    }
+    
 }

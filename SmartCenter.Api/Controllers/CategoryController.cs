@@ -25,7 +25,7 @@ public class CategoryController : ControllerBase
             "Lấy danh sách khóa học thành công", HttpContext.TraceIdentifier));
     }
 
-    [HttpPost("update-delete-categories")]
+    [HttpPost("update-categories")]
     [Authorize(Policy = JwtExtensions.AdminPolicy)]
     public async Task<IActionResult> UpdateCategories([FromBody] Request.UpDateCategoryRequest request)
     {
@@ -39,5 +39,13 @@ public class CategoryController : ControllerBase
     {
         return Ok(ApiResponseFactory.SuccessResponse(await _CategoryService.CreateCategory(request),
             "Tạo mới môn học thành công", HttpContext.TraceIdentifier));
+    }
+    
+    [HttpDelete("categories/{categoryId}")]
+    [Authorize(Policy = JwtExtensions.AdminPolicy)]
+    public async Task<IActionResult> DeleteCategories(Guid categoryId,bool isActive)
+    {
+        return Ok(ApiResponseFactory.SuccessResponse(await _CategoryService.DeleteCategory(categoryId, isActive),
+            "Cập nhật thành công", HttpContext.TraceIdentifier));
     }
 }

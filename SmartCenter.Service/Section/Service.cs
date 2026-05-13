@@ -4,7 +4,7 @@ using SmartCenter.Repository.Data;
 
 namespace SmartCenter.Service.Section;
 
-public class Service: IService
+public class Service : IService
 {
     private readonly AppDbContext _dbContext;
     private readonly IHttpContextAccessor _httpContextAccessor;
@@ -18,8 +18,8 @@ public class Service: IService
     private Guid GetLecturerId()
     {
         var claim = _httpContextAccessor.HttpContext?.User
-            .FindFirst("lecturerId")?.Value
-            ?? throw new UnauthorizedAccessException("Không tìm thấy thông tin giảng viên.");
+                        .FindFirst("lecturerId")?.Value
+                    ?? throw new UnauthorizedAccessException("Không tìm thấy thông tin giảng viên.");
         return Guid.Parse(claim);
     }
 
@@ -53,7 +53,7 @@ public class Service: IService
             .OrderBy(s => s.Position)
             .Select(s => new Response.SectionResponse
             {
-                Id    = s.Id,
+                Id = s.Id,
                 Title = s.Title,
                 Order = s.Position,
             })
@@ -66,10 +66,10 @@ public class Service: IService
 
         var section = new Repository.Entity.Section
         {
-            Id       = Guid.NewGuid(),
+            Id = Guid.NewGuid(),
             CourseId = courseId,
-            Title    = request.Title,
-            Position    = request.Position,
+            Title = request.Title,
+            Position = request.Position,
         };
 
         var sectionNew = new Response.SectionResponse
@@ -78,7 +78,7 @@ public class Service: IService
             Title = section.Title,
             Order = section.Position
         };
-        
+
         _dbContext.Sections.Add(section);
         await _dbContext.SaveChangesAsync();
 
@@ -90,12 +90,12 @@ public class Service: IService
         await AuthorizeSectionAsync(sectionId);
 
         var section = await _dbContext.Sections.FindAsync(sectionId)
-            ?? throw new Exception("Không tìm thấy section.");
+                      ?? throw new Exception("Không tìm thấy section.");
 
         if (request.Title != null) section.Title = request.Title;
         if (request.Position != null) section.Position = request.Position.Value;
 
-        
+
         var sectionNew = new Response.SectionResponse
         {
             Id = section.Id,
@@ -111,9 +111,39 @@ public class Service: IService
         await AuthorizeSectionAsync(sectionId);
 
         var section = await _dbContext.Sections.FindAsync(sectionId)
-            ?? throw new Exception("Không tìm thấy section.");
+                      ?? throw new Exception("Không tìm thấy section.");
 
         _dbContext.Sections.Remove(section);
         await _dbContext.SaveChangesAsync();
+    }
+
+    public async Task<Response.SectionListResponse> ListSectionsAsync(Guid SectionId)
+    {
+        var sections = await _dbContext.Sections
+            .Include(s => s.Lessons)
+            .FirstOrDefaultAsync(x => x.Id == SectionId);
+
+        if (sections == null)
+        {
+            throw new Exception("Section not found.");
+        }
+
+        var result = new Response.SectionListResponse()
+        {
+            Id = sections.Id,
+            Order = sections.Position,
+            Title = sections.Title,
+            ListLessions = sections.Lessons.Select(lesson => new Lesson.Response.LessonResponse()
+            {
+                Id = lesson.Id, 
+                Title = lesson.Title,
+                Description = lesson.Description,
+                VideoUrl = lesson.VideoUrl,
+                Order = lesson.Position, 
+                IsPreview = lesson.IsPreview,
+                Duration = lesson.Duration
+            }).ToList()
+        };
+        return result;
     }
 }

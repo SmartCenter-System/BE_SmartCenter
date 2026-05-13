@@ -6,4 +6,6 @@ public interface IService
     Task<Response.LessonResponse> CreateLessonAsync(Guid sectionId, Request.CreateLessonRequest request);
     Task<Response.LessonResponse> UpdateLessonAsync(Guid lessonId, Request.UpdateLessonRequest request);
     Task DeleteLessonAsync(Guid lessonId);
+    
+    Task<Response.LessonResponse> GetLessonAsync(Guid lessonId);
 }

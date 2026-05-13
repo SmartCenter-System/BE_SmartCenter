@@ -135,4 +135,26 @@ public class Service: IService
         _dbContext.Lessons.Remove(lesson);
         await _dbContext.SaveChangesAsync();
     }
+
+    public async Task<Response.LessonResponse> GetLessonAsync(Guid lessonId)
+    {
+        var lession = await _dbContext.Lessons.FirstOrDefaultAsync(x => x.Id == lessonId);
+
+        if (lession == null)
+        {
+            throw new Exception("Lession not found");
+        }
+
+        var result = new Response.LessonResponse()
+        {
+            Id = lession.Id,
+            IsPreview = lession.IsPreview,
+            Description = lession.Description,
+            Duration = lession.Duration,
+            VideoUrl = lession.VideoUrl,
+            Order = lession.Position,
+        };
+        
+        return result;
+    }
 }

@@ -5,9 +5,10 @@ using SmartCenter.Service.Model;
 using SmartCenter.Service.Section;
 
 namespace SmartCenter.Api.Controllers;
+
 [ApiController]
 [Route("[controller]")]
-public class SectionController: ControllerBase
+public class SectionController : ControllerBase
 {
     private readonly IService _sectionService;
 
@@ -20,7 +21,8 @@ public class SectionController: ControllerBase
     public async Task<IActionResult> GetSections(Guid courseId)
     {
         var section = await _sectionService.GetSectionsByCourseAsync(courseId);
-        return Ok(ApiResponseFactory.SuccessResponse(section, "Get Section Details Success", HttpContext.TraceIdentifier));
+        return Ok(ApiResponseFactory.SuccessResponse(section, "Get Section Details Success",
+            HttpContext.TraceIdentifier));
     }
 
 
@@ -29,7 +31,8 @@ public class SectionController: ControllerBase
     public async Task<IActionResult> Create(Guid courseId, [FromBody] Request.CreateSectionRequest request)
     {
         var section = await _sectionService.CreateSectionAsync(courseId, request);
-        return Ok(ApiResponseFactory.SuccessResponse(section, "Create Section Details Success", HttpContext.TraceIdentifier));
+        return Ok(ApiResponseFactory.SuccessResponse(section, "Create Section Details Success",
+            HttpContext.TraceIdentifier));
     }
 
     [HttpPut("{sectionId}")]
@@ -38,7 +41,8 @@ public class SectionController: ControllerBase
         [FromBody] Request.UpdateSectionRequest request)
     {
         var section = await _sectionService.UpdateSectionAsync(sectionId, request);
-        return Ok(ApiResponseFactory.SuccessResponse(section, "Get Section Details Success", HttpContext.TraceIdentifier));
+        return Ok(ApiResponseFactory.SuccessResponse(section, "Get Section Details Success",
+            HttpContext.TraceIdentifier));
     }
 
 
@@ -47,6 +51,15 @@ public class SectionController: ControllerBase
     public async Task<IActionResult> Delete(Guid courseId, Guid sectionId)
     {
         await _sectionService.DeleteSectionAsync(sectionId);
-        return Ok(ApiResponseFactory.SuccessResponse(null, "Delete Section Details Success", HttpContext.TraceIdentifier));
+        return Ok(ApiResponseFactory.SuccessResponse(null, "Delete Section Details Success",
+            HttpContext.TraceIdentifier));
+    }
+
+    [HttpGet("{sectionId}")]
+    [Authorize(Policy = JwtExtensions.AdminOrLecturerPolicy)]
+    public async Task<IActionResult> GetSectionById(Guid sectionId)
+    {
+        return Ok(ApiResponseFactory.SuccessResponse(await _sectionService.ListSectionsAsync(sectionId), "Success",
+            HttpContext.TraceIdentifier));
     }
 }
