@@ -32,6 +32,7 @@ public static class AppDbContextSeed
         await SeedCategoriesAsync(context);
         await SeedCombosAsync(context);
         await SeedReviewCoursesAsync(context);
+        await SeedCommentsAsync(context);
     }
 
     
