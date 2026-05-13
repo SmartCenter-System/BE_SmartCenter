@@ -30,6 +30,8 @@ public static class AppDbContextSeed
         await SeedLearningProcessAsync(context);
         await SeedDocumentsAsync(context);
         await SeedCategoriesAsync(context);
+        await SeedCombosAsync(context);
+        await SeedReviewCoursesAsync(context);
     }
 
     
@@ -1094,6 +1096,125 @@ public static class AppDbContextSeed
         await context.SaveChangesAsync();
     }
 
+        // ═══════════════════════════════════════════════════════════════════════
+        // 8. COMBOS + COMBO COURSES
+        // ═══════════════════════════════════════════════════════════════════════
+     
+        private static async Task SeedCombosAsync(AppDbContext context)
+        {
+            if (await context.Combos.AnyAsync()) return;
+     
+            var now     = DateTimeOffset.UtcNow;
+            var courses = await context.Courses.ToListAsync();
+            var carts   = await context.Carts.ToListAsync();
+     
+            // ── Tạo 4 Combo ──────────────────────────────────────────────────
+            var comboData = new[]
+            {
+                ("Combo Luyện thi THPT Khoa học Tự nhiên",  20, new[] { 1, 3, 5 }),   // Toán 12, Vật lý 12, Hóa 12
+                ("Combo Luyện thi THPT Khoa học Xã hội",    15, new[] { 7, 9 }),       // Tiếng Anh THPT, Ngữ văn 12
+                ("Combo Nền tảng Lớp 10",                   10, new[] { 0, 2, 4, 6 }), // Toán 10, Vật lý 11, Hóa 10, Tiếng Anh 10
+                ("Combo Toán & Lý Toàn Diện",               18, new[] { 0, 1, 2, 3 }), // Toán 10, Toán 12, Vật lý 11, Vật lý 12
+            };
+     
+            var combos = comboData.Select(d => new Combo
+            {
+                Id              = Guid.NewGuid(),
+                Name            = d.Item1,
+                DiscountPercent = d.Item2,
+                IsActive        = true,
+                CreatedAt       = now,
+            }).ToList();
+     
+            await context.Combos.AddRangeAsync(combos);
+     
+            // ── Tạo CartItem cho Combo (gắn vào cart của student 0, 1, 2, 3) ─
+            var comboCartItems = new List<CartItem>();
+            for (int i = 0; i < combos.Count; i++)
+            {
+                comboCartItems.Add(new CartItem
+                {
+                    Id        = Guid.NewGuid(),
+                    CartId    = carts[i].Id,
+                    ComboId   = combos[i].Id,
+                    ItemType  = CartItemType.Combo,
+                    Quantity  = 1,
+                    CreatedAt = now,
+                });
+            }
+            await context.CartItems.AddRangeAsync(comboCartItems);
+     
+            // ── Tạo ComboCourse ────────────────────────────────────────────────
+            var comboCourses = new List<ComboCourse>();
+            for (int ci = 0; ci < combos.Count; ci++)
+            {
+                var (_, _, courseIndexes) = comboData[ci];
+                foreach (var idx in courseIndexes)
+                {
+                    comboCourses.Add(new ComboCourse
+                    {
+                        Id          = Guid.NewGuid(),
+                        ComboId     = combos[ci].Id,
+                        CourseId    = courses[idx].Id,
+                        CartItemId  = comboCartItems[ci].Id,
+                        CreatedAt   = now,
+                    });
+                }
+            }
+     
+            await context.ComboCourses.AddRangeAsync(comboCourses);
+            await context.SaveChangesAsync();
+        }
+        
+        
+        
+        
+    // ═══════════════════════════════════════════════════════════════════════
+    // 9. REVIEW COURSES
+    // ═══════════════════════════════════════════════════════════════════════
+ 
+    private static async Task SeedReviewCoursesAsync(AppDbContext context)
+    {
+        if (await context.ReviewCourses.AnyAsync()) return;
+ 
+        var now         = DateTimeOffset.UtcNow;
+        var enrollments = await context.Enrollments.ToListAsync();
+ 
+        // Mỗi enrollment (student đã mua) sẽ có 1 review
+        var reviewData = new[]
+        {
+            (5, "Khóa học rất hay, giảng viên dạy dễ hiểu và bài tập phong phú!",          5),
+            (5, "Nội dung chi tiết, bám sát đề thi. Rất hữu ích cho kỳ thi THPT.",         5),
+            (4, "Khóa học tốt, video chất lượng cao. Chỉ tiếc phần bài tập hơi ít.",       4),
+            (4, "Giảng viên nhiệt tình, giải thích rõ ràng từng dạng bài.",                4),
+            (3, "Nội dung ổn, nhưng tốc độ giảng hơi nhanh với người mới bắt đầu.",       3),
+            (5, "Xuất sắc! Sau khi học xong mình thi được 9 điểm môn Hóa.",                5),
+            (4, "Phương pháp giảng dạy sáng tạo, nhiều ví dụ thực tế rất dễ nhớ.",       4),
+            (5, "Tài liệu đính kèm đầy đủ, slide đẹp. Rất đáng tiền!",                   5),
+            (3, "Ổn nhưng cần cập nhật thêm một số dạng câu hỏi mới trong đề thi 2025.", 3),
+            (4, "Khóa học giúp mình nắm chắc kiến thức nền tảng, giảng viên rất tận tâm.", 4),
+        };
+ 
+        var reviews = new List<ReviewCourse>();
+ 
+        for (int i = 0; i < Math.Min(enrollments.Count, reviewData.Length); i++)
+        {
+            var (_, comment, rating) = reviewData[i];
+            reviews.Add(new ReviewCourse
+            {
+                Id        = Guid.NewGuid(),
+                CourseId  = enrollments[i].CourseId,
+                StuId     = enrollments[i].StuId,
+                Rating    = rating,
+                Comment   = comment,
+                CreatedAt = now.AddDays(-i),
+            });
+        }
+ 
+        await context.ReviewCourses.AddRangeAsync(reviews);
+        await context.SaveChangesAsync();
+    }
+        
     // ═══════════════════════════════════════════════════════════════════════
     // HELPERS
     // ═══════════════════════════════════════════════════════════════════════
