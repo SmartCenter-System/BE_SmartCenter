@@ -31,6 +31,7 @@ public static class AppDbContextSeed
         await SeedDocumentsAsync(context);
         await SeedCategoriesAsync(context);
         await SeedCombosAsync(context);
+        await SeedReviewCoursesAsync(context);
     }
 
     
@@ -1164,6 +1165,56 @@ public static class AppDbContextSeed
             await context.ComboCourses.AddRangeAsync(comboCourses);
             await context.SaveChangesAsync();
         }
+        
+        
+        
+        
+    // ═══════════════════════════════════════════════════════════════════════
+    // 9. REVIEW COURSES
+    // ═══════════════════════════════════════════════════════════════════════
+ 
+    private static async Task SeedReviewCoursesAsync(AppDbContext context)
+    {
+        if (await context.ReviewCourses.AnyAsync()) return;
+ 
+        var now         = DateTimeOffset.UtcNow;
+        var enrollments = await context.Enrollments.ToListAsync();
+ 
+        // Mỗi enrollment (student đã mua) sẽ có 1 review
+        var reviewData = new[]
+        {
+            (5, "Khóa học rất hay, giảng viên dạy dễ hiểu và bài tập phong phú!",          5),
+            (5, "Nội dung chi tiết, bám sát đề thi. Rất hữu ích cho kỳ thi THPT.",         5),
+            (4, "Khóa học tốt, video chất lượng cao. Chỉ tiếc phần bài tập hơi ít.",       4),
+            (4, "Giảng viên nhiệt tình, giải thích rõ ràng từng dạng bài.",                4),
+            (3, "Nội dung ổn, nhưng tốc độ giảng hơi nhanh với người mới bắt đầu.",       3),
+            (5, "Xuất sắc! Sau khi học xong mình thi được 9 điểm môn Hóa.",                5),
+            (4, "Phương pháp giảng dạy sáng tạo, nhiều ví dụ thực tế rất dễ nhớ.",       4),
+            (5, "Tài liệu đính kèm đầy đủ, slide đẹp. Rất đáng tiền!",                   5),
+            (3, "Ổn nhưng cần cập nhật thêm một số dạng câu hỏi mới trong đề thi 2025.", 3),
+            (4, "Khóa học giúp mình nắm chắc kiến thức nền tảng, giảng viên rất tận tâm.", 4),
+        };
+ 
+        var reviews = new List<ReviewCourse>();
+ 
+        for (int i = 0; i < Math.Min(enrollments.Count, reviewData.Length); i++)
+        {
+            var (_, comment, rating) = reviewData[i];
+            reviews.Add(new ReviewCourse
+            {
+                Id        = Guid.NewGuid(),
+                CourseId  = enrollments[i].CourseId,
+                StuId     = enrollments[i].StuId,
+                Rating    = rating,
+                Comment   = comment,
+                CreatedAt = now.AddDays(-i),
+            });
+        }
+ 
+        await context.ReviewCourses.AddRangeAsync(reviews);
+        await context.SaveChangesAsync();
+    }
+        
     // ═══════════════════════════════════════════════════════════════════════
     // HELPERS
     // ═══════════════════════════════════════════════════════════════════════
