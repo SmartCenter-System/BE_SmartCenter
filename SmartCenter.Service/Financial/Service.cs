@@ -156,7 +156,7 @@ public class Service: IService
                 TotalRevenue  = g.Sum(i => i.UnitPrice * i.Quantity),
                 TotalOrders   = g.Count(),
             })
-            .OrderByDescending(r => r.TotalRevenue) // Top doanh thu
+            .OrderByDescending(r => r.TotalRevenue) 
             .ToListAsync();
     }
 }
