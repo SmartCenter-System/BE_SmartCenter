@@ -83,6 +83,7 @@ public class Service : IService
                 TotalAmount = o.TotalAmount,
                 PaymentStatus = o.Status.ToString(),
                 CreatedAt = o.CreatedAt,
+                TransactionId = o.TransactionId
             })
             .ToListAsync();
 

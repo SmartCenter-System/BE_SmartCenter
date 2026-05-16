@@ -24,6 +24,8 @@ public class Response
         public decimal TotalAmount   { get; set; }
         public string  PaymentStatus { get; set; } = string.Empty;
         public DateTimeOffset CreatedAt { get; set; }
+        
+        public Guid TransactionId {get; set;}
     }
     
     public class DashBoardCourseResponse

@@ -150,13 +150,13 @@ public class Service: IService
             if (!request.LecturerId.HasValue)
                 throw new Exception("Admin phải chỉ định LecturerId khi tạo khóa học.");
 
-            var lecturerExists = await _dbContext.Lecturers
-                .AnyAsync(l => l.Id == request.LecturerId.Value);
+            var lecturer = await _dbContext.Lecturers
+                .FirstOrDefaultAsync(l => l.UserId == request.LecturerId.Value);
 
-            if (!lecturerExists)
-                throw new Exception("Không tìm thấy giảng viên.");
+            if (lecturer == null)
+                throw new Exception("Không tìm thấy giảng viên theo UserId này.");
 
-            lecturerId = request.LecturerId.Value;
+            lecturerId = lecturer.Id;
         }
         else
         {

@@ -18,7 +18,7 @@ public class StaffController : ControllerBase
     }
 
     [HttpGet("dashboard/stats")]
-    [Authorize(Policy = JwtExtensions.StaffPolicy)]
+    [Authorize(Policy = JwtExtensions.StaffOrAdminPolicy)]
     public async Task<IActionResult> GetDashboardStats()
     {
         return Ok(ApiResponseFactory.SuccessResponse(await _staffService.GetConsultations(), "Thành công",
@@ -26,7 +26,7 @@ public class StaffController : ControllerBase
     }
 
     [HttpPost("{id}/accept")]
-    [Authorize(Policy = JwtExtensions.StaffPolicy)]
+    [Authorize(Policy = JwtExtensions.StaffOrAdminPolicy)]
     public async Task<IActionResult> AcceptConsultation(Guid consultationId)
     {
         return Ok(ApiResponseFactory.SuccessResponse(await _staffService.AcceptConsultation(consultationId),
@@ -34,7 +34,7 @@ public class StaffController : ControllerBase
     }
     
     [HttpPost("{id}/reject")]
-    [Authorize(Policy = JwtExtensions.StaffPolicy)]
+    [Authorize(Policy = JwtExtensions.StaffOrAdminPolicy)]
     public async Task<IActionResult> RejectConsultation(Guid consultationId)
     {
         return Ok(ApiResponseFactory.SuccessResponse(await _staffService.RejectConsultation(consultationId),
