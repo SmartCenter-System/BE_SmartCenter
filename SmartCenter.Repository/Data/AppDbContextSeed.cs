@@ -30,6 +30,9 @@ public static class AppDbContextSeed
         await SeedLearningProcessAsync(context);
         await SeedDocumentsAsync(context);
         await SeedCategoriesAsync(context);
+        await SeedCombosAsync(context);
+        await SeedReviewCoursesAsync(context);
+        await SeedCommentsAsync(context);
     }
 
     
@@ -1094,6 +1097,234 @@ public static class AppDbContextSeed
         await context.SaveChangesAsync();
     }
 
+        // ═══════════════════════════════════════════════════════════════════════
+        // 8. COMBOS + COMBO COURSES
+        // ═══════════════════════════════════════════════════════════════════════
+     
+        private static async Task SeedCombosAsync(AppDbContext context)
+        {
+            if (await context.Combos.AnyAsync()) return;
+     
+            var now     = DateTimeOffset.UtcNow;
+            var courses = await context.Courses.ToListAsync();
+            var carts   = await context.Carts.ToListAsync();
+     
+            // ── Tạo 4 Combo ──────────────────────────────────────────────────
+            var comboData = new[]
+            {
+                ("Combo Luyện thi THPT Khoa học Tự nhiên",  20, new[] { 1, 3, 5 }),   // Toán 12, Vật lý 12, Hóa 12
+                ("Combo Luyện thi THPT Khoa học Xã hội",    15, new[] { 7, 9 }),       // Tiếng Anh THPT, Ngữ văn 12
+                ("Combo Nền tảng Lớp 10",                   10, new[] { 0, 2, 4, 6 }), // Toán 10, Vật lý 11, Hóa 10, Tiếng Anh 10
+                ("Combo Toán & Lý Toàn Diện",               18, new[] { 0, 1, 2, 3 }), // Toán 10, Toán 12, Vật lý 11, Vật lý 12
+            };
+     
+            var combos = comboData.Select(d => new Combo
+            {
+                Id              = Guid.NewGuid(),
+                Name            = d.Item1,
+                DiscountPercent = d.Item2,
+                IsActive        = true,
+                CreatedAt       = now,
+            }).ToList();
+     
+            await context.Combos.AddRangeAsync(combos);
+     
+            // ── Tạo CartItem cho Combo (gắn vào cart của student 0, 1, 2, 3) ─
+            var comboCartItems = new List<CartItem>();
+            for (int i = 0; i < combos.Count; i++)
+            {
+                comboCartItems.Add(new CartItem
+                {
+                    Id        = Guid.NewGuid(),
+                    CartId    = carts[i].Id,
+                    ComboId   = combos[i].Id,
+                    ItemType  = CartItemType.Combo,
+                    Quantity  = 1,
+                    CreatedAt = now,
+                });
+            }
+            await context.CartItems.AddRangeAsync(comboCartItems);
+     
+            // ── Tạo ComboCourse ────────────────────────────────────────────────
+            var comboCourses = new List<ComboCourse>();
+            for (int ci = 0; ci < combos.Count; ci++)
+            {
+                var (_, _, courseIndexes) = comboData[ci];
+                foreach (var idx in courseIndexes)
+                {
+                    comboCourses.Add(new ComboCourse
+                    {
+                        Id          = Guid.NewGuid(),
+                        ComboId     = combos[ci].Id,
+                        CourseId    = courses[idx].Id,
+                        CartItemId  = comboCartItems[ci].Id,
+                        CreatedAt   = now,
+                    });
+                }
+            }
+     
+            await context.ComboCourses.AddRangeAsync(comboCourses);
+            await context.SaveChangesAsync();
+        }
+        
+        
+        
+        
+    // ═══════════════════════════════════════════════════════════════════════
+    // 9. REVIEW COURSES
+    // ═══════════════════════════════════════════════════════════════════════
+ 
+    private static async Task SeedReviewCoursesAsync(AppDbContext context)
+    {
+        if (await context.ReviewCourses.AnyAsync()) return;
+ 
+        var now         = DateTimeOffset.UtcNow;
+        var enrollments = await context.Enrollments.ToListAsync();
+ 
+        // Mỗi enrollment (student đã mua) sẽ có 1 review
+        var reviewData = new[]
+        {
+            (5, "Khóa học rất hay, giảng viên dạy dễ hiểu và bài tập phong phú!",          5),
+            (5, "Nội dung chi tiết, bám sát đề thi. Rất hữu ích cho kỳ thi THPT.",         5),
+            (4, "Khóa học tốt, video chất lượng cao. Chỉ tiếc phần bài tập hơi ít.",       4),
+            (4, "Giảng viên nhiệt tình, giải thích rõ ràng từng dạng bài.",                4),
+            (3, "Nội dung ổn, nhưng tốc độ giảng hơi nhanh với người mới bắt đầu.",       3),
+            (5, "Xuất sắc! Sau khi học xong mình thi được 9 điểm môn Hóa.",                5),
+            (4, "Phương pháp giảng dạy sáng tạo, nhiều ví dụ thực tế rất dễ nhớ.",       4),
+            (5, "Tài liệu đính kèm đầy đủ, slide đẹp. Rất đáng tiền!",                   5),
+            (3, "Ổn nhưng cần cập nhật thêm một số dạng câu hỏi mới trong đề thi 2025.", 3),
+            (4, "Khóa học giúp mình nắm chắc kiến thức nền tảng, giảng viên rất tận tâm.", 4),
+        };
+ 
+        var reviews = new List<ReviewCourse>();
+ 
+        for (int i = 0; i < Math.Min(enrollments.Count, reviewData.Length); i++)
+        {
+            var (_, comment, rating) = reviewData[i];
+            reviews.Add(new ReviewCourse
+            {
+                Id        = Guid.NewGuid(),
+                CourseId  = enrollments[i].CourseId,
+                StuId     = enrollments[i].StuId,
+                Rating    = rating,
+                Comment   = comment,
+                CreatedAt = now.AddDays(-i),
+            });
+        }
+ 
+        await context.ReviewCourses.AddRangeAsync(reviews);
+        await context.SaveChangesAsync();
+    }
+        
+    
+    
+    // ═══════════════════════════════════════════════════════════════════════
+    // 10. COMMENTS (3–5 comment mỗi Lesson)
+    // ═══════════════════════════════════════════════════════════════════════
+ 
+    private static async Task SeedCommentsAsync(AppDbContext context)
+    {
+        if (await context.Comments.AnyAsync()) return;
+ 
+        var now      = DateTimeOffset.UtcNow;
+        var lessons  = await context.Lessons.ToListAsync();
+        var students = await context.Students.Include(s => s.User).ToListAsync();
+        var lecturers = await context.Lecturers.Include(l => l.User).ToListAsync();
+ 
+        // Pool comment theo chủ đề — dùng luân phiên
+        var commentPool = new[]
+        {
+            "Thầy/cô có thể giải thích lại phần này rõ hơn không ạ? Em chưa hiểu lắm.",
+            "Bài này hay quá, em đã hiểu sau khi xem lại lần 2!",
+            "Cho em hỏi phần ví dụ thứ 2 tại sao lại ra kết quả đó ạ?",
+            "Em cảm ơn thầy/cô, phần giải thích rất dễ hiểu!",
+            "Video chất lượng tốt, nội dung súc tích. 👍",
+            "Em làm bài tập cuối video không ra, mong thầy/cô hướng dẫn thêm.",
+            "Tại sao bước 3 lại không dùng công thức kia ạ? Em thấy cũng hợp lý.",
+            "Phần này liên quan đến bài trước như thế nào ạ thầy/cô?",
+            "Bài giảng rõ ràng, em nắm được hết rồi. Cảm ơn ạ!",
+            "Em xem đi xem lại 3 lần vẫn chưa hiểu phần cuối, thầy/cô giúp em với.",
+            "Nội dung bài học rất thực tế, dễ áp dụng vào bài thi.",
+            "Thầy/cô dạy hay lắm, em subscribe khóa này là quyết định đúng đắn!",
+            "Phần ví dụ minh họa rất trực quan, em thích cách giảng này.",
+            "Em có thể hỏi thêm tài liệu tham khảo cho phần này không ạ?",
+            "Bài này em thi thử được 8/10, cảm ơn thầy/cô nhiều!",
+            "Giọng thầy/cô dễ nghe, tốc độ vừa phải, rất phù hợp.",
+            "Em vừa áp dụng cách này vào đề thi thử, ra kết quả đúng luôn!",
+            "Có thể làm thêm bài tập nâng cao cho phần này không ạ?",
+            "Slide bài giảng rõ ràng, em tải về ôn tập rất tiện.",
+            "Phần này khó hơn em nghĩ, may có video giải thích chi tiết.",
+        };
+ 
+        var replyPool = new[]
+        {
+            "Bạn có thể xem lại phần timestamp 5:30, thầy/cô giải thích kỹ ở đó.",
+            "Mình cũng thắc mắc chỗ đó, sau đó hiểu rồi. Bạn thử làm lại ví dụ đi!",
+            "Đúng rồi bạn ơi, phần đó mình cũng làm mãi mới ra.",
+            "Bạn thử xem bài trước liên quan, sẽ hiểu hơn phần này.",
+            "Mình đồng ý, bài này học xong tự tin hơn nhiều!",
+        };
+ 
+        var comments  = new List<Comment>();
+        var allUserIds = students.Select(s => s.User.Id)
+            .Concat(lecturers.Select(l => l.User.Id))
+            .ToList();
+ 
+        int poolIdx  = 0;
+        int replyIdx = 0;
+        int minuteOffset = 0;
+ 
+        var rng = new Random(42); // seed cố định để tái lập được
+ 
+        foreach (var lesson in lessons)
+        {
+            int commentCount = rng.Next(3, 6); // 3–5 comment
+ 
+            for (int c = 0; c < commentCount; c++)
+            {
+                var userId  = allUserIds[(poolIdx + c) % allUserIds.Count];
+                var content = commentPool[poolIdx % commentPool.Length];
+                poolIdx++;
+ 
+                var parent = new Comment
+                {
+                    Id               = Guid.NewGuid(),
+                    LessonId         = lesson.Id,
+                    UserId           = userId,
+                    ParentCommentId  = null,
+                    Content          = content,
+                    DepthLevel       = 0,
+                    IsLocked         = false,
+                    CreatedAt        = now.AddMinutes(-(minuteOffset++)),
+                };
+                comments.Add(parent);
+ 
+                // 1 reply cho comment đầu tiên của mỗi lesson
+                if (c == 0)
+                {
+                    var replyUserId = allUserIds[(poolIdx + 1) % allUserIds.Count];
+                    comments.Add(new Comment
+                    {
+                        Id              = Guid.NewGuid(),
+                        LessonId        = lesson.Id,
+                        UserId          = replyUserId,
+                        ParentCommentId = parent.Id,
+                        Content         = replyPool[replyIdx % replyPool.Length],
+                        DepthLevel      = 1,
+                        IsLocked        = false,
+                        CreatedAt       = now.AddMinutes(-(minuteOffset - 1) + 5),
+                    });
+                    replyIdx++;
+                }
+            }
+        }
+ 
+        await context.Comments.AddRangeAsync(comments);
+        await context.SaveChangesAsync();
+    }
+    
+    
+    
     // ═══════════════════════════════════════════════════════════════════════
     // HELPERS
     // ═══════════════════════════════════════════════════════════════════════
