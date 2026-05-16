@@ -18,7 +18,6 @@ public class UserController : ControllerBase
     }
 
     [HttpGet("profile")]
-    [Authorize(Policy = JwtExtensions.LectureOrStudentPolicy)]
     public async Task<IActionResult> GetProfile()
     {
         return Ok(ApiResponseFactory.SuccessResponse(await _UserService.GetProfileAsync(), "Get Profile Success",
@@ -26,7 +25,6 @@ public class UserController : ControllerBase
     }
 
     [HttpPost("update-profile")]
-    [Authorize(Policy = JwtExtensions.LectureOrStudentPolicy)]
     public async Task<IActionResult> UpdateProfile(Request.UpdateProfileRequest request)
     {
         return Ok(ApiResponseFactory.SuccessResponse(await _UserService.UpdateProfileAsync(request), "Update Profile Success", HttpContext.TraceIdentifier));
