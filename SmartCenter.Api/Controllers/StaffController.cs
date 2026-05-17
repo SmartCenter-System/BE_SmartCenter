@@ -41,6 +41,14 @@ public class StaffController : ControllerBase
             "Đã từ chối yêu cầu", HttpContext.TraceIdentifier));
     }
     
+    [HttpPost("{id}/process")]
+    [Authorize(Policy = JwtExtensions.StaffOrAdminPolicy)]
+    public async Task<IActionResult> ProcessingConsultation(Guid consultationId)
+    {
+        return Ok(ApiResponseFactory.SuccessResponse(await _staffService.ProcessingConsultation(consultationId),
+            "Đang tư vấn đơn yêu cầu", HttpContext.TraceIdentifier));
+    }
+    
     [HttpGet]
     [Authorize(Policy = JwtExtensions.StaffOrAdminPolicy)]
     public async Task<IActionResult> GetConsultations([FromQuery] Request.ConsultationRequest request)

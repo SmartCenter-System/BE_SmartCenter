@@ -102,6 +102,30 @@ public class Service : IService
         await _dbContext.SaveChangesAsync();
         return "Đã từ chối yêu cầu";
     }
+    
+    public async Task<string> ProcessingConsultation(Guid ConsultationId)
+    {
+        var staffrId = GetStaffrId();
+        
+        var Consultation = await _dbContext.ConsultationRequests
+            .FirstOrDefaultAsync(x => x.Id == ConsultationId);
+
+        if (Consultation == null)
+        {
+            throw new Exception("Đơn tư vẫn không tồn tại");
+        }
+
+        if (Consultation.StaffId != null)
+        {
+            throw new Exception("Đơn hàng đã được nhân viên khác xử lý");
+        }
+
+        Consultation.StaffId = staffrId;
+        Consultation.Status = ConsultReqStatus.Processing;
+        Consultation.UpdatedAt = DateTime.UtcNow;
+        await _dbContext.SaveChangesAsync();
+        return "Đang tư vấn đơn yêu cầu";
+    }
 
     public async Task<PagedResult<Response.ConsultationItemResponse>> GetConsultationsAsync(Request.ConsultationRequest request)
     {
